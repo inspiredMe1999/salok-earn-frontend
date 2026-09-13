@@ -1,0 +1,762 @@
+/* =========================================================
+   EARN PAGE
+   ========================================================= */
+
+.earn-page {
+    width: 100%;
+
+    padding-bottom: 40px;
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.earn-loading {
+    min-height: 60vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    color: var(--color-text-muted);
+
+    font-size: 12px;
+}
+
+.earn-loading-spinner {
+    color: var(--color-primary);
+
+    animation: earnSpin 900ms linear infinite;
+}
+
+@keyframes earnSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================================================
+   INTRO
+   ========================================================= */
+
+.earn-intro {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 25px;
+
+    margin-bottom: 26px;
+}
+
+.earn-eyebrow,
+.earn-results-heading span {
+    display: block;
+
+    color: var(--color-primary);
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 0.13em;
+}
+
+.earn-intro h1 {
+    margin: 6px 0 5px;
+
+    color: var(--color-text);
+
+    font-size: clamp(24px,
+            3vw,
+            31px);
+
+    font-weight: 650;
+
+    letter-spacing: -0.035em;
+}
+
+.earn-intro h1 span {
+    color: var(--color-primary);
+}
+
+.earn-intro p {
+    max-width: 520px;
+
+    margin: 0;
+
+    color: var(--color-text-muted);
+
+    font-size: 12px;
+
+    line-height: 1.6;
+}
+
+/* =========================================================
+   BALANCE
+   ========================================================= */
+
+.earn-balance {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 11px 13px;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-lg);
+
+    background: var(--color-surface);
+}
+
+.earn-balance>svg {
+    width: 35px;
+    height: 35px;
+
+    padding: 8px;
+
+    border-radius: var(--radius-md);
+
+    background: var(--color-primary-soft);
+
+    color: var(--color-primary);
+}
+
+.earn-balance>div {
+    display: flex;
+    flex-direction: column;
+}
+
+.earn-balance span {
+    color: var(--color-text-muted);
+
+    font-size: 8px;
+}
+
+.earn-balance strong {
+    margin-top: 3px;
+
+    color: var(--color-text);
+
+    font-size: 12px;
+}
+
+.earn-balance-guest {
+    cursor: pointer;
+
+    text-decoration: none;
+
+    border-style: dashed;
+
+    transition:
+        border-color var(--transition-fast),
+        background-color var(--transition-fast);
+}
+
+.earn-balance-guest:hover {
+    border-color: var(--color-primary-border);
+
+    background: var(--color-primary-soft);
+}
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+.earn-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 24px;
+
+    padding-bottom: 14px;
+
+    border-bottom: 1px solid var(--color-border);
+}
+
+.earn-category-tabs {
+    display: flex;
+    align-items: center;
+
+    gap: 3px;
+
+    overflow-x: auto;
+
+    scrollbar-width: none;
+}
+
+.earn-category-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.earn-category-tabs button {
+    min-height: 34px;
+
+    padding: 0 12px;
+
+    border: 1px solid transparent;
+
+    border-radius: var(--radius-md);
+
+    background: transparent;
+
+    color: var(--color-text-muted);
+
+    font-family: inherit;
+
+    font-size: 10px;
+    font-weight: 550;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.earn-category-tabs button:hover {
+    color: var(--color-text);
+
+    background: var(--color-surface-hover);
+}
+
+.earn-category-tabs button.active {
+    color: var(--color-primary);
+
+    border-color: var(--color-primary-border);
+
+    background: var(--color-primary-soft);
+
+    font-weight: 650;
+}
+
+/* =========================================================
+   CONTROLS
+   ========================================================= */
+
+.earn-controls {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    flex-shrink: 0;
+}
+
+.earn-search {
+    width: 220px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 0 10px;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-md);
+
+    background: var(--color-surface);
+
+    color: var(--color-text-muted);
+
+    transition:
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast);
+}
+
+.earn-search:focus-within {
+    border-color: var(--color-primary-border);
+
+    box-shadow:
+        0 0 0 3px var(--color-primary-soft);
+}
+
+.earn-search input {
+    min-width: 0;
+
+    flex: 1;
+
+    border: 0;
+    outline: 0;
+
+    background: transparent;
+
+    color: var(--color-text);
+
+    font-family: inherit;
+
+    font-size: 10px;
+}
+
+.earn-search input::placeholder {
+    color: var(--color-text-light);
+}
+
+.earn-sort {
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 0 9px;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-md);
+
+    background: var(--color-surface);
+
+    color: var(--color-text-muted);
+}
+
+.earn-sort select {
+    border: 0;
+    outline: 0;
+
+    background: transparent;
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+
+    font-size: 9px;
+
+    cursor: pointer;
+}
+
+/* =========================================================
+   RESULTS
+   ========================================================= */
+
+.earn-results-heading {
+    margin-bottom: 13px;
+}
+
+.earn-results-heading h2 {
+    margin: 4px 0 0;
+
+    color: var(--color-text);
+
+    font-size: 16px;
+    font-weight: 650;
+
+    letter-spacing: -0.02em;
+}
+
+/* =========================================================
+   OPPORTUNITY GRID
+   ========================================================= */
+
+.earn-opportunities-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 13px;
+}
+
+.earn-opportunity-card {
+    min-width: 0;
+
+    min-height: 260px;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 17px;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-lg);
+
+    background: var(--color-surface);
+
+    transition:
+        border-color var(--transition-fast),
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+}
+
+.earn-opportunity-card:hover {
+    border-color: var(--color-primary-border);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.06);
+}
+
+/* =========================================================
+   CARD TOP
+   ========================================================= */
+
+.earn-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 17px;
+}
+
+.earn-card-icon {
+    width: 39px;
+    height: 39px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: var(--radius-md);
+
+    background: var(--color-primary-soft);
+
+    color: var(--color-primary);
+}
+
+.earn-card-type {
+    padding: 4px 7px;
+
+    border-radius: 99px;
+
+    background: var(--color-bg);
+
+    color: var(--color-text-muted);
+
+    font-size: 8px;
+    font-weight: 550;
+
+    text-transform: capitalize;
+}
+
+/* =========================================================
+   CARD CONTENT
+   ========================================================= */
+
+.earn-card-content {
+    flex: 1;
+}
+
+.earn-card-content h3 {
+    margin: 0;
+
+    color: var(--color-text);
+
+    font-size: 13px;
+    font-weight: 650;
+
+    line-height: 1.4;
+}
+
+.earn-card-content p {
+    margin: 7px 0 0;
+
+    color: var(--color-text-muted);
+
+    font-size: 10px;
+
+    line-height: 1.6;
+}
+
+/* =========================================================
+   CARD META
+   ========================================================= */
+
+.earn-card-meta {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 15px;
+}
+
+.earn-card-meta span {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 4px;
+
+    color: var(--color-text-light);
+
+    font-size: 8px;
+}
+
+.earn-card-meta span+span {
+    padding-left: 8px;
+
+    border-left: 1px solid var(--color-border);
+}
+
+/* =========================================================
+   CARD FOOTER
+   ========================================================= */
+
+.earn-card-footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-top: 15px;
+    padding-top: 13px;
+
+    border-top: 1px solid var(--color-border);
+}
+
+.earn-card-footer>div {
+    display: flex;
+    flex-direction: column;
+}
+
+.earn-card-footer span {
+    color: var(--color-text-light);
+
+    font-size: 8px;
+}
+
+.earn-card-footer strong {
+    margin-top: 3px;
+
+    color: var(--color-primary);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.earn-card-button {
+    min-height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 0 11px;
+
+    border: 1px solid var(--color-primary-border);
+
+    border-radius: var(--radius-md);
+
+    background: var(--color-primary-soft);
+
+    color: var(--color-primary);
+
+    font-size: 9px;
+    font-weight: 650;
+
+    text-decoration: none;
+
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast);
+}
+
+.earn-card-button:hover {
+    background: var(--color-primary);
+
+    color: #17120a;
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.earn-empty {
+    min-height: 320px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    border: 1px dashed var(--color-border);
+
+    border-radius: var(--radius-lg);
+
+    text-align: center;
+}
+
+.earn-empty-icon {
+    width: 43px;
+    height: 43px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: var(--radius-md);
+
+    background: var(--color-bg);
+
+    color: var(--color-text-muted);
+}
+
+.earn-empty h3 {
+    margin: 13px 0 4px;
+
+    color: var(--color-text);
+
+    font-size: 13px;
+}
+
+.earn-empty p {
+    margin: 0;
+
+    color: var(--color-text-muted);
+
+    font-size: 10px;
+}
+
+.earn-empty button {
+    margin-top: 14px;
+
+    min-height: 34px;
+
+    padding: 0 12px;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-md);
+
+    background: var(--color-surface);
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+
+    font-size: 9px;
+    font-weight: 550;
+
+    cursor: pointer;
+}
+
+.earn-empty button:hover {
+    border-color: var(--color-primary-border);
+
+    color: var(--color-primary);
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+    .earn-opportunities-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .earn-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .earn-controls {
+        width: 100%;
+    }
+
+    .earn-search {
+        flex: 1;
+
+        width: auto;
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .earn-intro {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 16px;
+
+        margin-bottom: 20px;
+    }
+
+    .earn-balance {
+        width: 100%;
+    }
+
+    .earn-toolbar {
+        gap: 12px;
+
+        margin-bottom: 20px;
+    }
+
+    .earn-category-tabs {
+        width: 100%;
+    }
+
+    .earn-controls {
+        flex-direction: column;
+
+        width: 100%;
+    }
+
+    .earn-search,
+    .earn-sort {
+        width: 100%;
+    }
+
+    .earn-sort {
+        justify-content: space-between;
+    }
+
+    .earn-opportunities-grid {
+        grid-template-columns: 1fr;
+
+        gap: 10px;
+    }
+
+    .earn-opportunity-card {
+        min-height: 235px;
+    }
+}
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 480px) {
+    .earn-page {
+        padding-bottom: 25px;
+    }
+
+    .earn-intro h1 {
+        font-size: 23px;
+    }
+
+    .earn-intro p {
+        font-size: 11px;
+    }
+
+    .earn-opportunity-card {
+        padding: 15px;
+    }
+}

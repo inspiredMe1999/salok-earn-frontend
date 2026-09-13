@@ -1,0 +1,166 @@
+.guest-banner {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 13px 16px;
+
+    margin-bottom: 22px;
+
+    border-radius: var(--radius-lg, 14px);
+
+    border: 1px solid rgba(220, 169, 47, 0.28);
+
+    background:
+        linear-gradient(135deg,
+            rgba(220, 169, 47, 0.12),
+            rgba(220, 169, 47, 0.04));
+}
+
+.guest-banner-icon {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 32px;
+    height: 32px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: rgba(220, 169, 47, 0.16);
+
+    color: var(--gold-500, #dca92f);
+}
+
+.guest-banner-copy {
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+
+    flex: 1;
+
+    min-width: 180px;
+}
+
+.guest-banner-copy strong {
+    font-size: 13px;
+    font-weight: 700;
+
+    color: var(--color-text);
+}
+
+.guest-banner-copy span {
+    font-size: 12.5px;
+
+    color: var(--color-text-muted);
+
+    line-height: 1.4;
+}
+
+.guest-banner-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    flex-shrink: 0;
+}
+
+.guest-banner-login,
+.guest-banner-signup {
+    min-height: 36px;
+
+    padding: 0 14px;
+
+    border-radius: var(--radius-pill, 999px);
+
+    font-size: 12.5px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition:
+        background-color var(--transition-normal, 0.2s),
+        border-color var(--transition-normal, 0.2s),
+        opacity var(--transition-normal, 0.2s);
+}
+
+.guest-banner-login {
+    background: transparent;
+
+    border: 1px solid var(--color-border-strong, var(--color-border));
+
+    color: var(--color-text);
+}
+
+.guest-banner-login:hover {
+    background: rgba(220, 169, 47, 0.08);
+}
+
+.guest-banner-signup {
+    border: 1px solid transparent;
+
+    background: var(--gold-500, #dca92f);
+
+    color: #16130a;
+}
+
+.guest-banner-signup:hover {
+    opacity: 0.9;
+}
+
+.guest-banner-dismiss {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 26px;
+    height: 26px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: transparent;
+
+    color: var(--color-text-muted);
+
+    cursor: pointer;
+}
+
+.guest-banner-dismiss:hover {
+    background: rgba(220, 169, 47, 0.12);
+
+    color: var(--color-text);
+}
+
+@media (max-width: 640px) {
+    .guest-banner {
+        flex-wrap: wrap;
+    }
+
+    .guest-banner-actions {
+        width: 100%;
+
+        margin-left: 44px;
+    }
+
+    .guest-banner-login,
+    .guest-banner-signup {
+        flex: 1;
+
+        text-align: center;
+    }
+}

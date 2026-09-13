@@ -1,0 +1,689 @@
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.app-header {
+    position: sticky;
+    top: 0;
+
+    z-index: 500;
+
+    width: 100%;
+    height: var(--header-height);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 30px;
+
+    background: color-mix(
+        in srgb,
+        var(--color-surface) 94%,
+        transparent
+    );
+
+    border-bottom: 1px solid var(--color-border);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    transition:
+        background-color var(--transition-normal),
+        border-color var(--transition-normal);
+}
+
+.app-header,
+.app-header * {
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   LEFT
+   ========================================================= */
+
+.header-left {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 18px;
+}
+
+.mobile-menu-button {
+    display: none;
+
+    width: 40px;
+    height: 40px;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-md);
+
+    background: var(--color-surface);
+
+    color: var(--color-text-secondary);
+
+    cursor: pointer;
+}
+
+.mobile-menu-button:hover {
+    color: var(--color-text);
+
+    background: var(--color-surface-hover);
+}
+
+/* =========================================================
+   PAGE CONTEXT
+   ========================================================= */
+
+.header-context {
+    min-width: 100px;
+
+    display: flex;
+    flex-direction: column;
+
+    padding-right: 4px;
+}
+
+.header-context span {
+    color: var(--color-text-light);
+
+    font-size: 9px;
+    font-weight: 500;
+
+    letter-spacing: 0.04em;
+}
+
+.header-context strong {
+    margin-top: 2px;
+
+    color: var(--color-text);
+
+    font-size: 13px;
+    font-weight: 650;
+}
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.header-search {
+    width: min(320px, 32vw);
+
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 0 11px;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-md);
+
+    background: var(--color-bg);
+
+    color: var(--color-text-muted);
+
+    transition:
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast);
+}
+
+.header-search:focus-within {
+    border-color: var(--color-primary-border);
+
+    box-shadow:
+        0 0 0 3px var(--color-primary-soft);
+}
+
+.header-search input {
+    min-width: 0;
+
+    flex: 1;
+
+    border: 0;
+    outline: 0;
+
+    background: transparent;
+
+    color: var(--color-text);
+
+    font-family: inherit;
+
+    font-size: 12px;
+}
+
+.header-search input::placeholder {
+    color: var(--color-text-light);
+}
+
+.header-search input::-webkit-search-cancel-button {
+    opacity: 0.5;
+}
+
+.search-shortcut {
+    width: 22px;
+    height: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: 5px;
+
+    color: var(--color-text-light);
+
+    font-size: 11px;
+}
+
+/* =========================================================
+   RIGHT
+   ========================================================= */
+
+.header-right {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    flex-shrink: 0;
+}
+
+.header-icon-button {
+    position: relative;
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-full);
+
+    background: var(--color-surface);
+
+    color: var(--color-text-secondary);
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.header-icon-button:hover {
+    color: var(--color-primary);
+
+    border-color: var(--color-primary-border);
+
+    background: var(--color-primary-soft);
+}
+
+/* =========================================================
+   GUEST SIGN IN BUTTON
+   ========================================================= */
+
+.header-signin {
+    min-height: 40px;
+
+    padding: 0 16px;
+
+    border-radius: var(--radius-full);
+
+    background: transparent;
+
+    border: 1px solid var(--color-border);
+
+    color: var(--color-text);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.header-signin:hover {
+    color: var(--color-primary);
+
+    border-color: var(--color-primary-border);
+
+    background: var(--color-primary-soft);
+}
+
+/* =========================================================
+   NOTIFICATION INDICATOR
+   ========================================================= */
+
+.notification-dot {
+    position: absolute;
+
+    top: 7px;
+    right: 7px;
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: var(--color-primary);
+
+    box-shadow:
+        0 0 0 2px var(--color-surface);
+}
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.header-divider {
+    width: 1px;
+    height: 28px;
+
+    margin: 0 5px;
+
+    background: var(--color-border);
+}
+
+/* =========================================================
+   PROFILE
+   ========================================================= */
+
+.header-profile-wrapper {
+    position: relative;
+}
+
+.header-profile {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 4px 7px 4px 4px;
+
+    border: 1px solid transparent;
+
+    border-radius: var(--radius-md);
+
+    background: transparent;
+
+    color: var(--color-text);
+
+    text-align: left;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+.header-profile:hover,
+.header-profile.profile-open {
+    background: var(--color-surface-hover);
+
+    border-color: var(--color-border);
+}
+
+.header-avatar {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(135deg,
+            var(--gold-300),
+            var(--gold-600));
+
+    color: #17120a;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.header-user-info {
+    min-width: 70px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.header-user-info strong {
+    color: var(--color-text);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.header-user-info span {
+    margin-top: 1px;
+
+    color: var(--color-text-muted);
+
+    font-size: 9px;
+}
+
+.header-profile-chevron {
+    color: var(--color-text-muted);
+
+    transition:
+        transform var(--transition-fast);
+}
+
+.header-profile-chevron.chevron-open {
+    transform: rotate(180deg);
+}
+
+/* =========================================================
+   PROFILE DROPDOWN
+   ========================================================= */
+
+.profile-dropdown {
+    position: absolute;
+
+    top: calc(100% + 10px);
+    right: 0;
+
+    width: 238px;
+
+    padding: 8px;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-lg);
+
+    background: var(--color-surface);
+
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.12);
+
+    z-index: 200;
+
+    animation: profileDropdownIn 150ms ease;
+}
+
+@keyframes profileDropdownIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.profile-dropdown-header {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 9px 8px;
+}
+
+.profile-dropdown-avatar {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(135deg,
+            var(--gold-300),
+            var(--gold-600));
+
+    color: #17120a;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.profile-dropdown-header>div:last-child {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-dropdown-header strong {
+    overflow: hidden;
+
+    color: var(--color-text);
+
+    font-size: 11px;
+    font-weight: 650;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile-dropdown-header span {
+    margin-top: 2px;
+
+    overflow: hidden;
+
+    color: var(--color-text-muted);
+
+    font-size: 9px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile-dropdown-divider {
+    height: 1px;
+
+    margin: 6px 4px;
+
+    background: var(--color-border);
+}
+
+.profile-dropdown-item {
+    width: 100%;
+    min-height: 38px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 0 10px;
+
+    border: 0;
+
+    border-radius: var(--radius-md);
+
+    background: transparent;
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+
+    font-size: 11px;
+    font-weight: 500;
+
+    text-decoration: none;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast);
+}
+
+.profile-dropdown-item:hover {
+    color: var(--color-text);
+
+    background: var(--color-surface-hover);
+}
+
+.profile-dropdown-item svg {
+    flex-shrink: 0;
+}
+
+.profile-dropdown-item.logout-item:hover {
+    color: var(--color-danger, #dc2626);
+
+    background: color-mix(in srgb,
+            var(--color-danger, #dc2626) 8%,
+            transparent);
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+    .app-header {
+        padding: 0 24px;
+    }
+
+    .header-context {
+        display: none;
+    }
+
+    .header-search {
+        width: min(340px, 40vw);
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .app-header {
+        height: 64px;
+
+        padding: 0 16px;
+    }
+
+    .mobile-menu-button {
+        display: flex;
+    }
+
+    .header-left {
+        gap: 7px;
+    }
+
+    .header-search {
+        width: 40px;
+
+        padding: 0;
+
+        border: 0;
+
+        background: transparent;
+
+        box-shadow: none !important;
+    }
+
+    .header-search svg {
+        flex-shrink: 0;
+
+        color: var(--color-text-secondary);
+    }
+
+    .header-search input,
+    .search-shortcut {
+        display: none;
+    }
+
+    .header-right {
+        gap: 5px;
+    }
+
+    .header-divider {
+        display: none;
+    }
+
+    .header-user-info,
+    .header-profile-chevron {
+        display: none;
+    }
+
+    .header-profile {
+        padding: 2px;
+    }
+
+    .header-avatar {
+        width: 36px;
+        height: 36px;
+    }
+
+    .header-icon-button,
+    .theme-toggle {
+        width: 38px;
+        height: 38px;
+    }
+
+    .profile-dropdown {
+        top: calc(100% + 8px);
+        right: -4px;
+    }
+}
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 400px) {
+    .app-header {
+        padding: 0 12px;
+    }
+
+    .header-right {
+        gap: 3px;
+    }
+
+    .header-left {
+        gap: 3px;
+    }
+}

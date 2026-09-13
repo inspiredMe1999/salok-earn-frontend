@@ -1,0 +1,157 @@
+/* =========================================================
+   APPLICATION LAYOUT
+   ========================================================= */
+
+.app-layout {
+    min-height: 100vh;
+    width: 100%;
+
+    display: flex;
+    align-items: stretch;
+
+    background: var(--color-bg);
+    color: var(--color-text);
+
+    transition:
+        background-color var(--transition-normal),
+        color var(--transition-normal);
+}
+
+/* =========================================================
+   MAIN APPLICATION AREA
+   ========================================================= */
+
+.app-main {
+    min-width: 0;
+    min-height: 100vh;
+
+    width: calc(100% - var(--sidebar-width));
+
+    margin-left: var(--sidebar-width);
+
+    transition:
+        width var(--transition-normal),
+        margin-left var(--transition-normal);
+}
+
+/* Expanded desktop sidebar */
+.app-layout:not(.sidebar-collapsed) .app-main {
+    width: calc(100% - var(--sidebar-width));
+    margin-left: var(--sidebar-width);
+}
+
+/* Collapsed desktop sidebar */
+.app-layout.sidebar-collapsed .app-main {
+    width: calc(100% - var(--sidebar-collapsed-width));
+    margin-left: var(--sidebar-collapsed-width);
+}
+
+/* =========================================================
+   CONTENT AREA
+   ========================================================= */
+
+.app-content {
+    width: 100%;
+    min-height: calc(100vh - var(--header-height));
+
+    padding: 30px;
+
+    background: var(--color-bg);
+
+    transition:
+        background-color var(--transition-normal),
+        padding var(--transition-normal);
+}
+
+.app-content-inner {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* =========================================================
+   MOBILE OVERLAY
+   ========================================================= */
+
+.sidebar-overlay {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    z-index: 90;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 0;
+    border: 0;
+
+    background: rgba(0, 0, 0, 0.48);
+    backdrop-filter: blur(3px);
+
+    cursor: pointer;
+
+    animation: sidebarOverlayIn 180ms ease;
+}
+
+@keyframes sidebarOverlayIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .app-main,
+    .app-layout:not(.sidebar-collapsed) .app-main,
+    .app-layout.sidebar-collapsed .app-main {
+        width: calc(100% - var(--sidebar-collapsed-width));
+        margin-left: var(--sidebar-collapsed-width);
+    }
+
+    .app-content {
+        padding: 28px;
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .app-main,
+    .app-layout:not(.sidebar-collapsed) .app-main,
+    .app-layout.sidebar-collapsed .app-main {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .app-content {
+        min-height: calc(100vh - 64px);
+        padding: 24px 18px;
+    }
+
+    .sidebar-overlay {
+        display: block;
+    }
+}
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 480px) {
+    .app-content {
+        padding: 20px 14px;
+    }
+}
