@@ -2,6 +2,20 @@
    FLOATING COMMUNITY CHAT
    Wired to the same design tokens as wallet.css so it shares
    the gold brand language and reacts correctly to [data-theme].
+
+   Interaction model:
+   - The drag handle rests at the far left, vertically centered
+     by default, and can only be repositioned vertically.
+   - A click, or a rightward drag past a threshold, opens the
+     community chat as a full-page overlay that slides in from
+     the left. The handle hides while the overlay is open.
+   - A "home" icon appears centered on the right edge while the
+     overlay is open. Clicking it, or dragging it left past a
+     threshold, closes the overlay and reveals the handle again.
+   ========================================================= */
+
+/* =========================================================
+   DRAG HANDLE
    ========================================================= */
 
 .floating-chat-launcher {
@@ -34,12 +48,21 @@
 
     transition:
         box-shadow var(--transition-normal),
-        transform var(--transition-normal),
+        opacity 380ms ease,
+        transform 380ms ease,
+        background var(--transition-normal);
+}
+
+/* While actively being dragged, position/rubber-band changes should be
+   instant, not eased — the eased transform above is only for the
+   open/close hide-and-reveal transition. */
+.floating-chat-launcher-dragging {
+    transition:
+        box-shadow var(--transition-normal),
         background var(--transition-normal);
 }
 
 .floating-chat-launcher:hover {
-    transform: translateY(-2px);
     box-shadow:
         0 16px 36px var(--color-primary-soft),
         0 0 0 7px var(--color-primary-soft);
@@ -48,13 +71,13 @@
 .floating-chat-launcher:active,
 .floating-chat-launcher-dragging {
     cursor: grabbing;
-    transform: scale(.96);
 }
 
-.floating-chat-launcher-open {
-    background: var(--color-card);
-    color: var(--color-primary);
-    border-color: var(--color-primary-border);
+.floating-chat-launcher-hidden {
+    opacity: 0;
+    transform: translateY(-50%) scale(.7);
+
+    pointer-events: none;
 }
 
 .floating-chat-online-dot {
@@ -69,74 +92,148 @@
 
     background: var(--color-success, #48c774);
 
-    border: 2px solid var(--color-card);
+    border: 2px solid var(--color-primary);
 }
 
-.floating-chat-drag-label {
+/* Animated "drag right to open" affordance — a double chevron that
+   beeps/nudges toward the right edge of the button. Fades out the
+   moment an actual drag starts, and never shows while hidden. */
+.floating-chat-drag-hint {
     position: absolute;
-    bottom: -22px;
-    left: 50%;
+    top: 50%;
+    right: 5px;
 
-    transform: translateX(-50%);
+    color: var(--color-primary-text);
 
-    color: var(--color-text-muted);
-
-    font-size: 9px;
-    font-weight: 600;
+    opacity: .4;
+    transform: translateY(-50%) translateX(0);
 
     pointer-events: none;
 
-    opacity: .75;
+    animation: floating-chat-hint-beacon 1.6s ease-in-out infinite;
+}
+
+@keyframes floating-chat-hint-beacon {
+
+    0%,
+    100% {
+        opacity: .35;
+        transform: translateY(-50%) translateX(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(-50%) translateX(4px);
+    }
+}
+
+.floating-chat-launcher-dragging .floating-chat-drag-hint,
+.floating-chat-launcher-hidden .floating-chat-drag-hint {
+    opacity: 0;
+    animation: none;
 }
 
 /* =========================================================
-   CHAT PANEL
+   HOME ICON (close trigger for the full-page overlay)
    ========================================================= */
 
-.floating-chat-panel {
+.floating-home-button {
     position: fixed;
-    z-index: 9989;
+    z-index: 10001;
 
-    right: 24px;
-    bottom: 94px;
+    top: 50%;
+    right: 22px;
 
-    width: 370px;
-    max-width: calc(100vw - 32px);
+    width: 52px;
+    height: 52px;
 
-    height: 550px;
-    max-height: calc(100vh - 130px);
+    display: grid;
+    place-items: center;
+
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+
+    background: var(--color-card);
+
+    color: var(--color-primary);
+
+    box-shadow: var(--shadow-lg);
+
+    cursor: grab;
+    touch-action: none;
+
+    user-select: none;
+
+    opacity: 0;
+    transform: translateY(-50%) scale(.7);
+
+    pointer-events: none;
+
+    transition:
+        opacity 380ms ease 90ms,
+        transform 380ms ease 90ms,
+        box-shadow var(--transition-normal);
+}
+
+.floating-home-button:active {
+    cursor: grabbing;
+}
+
+/* While actively being dragged, position/fade changes should be
+   instant, not eased — same reasoning as the launcher's dragging
+   class above. */
+.floating-home-button-dragging {
+    transition:
+        box-shadow var(--transition-normal);
+}
+
+.floating-home-button-visible {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+
+    pointer-events: auto;
+}
+
+.floating-home-button:hover {
+    box-shadow:
+        0 16px 36px rgba(0, 0, 0, .18),
+        0 0 0 5px var(--color-primary-soft);
+}
+
+/* =========================================================
+   FULL-PAGE OVERLAY
+   ========================================================= */
+
+.floating-chat-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+
+    transform: translateX(-100%);
+
+    transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+
+    background: var(--color-bg);
+}
+
+.floating-chat-overlay-open {
+    transform: translateX(0);
+}
+
+.floating-chat-overlay-inner {
+    width: 100%;
+    height: 100%;
+
+    max-width: 760px;
+    margin: 0 auto;
 
     display: flex;
     flex-direction: column;
 
-    overflow: hidden;
-
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-xl);
-
     background: var(--color-card);
 
-    box-shadow: var(--shadow-lg);
-
-    animation: floating-chat-open .22s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/*
-   NOTE: this animation only affects .floating-chat-panel itself (a
-   fixed-position element, not an ancestor of one), so the transform here
-   is safe — it can't trap a nested `position: fixed` element the way an
-   animated ancestor would. See the equivalent note in wallet.css.
-*/
-@keyframes floating-chat-open {
-    from {
-        opacity: 0;
-        transform: translateY(12px) scale(.97);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+    border-left: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
 }
 
 /* Header */
@@ -146,7 +243,9 @@
     align-items: center;
     justify-content: space-between;
 
-    padding: 13px 14px;
+    flex-shrink: 0;
+
+    padding: 18px 22px;
 
     border-bottom: 1px solid var(--color-border);
 
@@ -156,12 +255,12 @@
 .floating-chat-heading {
     display: flex;
     align-items: center;
-    gap: 9px;
+    gap: 12px;
 }
 
 .floating-chat-heading-icon {
-    width: 34px;
-    height: 34px;
+    width: 40px;
+    height: 40px;
 
     display: grid;
     place-items: center;
@@ -182,24 +281,24 @@
 
 .floating-chat-heading strong {
     color: var(--color-text);
-    font-size: 12px;
+    font-size: 15px;
 }
 
 .floating-chat-heading span {
     color: var(--color-text-muted);
-    font-size: 9px;
+    font-size: 11px;
 }
 
 .floating-chat-header-actions {
     display: flex;
     align-items: center;
-    gap: 3px;
+    gap: 4px;
 }
 
 .floating-chat-header-actions button,
 .floating-chat-header-actions a {
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 36px;
 
     display: grid;
     place-items: center;
@@ -230,7 +329,7 @@
 
     overflow-y: auto;
 
-    padding: 14px;
+    padding: 20px;
 
     scrollbar-width: thin;
 }
@@ -238,22 +337,23 @@
 .floating-message {
     display: flex;
     align-items: flex-end;
-    gap: 7px;
+    gap: 9px;
 
-    margin-bottom: 12px;
+    margin: 0 auto 16px;
 
-    max-width: 91%;
+    max-width: 620px;
 }
 
 .floating-message-own {
     margin-left: auto;
+    margin-right: auto;
     justify-content: flex-end;
 }
 
 .floating-chat-avatar {
-    width: 25px;
-    height: 25px;
-    min-width: 25px;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
 
     display: grid;
     place-items: center;
@@ -266,7 +366,7 @@
 
     border: 1px solid var(--color-primary-border);
 
-    font-size: 8px;
+    font-size: 9px;
     font-weight: 700;
 }
 
@@ -279,16 +379,16 @@
 
     color: var(--color-text-muted);
 
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 600;
 }
 
 .floating-message-bubble {
     position: relative;
 
-    padding: 8px 10px;
+    padding: 9px 11px;
 
-    border-radius: 11px 11px 11px 3px;
+    border-radius: 13px 13px 13px 4px;
 
     background: var(--color-surface-2);
 
@@ -298,7 +398,7 @@
 }
 
 .floating-message-bubble-own {
-    border-radius: 11px 11px 3px 11px;
+    border-radius: 13px 13px 4px 13px;
 
     background: var(--color-primary-soft);
 
@@ -309,9 +409,9 @@
 
 .floating-message-bubble p {
     margin: 0;
-    padding-right: 35px;
+    padding-right: 38px;
 
-    font-size: 11px;
+    font-size: 13px;
     line-height: 1.5;
 
     word-break: break-word;
@@ -319,12 +419,12 @@
 
 .floating-message-time {
     position: absolute;
-    right: 8px;
-    bottom: 5px;
+    right: 9px;
+    bottom: 6px;
 
     color: var(--color-text-faint);
 
-    font-size: 7px;
+    font-size: 8px;
 }
 
 /* Reply */
@@ -342,7 +442,7 @@
 
     color: var(--color-text-muted);
 
-    font-size: 8px;
+    font-size: 9px;
 }
 
 .floating-message-reply div {
@@ -377,8 +477,8 @@
     display: block;
 
     width: 100%;
-    max-width: 230px;
-    max-height: 190px;
+    max-width: 280px;
+    max-height: 230px;
 
     object-fit: cover;
 }
@@ -410,7 +510,7 @@
 
     color: var(--color-text-faint);
 
-    font-size: 10px;
+    font-size: 11px;
 
     cursor: pointer;
 
@@ -430,17 +530,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 7px;
+    gap: 8px;
 
     color: var(--color-text-muted);
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .floating-chat-loading span,
 .floating-chat-spinner {
-    width: 13px;
-    height: 13px;
+    width: 14px;
+    height: 14px;
 
     border: 2px solid currentColor;
     border-right-color: transparent;
@@ -472,8 +572,8 @@
 }
 
 .floating-chat-empty svg {
-    margin-bottom: 9px;
-    padding: 9px;
+    margin-bottom: 10px;
+    padding: 10px;
 
     border-radius: var(--radius-md);
 
@@ -485,12 +585,12 @@
 
 .floating-chat-empty strong {
     color: var(--color-text);
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .floating-chat-empty span {
     margin-top: 4px;
-    font-size: 9px;
+    font-size: 11px;
 }
 
 /* Composer */
@@ -498,17 +598,21 @@
 .floating-chat-composer-area {
     position: relative;
 
-    padding: 9px 10px;
+    flex-shrink: 0;
 
-    border-top: 1px solid var(--color-border);
+    max-width: 620px;
+    width: 100%;
+
+    margin: 0 auto;
+    padding: 12px 20px 18px;
 }
 
 .floating-chat-composer {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
 
-    padding: 4px;
+    padding: 5px;
 
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
@@ -524,9 +628,9 @@
 }
 
 .floating-chat-composer>button {
-    width: 28px;
-    height: 28px;
-    min-width: 28px;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
 
     display: grid;
     place-items: center;
@@ -558,7 +662,7 @@
 
     min-width: 0;
 
-    height: 28px;
+    height: 32px;
 
     padding: 0 4px;
 
@@ -570,7 +674,7 @@
     color: var(--color-text);
 
     font: inherit;
-    font-size: 11px;
+    font-size: 13px;
 }
 
 .floating-chat-input::placeholder {
@@ -584,6 +688,99 @@
 
 .floating-chat-send:disabled {
     opacity: .35;
+}
+
+/* Guest composer (sign-in prompt) */
+
+.floating-chat-guest-composer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 10px 12px;
+
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-md);
+
+    background: var(--color-primary-soft);
+}
+
+.floating-chat-guest-icon {
+    width: 34px;
+    height: 34px;
+
+    display: grid;
+    place-items: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    color: var(--color-primary);
+
+    background: var(--color-card);
+
+    border: 1px solid var(--color-primary-border);
+}
+
+.floating-chat-guest-text {
+    flex: 1;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.floating-chat-guest-text strong {
+    color: var(--color-text);
+    font-size: 12px;
+}
+
+.floating-chat-guest-text span {
+    color: var(--color-text-muted);
+    font-size: 10px;
+}
+
+.floating-chat-guest-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    flex-shrink: 0;
+}
+
+.floating-chat-guest-actions button {
+    height: 32px;
+
+    padding: 0 12px;
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xs);
+
+    background: var(--color-card);
+
+    color: var(--color-text);
+
+    font: inherit;
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.floating-chat-guest-actions button:hover {
+    border-color: var(--color-primary-border);
+    transform: translateY(-1px);
+}
+
+.floating-chat-guest-primary {
+    border: 0 !important;
+
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover)) !important;
+    color: var(--color-primary-text) !important;
 }
 
 /* Reply preview */
@@ -621,7 +818,7 @@
 
 .floating-chat-reply-preview strong {
     color: var(--color-text);
-    font-size: 8px;
+    font-size: 9px;
 }
 
 .floating-chat-reply-preview span {
@@ -629,7 +826,7 @@
 
     color: var(--color-text-muted);
 
-    font-size: 8px;
+    font-size: 9px;
 }
 
 .floating-chat-reply-preview button {
@@ -652,8 +849,8 @@
 .floating-chat-image-preview {
     position: relative;
 
-    width: 50px;
-    height: 50px;
+    width: 54px;
+    height: 54px;
 
     margin-bottom: 6px;
 
@@ -698,8 +895,8 @@
 .floating-chat-emoji-picker {
     position: absolute;
 
-    bottom: 58px;
-    left: 10px;
+    bottom: 66px;
+    left: 20px;
 
     display: flex;
     gap: 2px;
@@ -715,15 +912,15 @@
 }
 
 .floating-chat-emoji-picker button {
-    width: 27px;
-    height: 27px;
+    width: 30px;
+    height: 30px;
 
     border: 0;
     border-radius: var(--radius-xs);
 
     background: transparent;
 
-    font-size: 14px;
+    font-size: 15px;
 
     cursor: pointer;
 
@@ -740,13 +937,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 5px;
 
-    padding: 6px;
+    flex-shrink: 0;
+
+    padding: 9px;
 
     color: var(--color-text-faint);
 
-    font-size: 8px;
+    font-size: 10px;
 
     border-top: 1px solid var(--color-border);
 }
@@ -764,36 +963,74 @@
     text-decoration: none;
 }
 
+.floating-chat-hidden-file {
+    display: none;
+}
+
 /* =========================================================
    MOBILE
    ========================================================= */
 
 @media (max-width: 700px) {
-    .floating-chat-panel {
-        right: 12px;
-        bottom: 78px;
-
-        width: calc(100vw - 24px);
-
-        height: min(540px, calc(100vh - 105px));
-
-        border-radius: var(--radius-lg);
-    }
-
     .floating-chat-launcher {
-        width: 54px;
-        height: 54px;
-
-        right: 16px;
-        bottom: 16px;
+        width: 52px;
+        height: 52px;
     }
 
-    .floating-chat-drag-label {
-        display: none;
+    .floating-home-button {
+        width: 48px;
+        height: 48px;
+
+        right: 14px;
+    }
+
+    .floating-chat-overlay-inner {
+        max-width: none;
+
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .floating-chat-panel-header {
+        padding: 14px 16px;
+    }
+
+    .floating-chat-messages {
+        padding: 14px;
+    }
+
+    .floating-chat-composer-area {
+        padding: 10px 14px 14px;
     }
 
     .floating-message-actions {
         opacity: 1;
+    }
+
+    .floating-chat-guest-composer {
+        flex-wrap: wrap;
+    }
+
+    .floating-chat-guest-text {
+        min-width: 140px;
+    }
+
+    .floating-chat-guest-actions {
+        width: 100%;
+    }
+
+    .floating-chat-guest-actions button {
+        flex: 1;
+    }
+}
+
+@media (max-width: 420px) {
+    .floating-chat-launcher {
+        left: 14px !important;
+    }
+
+    .floating-home-button {
+        right: 14px;
     }
 }
 
@@ -801,14 +1038,14 @@
    LIGHT MODE
    ========================================================= */
 
-:root[data-theme="light"] .floating-chat-panel {
-    box-shadow: 0 20px 50px rgba(40, 35, 20, 0.1);
-}
-
 :root[data-theme="light"] .floating-chat-launcher {
     box-shadow:
         0 10px 26px rgba(191, 139, 24, 0.24),
         0 0 0 5px var(--color-primary-soft);
+}
+
+:root[data-theme="light"] .floating-home-button {
+    box-shadow: 0 20px 50px rgba(40, 35, 20, 0.14);
 }
 
 :root[data-theme="light"] .floating-chat-emoji-picker {
@@ -820,13 +1057,17 @@
    ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
-    .floating-chat-panel {
-        animation: none;
-    }
 
+    .floating-chat-overlay,
     .floating-chat-launcher,
+    .floating-home-button,
     .floating-chat-composer,
     .floating-message-actions {
         transition: none;
+    }
+
+    .floating-chat-drag-hint {
+        animation: none;
+        opacity: .6;
     }
 }

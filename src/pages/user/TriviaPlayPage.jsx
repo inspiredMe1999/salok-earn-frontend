@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import {
     AlertCircle,
     ArrowLeft,
@@ -25,6 +27,193 @@ import {
 
 import "./trivia.css";
 
+import successAnimation from "../../assets/animations/Success celebration2.json?url";
+import failureAnimation from "../../assets/animations/Failed Status.json?url";
+
+/*
+|--------------------------------------------------------------------------
+| Sparkle burst geometry
+|--------------------------------------------------------------------------
+*/
+
+const SPARKLE_ANGLES = [0, 40, 80, 120, 160, 200, 240, 280, 320];
+
+/*
+|--------------------------------------------------------------------------
+| Result Celebration
+|--------------------------------------------------------------------------
+|
+| A short, theatrical reveal shown right after an answer is submitted.
+| It plays the matching lottie once, dismissing itself the moment the
+| animation actually finishes (via the dotLottie "complete" event) —
+| with a safety-net timeout in case that event never fires — and can
+| also be dismissed early with a tap.
+|--------------------------------------------------------------------------
+*/
+
+function ResultCelebration({
+    isCorrect,
+    onDismiss,
+}) {
+    const [lottieInstance, setLottieInstance] =
+        useState(null);
+
+    useEffect(() => {
+        if (!lottieInstance) {
+            return undefined;
+        }
+
+        const handleComplete = () => {
+            onDismiss();
+        };
+
+        lottieInstance.addEventListener(
+            "complete",
+            handleComplete
+        );
+
+        const fallback = setTimeout(() => {
+            onDismiss();
+        }, 4000);
+
+        return () => {
+            lottieInstance.removeEventListener(
+                "complete",
+                handleComplete
+            );
+
+            clearTimeout(fallback);
+        };
+    }, [lottieInstance, onDismiss]);
+
+    return (
+        <motion.div
+            className="trivia-result-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            onClick={onDismiss}
+        >
+            <motion.div
+                className={`trivia-result-celebration ${isCorrect
+                    ? "is-correct"
+                    : "is-incorrect"
+                    }`}
+                initial={{ opacity: 0, scale: 0.7, y: 18 }}
+                animate={{
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                    x: isCorrect
+                        ? 0
+                        : [0, -9, 9, -7, 7, -3, 0],
+                }}
+                exit={{ opacity: 0, scale: 0.85, y: -10 }}
+                transition={{
+                    duration: 0.45,
+                    ease: [0.22, 1, 0.36, 1],
+                    x: { duration: 0.5, delay: 0.15 },
+                }}
+                onClick={(event) =>
+                    event.stopPropagation()
+                }
+            >
+                <div
+                    className="trivia-celebration-rings"
+                    aria-hidden="true"
+                >
+                    <span className="ring ring-1" />
+                    <span className="ring ring-2" />
+                    <span className="ring ring-3" />
+                </div>
+
+                {isCorrect && (
+                    <div
+                        className="trivia-celebration-sparkles"
+                        aria-hidden="true"
+                    >
+                        {SPARKLE_ANGLES.map(
+                            (angle, index) => (
+                                <motion.span
+                                    key={angle}
+                                    className={`sparkle ${index % 2 === 0
+                                        ? "sparkle-gold"
+                                        : "sparkle-green"
+                                        }`}
+                                    style={{
+                                        "--angle": `${angle}deg`,
+                                    }}
+                                    initial={{
+                                        opacity: 0,
+                                        scale: 0,
+                                    }}
+                                    animate={{
+                                        opacity: [0, 1, 0],
+                                        scale: [0, 1, 0.5],
+                                    }}
+                                    transition={{
+                                        duration: 1.1,
+                                        delay:
+                                            0.1 +
+                                            index * 0.035,
+                                        ease: "easeOut",
+                                    }}
+                                />
+                            )
+                        )}
+                    </div>
+                )}
+
+                <div className="trivia-celebration-lottie">
+                    <DotLottieReact
+                        src={
+                            isCorrect
+                                ? successAnimation
+                                : failureAnimation
+                        }
+                        autoplay
+                        loop={false}
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                        }}
+                        dotLottieRefCallback={
+                            setLottieInstance
+                        }
+                    />
+                </div>
+
+                <motion.div
+                    className="trivia-celebration-text"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                        delay: 0.25,
+                        duration: 0.35,
+                    }}
+                >
+                    <strong>
+                        {isCorrect
+                            ? "Correct!"
+                            : "Incorrect"}
+                    </strong>
+
+                    <span>
+                        {isCorrect
+                            ? "Nicely done — keep it up."
+                            : "You'll get the next one."}
+                    </span>
+                </motion.div>
+
+                <span className="trivia-celebration-hint">
+                    Tap anywhere to continue
+                </span>
+            </motion.div>
+        </motion.div>
+    );
+}
+
 export default function TriviaPlayPage() {
     const navigate = useNavigate();
     const { sessionId } = useParams();
@@ -41,6 +230,9 @@ export default function TriviaPlayPage() {
 
     const [answerResult, setAnswerResult] =
         useState(null);
+
+    const [showResultAnim, setShowResultAnim] =
+        useState(false);
 
     const [reporting, setReporting] =
         useState(false);
@@ -210,6 +402,18 @@ export default function TriviaPlayPage() {
 
             /*
             |--------------------------------------------------------------------------
+            | Trigger the result celebration
+            |--------------------------------------------------------------------------
+            |
+            | The celebration dismisses itself once the lottie animation
+            | actually finishes playing (see ResultCelebration).
+            |--------------------------------------------------------------------------
+            */
+
+            setShowResultAnim(true);
+
+            /*
+            |--------------------------------------------------------------------------
             | Update local session score
             |--------------------------------------------------------------------------
             */
@@ -279,6 +483,7 @@ export default function TriviaPlayPage() {
             setQuestion(nextQuestion);
             setSelectedAnswer(null);
             setAnswerResult(null);
+            setShowResultAnim(false);
         } catch (err) {
             toast.error(
                 err?.message ||
@@ -635,11 +840,14 @@ export default function TriviaPlayPage() {
                     ------------------------------------------------- */}
 
                     {answerResult && (
-                        <div
+                        <motion.div
                             className={`trivia-feedback ${isAnswerCorrect
-                                    ? "correct"
-                                    : "incorrect"
+                                ? "correct"
+                                : "incorrect"
                                 }`}
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.35, ease: "easeOut" }}
                         >
                             <div className="trivia-feedback-icon">
                                 {isAnswerCorrect ? (
@@ -662,7 +870,7 @@ export default function TriviaPlayPage() {
                                     }
                                 </p>
                             </div>
-                        </div>
+                        </motion.div>
                     )}
 
                     {/* -------------------------------------------------
@@ -774,6 +982,25 @@ export default function TriviaPlayPage() {
                     </span>
                 </div>
             </div>
+
+            {/* -------------------------------------------------
+                RESULT CELEBRATION
+            ------------------------------------------------- */}
+
+            <AnimatePresence>
+                {showResultAnim && answerResult && (
+                    <ResultCelebration
+                        key={
+                            question?.id ||
+                            question?.question?.id
+                        }
+                        isCorrect={isAnswerCorrect}
+                        onDismiss={() =>
+                            setShowResultAnim(false)
+                        }
+                    />
+                )}
+            </AnimatePresence>
         </div>
     );
 }

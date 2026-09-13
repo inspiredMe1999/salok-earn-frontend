@@ -1195,6 +1195,7 @@
 }
 
 .trivia-question-card {
+    position: relative;
     width: 100%;
     padding: 32px;
     border: 1px solid var(--color-border);
@@ -1415,6 +1416,214 @@
 
 /*
 |--------------------------------------------------------------------------
+| Result Celebration
+|--------------------------------------------------------------------------
+*/
+
+.trivia-result-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(8, 9, 12, 0.55);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    cursor: pointer;
+}
+
+.trivia-result-celebration {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(320px, 100%);
+    padding: 34px 26px 26px;
+    border: 1px solid var(--color-border);
+    border-radius: 26px;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    cursor: default;
+    overflow: hidden;
+}
+
+.trivia-result-celebration.is-correct {
+    border-color: color-mix(in srgb, var(--color-success) 45%, transparent);
+    box-shadow:
+        0 25px 70px color-mix(in srgb, var(--color-success) 30%, transparent),
+        0 0 0 1px color-mix(in srgb, var(--color-success) 20%, transparent);
+}
+
+.trivia-result-celebration.is-incorrect {
+    border-color: color-mix(in srgb, var(--color-danger) 40%, transparent);
+    box-shadow:
+        0 25px 70px color-mix(in srgb, var(--color-danger) 24%, transparent),
+        0 0 0 1px color-mix(in srgb, var(--color-danger) 18%, transparent);
+}
+
+/* Radiating rings behind the lottie */
+
+.trivia-celebration-rings {
+    position: absolute;
+    top: 96px;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.trivia-celebration-rings .ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 90px;
+    height: 90px;
+    margin: -45px 0 0 -45px;
+    border-radius: 50%;
+    border: 2px solid;
+    opacity: 0;
+    animation: triviaCelebrationRing 1.8s ease-out infinite;
+}
+
+.is-correct .trivia-celebration-rings .ring {
+    border-color: var(--color-success);
+}
+
+.is-incorrect .trivia-celebration-rings .ring {
+    border-color: var(--color-danger);
+}
+
+.trivia-celebration-rings .ring-2 {
+    animation-delay: 0.4s;
+}
+
+.trivia-celebration-rings .ring-3 {
+    animation-delay: 0.8s;
+}
+
+@keyframes triviaCelebrationRing {
+    0% {
+        transform: scale(0.6);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: scale(2.4);
+        opacity: 0;
+    }
+}
+
+/* Sparkle burst (correct answers only) */
+
+.trivia-celebration-sparkles {
+    position: absolute;
+    top: 101px;
+    left: 50%;
+    width: 0;
+    height: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.sparkle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 7px;
+    height: 7px;
+    margin: -3.5px;
+    border-radius: 50%;
+    transform: rotate(var(--angle)) translateY(-64px);
+    box-shadow: 0 0 8px currentColor;
+}
+
+.sparkle-gold {
+    background: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.sparkle-green {
+    background: var(--color-success);
+    color: var(--color-success);
+}
+
+.trivia-celebration-lottie {
+    position: relative;
+    z-index: 1;
+    width: 176px;
+    height: 176px;
+    margin-bottom: 6px;
+}
+
+.trivia-celebration-text {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.trivia-celebration-text strong {
+    color: var(--color-text);
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.is-correct .trivia-celebration-text strong {
+    color: var(--color-success);
+}
+
+.is-incorrect .trivia-celebration-text strong {
+    color: var(--color-danger);
+}
+
+.trivia-celebration-text span {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+}
+
+.trivia-celebration-hint {
+    position: relative;
+    z-index: 1;
+    margin-top: 18px;
+    color: var(--color-text-light);
+    font-size: 0.65rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .trivia-celebration-rings .ring {
+        animation: none;
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Result Page Confetti
+|--------------------------------------------------------------------------
+*/
+
+.trivia-result-confetti {
+    position: fixed;
+    inset: 0;
+    z-index: 250;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+}
+
+.trivia-confetti-inner {
+    width: min(560px, 92vw);
+    height: min(560px, 92vw);
+}
+
+/*
+|--------------------------------------------------------------------------
 | Question Actions
 |--------------------------------------------------------------------------
 */
@@ -1561,6 +1770,19 @@
     .trivia-question-card {
         padding: 20px 16px;
         border-radius: 16px;
+    }
+
+    .trivia-result-celebration {
+        padding: 26px 18px 20px;
+    }
+
+    .trivia-celebration-lottie {
+        width: 130px;
+        height: 130px;
+    }
+
+    .trivia-celebration-text strong {
+        font-size: 1.15rem;
     }
 
     .trivia-question-number {
@@ -1717,23 +1939,26 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 86px;
-    height: 86px;
-    margin-bottom: 20px;
-    border: 1px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+    width: 128px;
+    height: 128px;
+    margin-bottom: 8px;
+}
+
+.trivia-result-trophy::before {
+    content: "";
+    position: absolute;
+    inset: 14px;
+    z-index: -1;
     border-radius: 50%;
     background:
-        linear-gradient(135deg,
-            var(--color-primary),
-            var(--color-primary-hover));
-    color: #17120a;
-    box-shadow:
-        0 12px 30px color-mix(in srgb, var(--color-primary) 30%, transparent),
-        0 0 0 8px color-mix(in srgb, var(--color-primary) 10%, transparent);
+        radial-gradient(circle,
+            color-mix(in srgb, var(--color-primary) 40%, transparent),
+            transparent 70%);
+    filter: blur(16px);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    .trivia-result-trophy {
+    .trivia-result-trophy::before {
         animation: triviaTrophyPulse 2.6s ease-in-out infinite;
     }
 }
@@ -1742,15 +1967,13 @@
 
     0%,
     100% {
-        box-shadow:
-            0 12px 30px color-mix(in srgb, var(--color-primary) 30%, transparent),
-            0 0 0 8px color-mix(in srgb, var(--color-primary) 10%, transparent);
+        opacity: 0.75;
+        transform: scale(1);
     }
 
     50% {
-        box-shadow:
-            0 12px 34px color-mix(in srgb, var(--color-primary) 38%, transparent),
-            0 0 0 12px color-mix(in srgb, var(--color-primary) 6%, transparent);
+        opacity: 1;
+        transform: scale(1.12);
     }
 }
 
@@ -2155,9 +2378,9 @@
     }
 
     .trivia-result-trophy {
-        width: 72px;
-        height: 72px;
-        margin-bottom: 17px;
+        width: 96px;
+        height: 96px;
+        margin-bottom: 10px;
     }
 
     .trivia-result-hero p {

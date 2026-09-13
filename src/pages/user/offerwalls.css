@@ -1,0 +1,526 @@
+/* =========================================================
+   OFFERWALLS PAGE
+   ========================================================= */
+
+.offerwalls-page {
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+    padding-bottom: 50px;
+}
+
+
+/* ---------------------------------------------------------
+   Header
+--------------------------------------------------------- */
+
+.offerwalls-header {
+    margin-bottom: 20px;
+}
+
+
+.offerwalls-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 6px 12px 6px 10px;
+
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-pill);
+
+    color: var(--gold-400);
+    background: var(--color-primary-soft);
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+
+.offerwalls-header h1 {
+    margin: 14px 0 0;
+
+    color: var(--color-text);
+
+    font-size: clamp(24px, 3vw, 34px);
+    line-height: 1.2;
+    font-weight: 750;
+    letter-spacing: -0.03em;
+}
+
+
+.offerwalls-header h1 span {
+    color: var(--gold-400);
+}
+
+
+.offerwalls-header p {
+    max-width: 640px;
+
+    margin: 10px 0 0;
+
+    color: var(--color-text-secondary);
+
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+
+/* ---------------------------------------------------------
+   Section heading (shared)
+--------------------------------------------------------- */
+
+.offerwalls-section {
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+
+.offerwalls-section-heading {
+    margin-bottom: 18px;
+}
+
+
+.offerwalls-section-label {
+    display: block;
+
+    color: var(--gold-400);
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+
+.offerwalls-section-heading h2 {
+    margin: 6px 0 0;
+
+    color: var(--color-text);
+
+    font-size: 18px;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+}
+
+
+.offerwalls-section-heading p {
+    max-width: 480px;
+
+    margin: 6px 0 0;
+
+    color: var(--color-text-muted);
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+/* ---------------------------------------------------------
+   Network grid
+--------------------------------------------------------- */
+
+.offerwalls-network-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+
+.offerwalls-network-card {
+    display: flex;
+    flex-direction: column;
+
+    padding: 19px;
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+
+    background: var(--color-card);
+
+    transition:
+        transform var(--transition-normal),
+        border-color var(--transition-normal);
+}
+
+
+.offerwalls-network-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-primary-border);
+}
+
+
+.offerwalls-network-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.offerwalls-network-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: var(--radius-md);
+
+    color: var(--gold-400);
+    background: var(--color-primary-soft);
+}
+
+
+.offerwalls-network-tag {
+    padding: 3px 8px;
+
+    border-radius: var(--radius-pill);
+
+    color: var(--color-text-muted);
+    background: var(--color-surface-2);
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+.offerwalls-network-card h3 {
+    margin: 13px 0 0;
+
+    color: var(--color-text);
+
+    font-size: 14px;
+}
+
+
+.offerwalls-network-card>p {
+    flex: 1;
+
+    margin: 6px 0 0;
+
+    color: var(--color-text-muted);
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+
+.offerwalls-network-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    min-height: 38px;
+
+    margin-top: 15px;
+
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-sm);
+
+    color: var(--gold-400);
+    background: var(--color-primary-soft);
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: background var(--transition-fast);
+}
+
+
+.offerwalls-network-button:hover {
+    background: rgba(220, 169, 47, 0.16);
+}
+
+
+/* ---------------------------------------------------------
+   Offer grid
+--------------------------------------------------------- */
+
+.offerwalls-offer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+
+.offerwalls-offer-card {
+    display: flex;
+    flex-direction: column;
+
+    padding: 18px;
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+
+    background: var(--color-card);
+
+    transition:
+        transform var(--transition-normal),
+        border-color var(--transition-normal);
+}
+
+
+.offerwalls-offer-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-primary-border);
+}
+
+
+.offerwalls-offer-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.offerwalls-offer-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 34px;
+    height: 34px;
+
+    border-radius: var(--radius-sm);
+
+    color: var(--gold-400);
+    background: var(--color-primary-soft);
+}
+
+
+.offerwalls-offer-top>span {
+    padding: 3px 8px;
+
+    border-radius: var(--radius-pill);
+
+    color: var(--color-text-muted);
+    background: var(--color-surface-2);
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+.offerwalls-offer-card h3 {
+    margin: 12px 0 0;
+
+    color: var(--color-text);
+
+    font-size: 13px;
+}
+
+
+.offerwalls-offer-card>p {
+    flex: 1;
+
+    margin: 5px 0 0;
+
+    color: var(--color-text-muted);
+
+    font-size: 11px;
+    line-height: 1.55;
+}
+
+
+.offerwalls-offer-meta {
+    margin-top: 12px;
+}
+
+
+.offerwalls-offer-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    color: var(--color-text-muted);
+
+    font-size: 10px;
+}
+
+
+.offerwalls-offer-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    margin-top: 14px;
+    padding-top: 12px;
+
+    border-top: 1px solid var(--color-border);
+}
+
+
+.offerwalls-offer-footer>div {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.offerwalls-offer-footer span {
+    color: var(--color-text-muted);
+
+    font-size: 9px;
+}
+
+
+.offerwalls-offer-footer strong {
+    margin-top: 2px;
+
+    color: var(--gold-400);
+
+    font-size: 13px;
+}
+
+
+.offerwalls-offer-footer button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    min-height: 33px;
+    padding: 0 12px;
+
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-sm);
+
+    color: var(--gold-400);
+    background: var(--color-primary-soft);
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: background var(--transition-fast);
+}
+
+
+.offerwalls-offer-footer button:hover {
+    background: rgba(220, 169, 47, 0.16);
+}
+
+
+/* ---------------------------------------------------------
+   Loading / empty
+--------------------------------------------------------- */
+
+.offerwalls-loading,
+.offerwalls-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    min-height: 160px;
+    padding: 20px;
+
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius-lg);
+
+    color: var(--color-text-muted);
+
+    font-size: 12px;
+    text-align: center;
+}
+
+
+.offerwalls-loading-spinner {
+    animation: offerwalls-spin 1s linear infinite;
+}
+
+
+@keyframes offerwalls-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+.offerwalls-empty svg {
+    color: var(--gold-400);
+}
+
+
+/* ---------------------------------------------------------
+   Trust note
+--------------------------------------------------------- */
+
+.offerwalls-trust {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    margin-top: 30px;
+    padding: 17px 19px;
+
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-lg);
+
+    background: var(--color-primary-soft);
+}
+
+
+.offerwalls-trust-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: var(--radius-md);
+
+    color: var(--gold-400);
+    background: var(--color-card);
+
+    border: 1px solid var(--color-primary-border);
+}
+
+
+.offerwalls-trust p {
+    margin: 0;
+
+    color: var(--color-text-secondary);
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+/* ---------------------------------------------------------
+   Tablet
+--------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+
+    .offerwalls-network-grid,
+    .offerwalls-offer-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+/* ---------------------------------------------------------
+   Mobile
+--------------------------------------------------------- */
+
+@media (max-width: 700px) {
+
+    .offerwalls-network-grid,
+    .offerwalls-offer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .offerwalls-trust {
+        align-items: flex-start;
+    }
+}

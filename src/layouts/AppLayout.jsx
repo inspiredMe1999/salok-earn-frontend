@@ -6,21 +6,10 @@ import Header from "../components/layout/Header";
 import useAuth from "../hooks/useAuth";
 
 import "./AppLayout.css";
-import FloatingChat from "../components/community/FloatingChat";
 
 function AppLayout() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-
-    /*
-    |--------------------------------------------------------------------------
-    | The community page has its own full chat experience, so the floating
-    | chat bubble would be redundant (and would float on top of it) there.
-    |--------------------------------------------------------------------------
-    */
-    const isCommunityPage = location.pathname.startsWith(
-        "/community"
-    );
 
     /*
     |--------------------------------------------------------------------------
@@ -96,8 +85,8 @@ function AppLayout() {
     return (
         <div
             className={`app-layout ${sidebarCollapsed
-                    ? "sidebar-collapsed"
-                    : ""
+                ? "sidebar-collapsed"
+                : ""
                 }`}
         >
             <Sidebar
@@ -135,8 +124,6 @@ function AppLayout() {
                     aria-label="Close navigation"
                 />
             )}
-
-            {!isGuest && <FloatingChat />}
         </div>
     );
 }

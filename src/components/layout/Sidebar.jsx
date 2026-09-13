@@ -18,9 +18,11 @@ import {
     X,
     ChevronLeft,
     ChevronRight,
-    LogOut,
     Lock,
+    Store,
 } from "lucide-react";
+
+import { useAuthGate } from "../../context/AuthGateContext";
 
 import logo from "../../assets/brand/salok-earn-logo.png";
 
@@ -38,6 +40,12 @@ const navigation = [
         label: "Earn",
         path: "/earn",
         icon: Coins,
+        guestAccessible: true,
+    },
+    {
+        label: "Offerwalls",
+        path: "/offerwalls",
+        icon: Store,
         guestAccessible: true,
     },
     {
@@ -100,6 +108,7 @@ function Sidebar({
     isGuest = false,
 }) {
     const navigate = useNavigate();
+    const { openAuthGate } = useAuthGate();
 
     const handleLockedClick = (
         event,
@@ -109,17 +118,15 @@ function Sidebar({
 
         onClose?.();
 
-        navigate("/login", {
-            state: {
-                from: path,
-            },
+        openAuthGate({
+            redirectTo: path,
         });
     };
     return (
         <aside
             className={`app-sidebar ${isOpen
-                    ? "sidebar-open"
-                    : ""
+                ? "sidebar-open"
+                : ""
                 } ${isCollapsed
                     ? "sidebar-is-collapsed"
                     : ""

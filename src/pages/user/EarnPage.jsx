@@ -27,6 +27,7 @@ import {
 } from "../../services/mock/earnService";
 
 import useAuth from "../../hooks/useAuth";
+import { useAuthGate } from "../../context/AuthGateContext";
 import GuestBanner from "../../components/common/GuestBanner";
 
 import "./earn.css";
@@ -48,6 +49,7 @@ function formatReward(
 
 function EarnPage() {
     const { isAuthenticated } = useAuth();
+    const { openAuthGate } = useAuthGate();
 
     const [
         searchParams,
@@ -538,15 +540,24 @@ function EarnPage() {
                                                 to={
                                                     isAuthenticated
                                                         ? `/earn/${opportunity.id}`
-                                                        : "/signup"
+                                                        : "#"
                                                 }
-                                                state={
-                                                    isAuthenticated
-                                                        ? undefined
-                                                        : {
-                                                            from: `/earn/${opportunity.id}`,
-                                                        }
-                                                }
+                                                onClick={(event) => {
+                                                    if (
+                                                        isAuthenticated
+                                                    ) {
+                                                        return;
+                                                    }
+
+                                                    event.preventDefault();
+
+                                                    openAuthGate({
+                                                        title:
+                                                            "Sign up to start this opportunity",
+                                                        message: `Create a free account to start "${opportunity.title}" and collect the reward.`,
+                                                        redirectTo: `/earn/${opportunity.id}`,
+                                                    });
+                                                }}
                                                 className="earn-card-button"
                                             >
                                                 {isAuthenticated ? (

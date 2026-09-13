@@ -18,6 +18,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { getTriviaOverview, startTriviaRound } from "../../services/mock/triviaService";
 import useAuth from "../../hooks/useAuth";
+import { useAuthGate } from "../../context/AuthGateContext";
 import GuestBanner from "../../components/common/GuestBanner";
 import "./trivia.css";
 
@@ -60,6 +61,7 @@ export default function TriviaPage() {
     const location = useLocation();
 
     const { isAuthenticated } = useAuth();
+    const { openAuthGate } = useAuthGate();
 
     const [overview, setOverview] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -99,14 +101,11 @@ export default function TriviaPage() {
 
     const handleStartRound = async (categoryId) => {
         if (!isAuthenticated) {
-            toast.info(
-                "Create a free account to start playing Trivia."
-            );
-
-            navigate("/signup", {
-                state: {
-                    from: location.pathname,
-                },
+            openAuthGate({
+                title: "Sign up to start playing Trivia",
+                message:
+                    "Create a free account to start this round and start collecting rewards for correct answers.",
+                redirectTo: location.pathname,
             });
 
             return;
