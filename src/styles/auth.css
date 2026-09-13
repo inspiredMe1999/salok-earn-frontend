@@ -647,12 +647,12 @@
    LIGHT MODE
    ========================================================= */
 
-:root:not(.dark) .auth-shell {
+:root[data-theme="light"] .auth-shell {
     box-shadow:
         0 25px 70px rgba(20, 20, 20, 0.08);
 }
 
-:root:not(.dark) .auth-brand-section {
+:root[data-theme="light"] .auth-brand-section {
     background:
         radial-gradient(circle at 75% 30%,
             rgba(214, 169, 74, 0.12),
@@ -662,15 +662,15 @@
             #f8f4e9);
 }
 
-:root:not(.dark) .auth-form-section {
+:root[data-theme="light"] .auth-form-section {
     background: #ffffff;
 }
 
-:root:not(.dark) .auth-input-wrapper {
+:root[data-theme="light"] .auth-input-wrapper {
     background: #fafafa;
 }
 
-:root:not(.dark) .auth-input-wrapper:focus-within {
+:root[data-theme="light"] .auth-input-wrapper:focus-within {
     background: #fffdf8;
 }
 
