@@ -27,6 +27,8 @@ import {
 
 import "./trivia.css";
 
+import Loader from "../../components/common/Loader";
+
 import successAnimation from "../../assets/animations/Success celebration2.json?url";
 import failureAnimation from "../../assets/animations/Failed Status.json?url";
 
@@ -546,14 +548,10 @@ export default function TriviaPlayPage() {
     if (loading && !question) {
         return (
             <div className="trivia-game-loading">
-                <LoaderCircle
-                    size={32}
-                    className="trivia-spinner"
+                <Loader
+                    size="lg"
+                    label="Preparing your trivia round..."
                 />
-
-                <p>
-                    Preparing your trivia round...
-                </p>
             </div>
         );
     }

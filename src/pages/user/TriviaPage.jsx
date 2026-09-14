@@ -22,6 +22,8 @@ import { useAuthGate } from "../../context/AuthGateContext";
 import GuestBanner from "../../components/common/GuestBanner";
 import "./trivia.css";
 
+import Loader from "../../components/common/Loader";
+
 const categoryIcons = {
     general: Brain,
     science: FlaskConical,
@@ -148,14 +150,10 @@ export default function TriviaPage() {
     if (loading) {
         return (
             <div className="trivia-loading">
-                <LoaderCircle
-                    size={30}
-                    className="trivia-spinner"
+                <Loader
+                    size="lg"
+                    label="Loading Trivia..."
                 />
-
-                <p>
-                    Loading Trivia...
-                </p>
             </div>
         );
     }

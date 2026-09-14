@@ -32,7 +32,7 @@ const QUICK_REACTIONS = [
 ];
 
 // How far from the left edge the drag handle rests.
-const HANDLE_LEFT = 22;
+const HANDLE_LEFT = 16;
 
 // Minimum horizontal drag (px) to count as an "open" gesture.
 const OPEN_DRAG_THRESHOLD = 70;
@@ -41,13 +41,30 @@ const OPEN_DRAG_THRESHOLD = 70;
 const CLOSE_DRAG_THRESHOLD = 70;
 
 // How far the handle / home icon travels — following the pointer
-// 1:1 — before it's fully faded out. Also the distance over which
-// its companion icon fades in as a "coming alive" preview.
-const DRAG_TRAVEL = 120;
+// 1:1 — before it's fully faded out. This is also the point that
+// counts as "reaching" the opposite side.
+const DRAG_TRAVEL = 130;
+
+// The crossfade (self fade-out + companion fade-in) only happens
+// in this final fraction of the travel — i.e. right as the button
+// actually arrives at the far side, not gradually the whole way
+// there. For the first (1 - EDGE_FADE_ZONE) of the drag, the
+// button stays fully visible and its companion stays fully hidden.
+const EDGE_FADE_ZONE = 0.3;
 
 // Below this many px of movement, a gesture hasn't committed to an
 // axis yet (see the "mode" lock in handlePointerMove).
 const AXIS_LOCK_THRESHOLD = 6;
+
+// Maps overall drag progress (0–1) to the 0–1 crossfade amount,
+// which stays at 0 until the final EDGE_FADE_ZONE stretch.
+function edgeFade(progress) {
+    const start = 1 - EDGE_FADE_ZONE;
+
+    if (progress <= start) return 0;
+
+    return (progress - start) / EDGE_FADE_ZONE;
+}
 
 function formatTime(timestamp) {
     if (!timestamp) return "";
@@ -875,6 +892,15 @@ function FloatingChat() {
     const homeDragProgress =
         Math.min(1, -homeDragOffsetX / DRAG_TRAVEL);
 
+    // The actual 0–1 crossfade amounts — flat at 0 until the button
+    // is nearly at the far side, then ramping to 1 exactly as it
+    // arrives. See EDGE_FADE_ZONE above.
+    const launcherEdgeFade =
+        edgeFade(launcherDragProgress);
+
+    const homeEdgeFade =
+        edgeFade(homeDragProgress);
+
     const launcherStyle = {
         left: `${HANDLE_LEFT}px`,
         top: `${centerY}px`,
@@ -884,23 +910,25 @@ function FloatingChat() {
         // Resting hidden, unless the home icon is mid-drag toward
         // it — in which case the launcher previews coming back to
         // life in place (it doesn't travel; only the dragged icon
-        // travels).
-        if (homeDragging && homeDragProgress > 0) {
+        // travels), only once the home icon has nearly arrived.
+        if (homeDragging && homeEdgeFade > 0) {
             launcherStyle.transform =
-                `translateY(-50%) scale(${(0.7 + 0.3 * homeDragProgress).toFixed(3)})`;
+                `translateY(-50%) scale(${(0.7 + 0.3 * homeEdgeFade).toFixed(3)})`;
 
-            launcherStyle.opacity = homeDragProgress;
+            launcherStyle.opacity = homeEdgeFade;
             launcherStyle.pointerEvents = "none";
         }
     } else {
         // Visible, and — while being dragged — following the
-        // pointer horizontally.
+        // pointer horizontally. It only starts fading once it's
+        // nearly at the far right, not from the first pixel of
+        // movement.
         launcherStyle.transform =
             `translateY(-50%) translateX(${dragOffsetX}px)`;
 
         if (dragging && dragOffsetX > 0) {
             launcherStyle.opacity =
-                Math.max(0, 1 - launcherDragProgress);
+                Math.max(0, 1 - launcherEdgeFade);
         }
     }
 
@@ -908,12 +936,13 @@ function FloatingChat() {
 
     if (!isOpen) {
         // Resting hidden, unless the launcher is mid-drag toward
-        // it — same preview treatment, mirrored.
-        if (dragging && launcherDragProgress > 0) {
+        // it — same preview treatment, mirrored, only kicking in
+        // once the launcher has nearly reached it.
+        if (dragging && launcherEdgeFade > 0) {
             homeStyle.transform =
-                `translateY(-50%) scale(${(0.7 + 0.3 * launcherDragProgress).toFixed(3)})`;
+                `translateY(-50%) scale(${(0.7 + 0.3 * launcherEdgeFade).toFixed(3)})`;
 
-            homeStyle.opacity = launcherDragProgress;
+            homeStyle.opacity = launcherEdgeFade;
             homeStyle.pointerEvents = "none";
         }
     } else {
@@ -922,12 +951,56 @@ function FloatingChat() {
 
         if (homeDragging && homeDragOffsetX < 0) {
             homeStyle.opacity =
-                Math.max(0, 1 - homeDragProgress);
+                Math.max(0, 1 - homeEdgeFade);
         }
+    }
+
+    // The docks are glued to their buttons — same transform (so they
+    // travel, scale and settle together) and the same opacity, just
+    // read straight off the button's own computed style.
+    const launcherDockStyle = {
+        top: `${centerY}px`,
+    };
+
+    if (launcherStyle.transform !== undefined) {
+        launcherDockStyle.transform = launcherStyle.transform;
+    }
+
+    if (launcherStyle.opacity !== undefined) {
+        launcherDockStyle.opacity = launcherStyle.opacity;
+    }
+
+    const homeDockStyle = {};
+
+    if (homeStyle.transform !== undefined) {
+        homeDockStyle.transform = homeStyle.transform;
+    }
+
+    if (homeStyle.opacity !== undefined) {
+        homeDockStyle.opacity = homeStyle.opacity;
     }
 
     return (
         <>
+            {/* -------------------------------------------------
+                LAUNCHER DOCK
+                The curvy backdrop the launcher "lives inside" —
+                flush with the page edge, curving out around the
+                button.
+            ------------------------------------------------- */}
+
+            <div
+                className={`floating-chat-dock ${dragging
+                    ? "floating-chat-dock-dragging"
+                    : ""
+                    } ${isOpen
+                        ? "floating-chat-dock-hidden"
+                        : ""
+                    }`}
+                style={launcherDockStyle}
+                aria-hidden="true"
+            />
+
             {/* -------------------------------------------------
                 DRAG HANDLE (vertical drag only · click / drag-right to open)
             ------------------------------------------------- */}
@@ -958,17 +1031,34 @@ function FloatingChat() {
                 title="Drag up or down to move · drag right or tap to open"
             >
                 <MessageCircle
-                    size={23}
+                    size={18}
                 />
 
                 <span className="floating-chat-online-dot" />
 
                 <ChevronsRight
-                    size={13}
+                    size={10}
                     className="floating-chat-drag-hint"
                     aria-hidden="true"
                 />
             </button>
+
+            {/* -------------------------------------------------
+                HOME DOCK
+                Same idea, mirrored — flush with the right edge.
+            ------------------------------------------------- */}
+
+            <div
+                className={`floating-home-dock ${homeDragging
+                    ? "floating-home-dock-dragging"
+                    : ""
+                    } ${isOpen
+                        ? ""
+                        : "floating-home-dock-hidden"
+                    }`}
+                style={homeDockStyle}
+                aria-hidden="true"
+            />
 
             {/* -------------------------------------------------
                 HOME ICON (appears while chat is open · click / drag-left to close)
@@ -998,7 +1088,7 @@ function FloatingChat() {
                 aria-label="Close community chat"
                 title="Drag left or tap to close"
             >
-                <Home size={21} />
+                <Home size={16} />
             </button>
 
             {/* -------------------------------------------------

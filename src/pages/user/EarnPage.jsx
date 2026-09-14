@@ -15,7 +15,6 @@ import {
     Coins,
     Filter,
     ListTodo,
-    LoaderCircle,
     Lock,
     MessageSquareText,
     Search,
@@ -31,6 +30,8 @@ import { useAuthGate } from "../../context/AuthGateContext";
 import GuestBanner from "../../components/common/GuestBanner";
 
 import "./earn.css";
+
+import Loader from "../../components/common/Loader";
 
 const typeIcons = {
     surveys: MessageSquareText,
@@ -252,14 +253,10 @@ function EarnPage() {
     if (loading || !data) {
         return (
             <div className="earn-loading">
-                <LoaderCircle
-                    size={27}
-                    className="earn-loading-spinner"
+                <Loader
+                    size="lg"
+                    label="Loading earning opportunities..."
                 />
-
-                <span>
-                    Loading earning opportunities...
-                </span>
             </div>
         );
     }

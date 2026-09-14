@@ -10,7 +10,6 @@ import {
     CreditCard,
     DollarSign,
     History,
-    Loader2,
     RefreshCw,
     ShieldCheck,
     Wallet as WalletIcon,
@@ -20,6 +19,8 @@ import {
 import walletService from "../../services/mock/walletService";
 
 import "./wallet.css";
+
+import Loader from "../../components/common/Loader";
 
 /*
 |--------------------------------------------------------------------------
@@ -336,14 +337,10 @@ function WithdrawalRow({ withdrawal }) {
 function WalletLoading() {
     return (
         <div className="wallet-loading">
-            <Loader2
-                size={30}
-                className="wallet-loading-spinner"
+            <Loader
+                size="lg"
+                label="Loading your wallet..."
             />
-
-            <p>
-                Loading your wallet...
-            </p>
         </div>
     );
 }

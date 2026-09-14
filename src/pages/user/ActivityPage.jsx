@@ -30,6 +30,8 @@ import activityService from "../../services/mock/activityService";
 import "./wallet.css";
 import "./activity.css";
 
+import Loader from "../../components/common/Loader";
+
 const TYPE_ICONS = {
     earnings: Wallet,
     trivia: Brain,
@@ -254,11 +256,10 @@ function SummaryCard({
 function LoadingState() {
     return (
         <div className="activity-loading">
-            <div className="activity-spinner" />
-
-            <p>
-                Loading your activity...
-            </p>
+            <Loader
+                size="lg"
+                label="Loading your activity..."
+            />
         </div>
     );
 }

@@ -1,4 +1,5 @@
 import useAuth from "../../hooks/useAuth";
+import Loader from "../../components/common/Loader";
 
 import WalletPage from "./WalletPage";
 import WalletPreview from "./WalletPreview";
@@ -26,21 +27,11 @@ function WalletGate() {
 
     if (loading) {
         return (
-            <div className="auth-loading-screen wallet-gate-loading">
-                <div className="auth-loading-card">
-                    <div className="auth-loading-spinner" />
-
-                    <div>
-                        <strong>
-                            Salok Earn
-                        </strong>
-
-                        <span>
-                            Loading your wallet...
-                        </span>
-                    </div>
-                </div>
-            </div>
+            <Loader
+                fullScreen
+                size="lg"
+                label="Loading your wallet..."
+            />
         );
     }
 

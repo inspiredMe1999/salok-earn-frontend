@@ -23,7 +23,6 @@ import {
     Trophy,
     Clock3,
     CircleDollarSign,
-    LoaderCircle,
 } from "lucide-react";
 
 import {
@@ -33,6 +32,8 @@ import {
 import {
     getDashboardData,
 } from "../../services/mock/dashboardService";
+
+import Loader from "../../components/common/Loader";
 
 import "./dashboard.css";
 
@@ -106,14 +107,10 @@ function DashboardPage() {
     if (loading || !data) {
         return (
             <div className="dashboard-loading">
-                <LoaderCircle
-                    size={26}
-                    className="dashboard-loading-spinner"
+                <Loader
+                    size="lg"
+                    label="Loading your dashboard..."
                 />
-
-                <span>
-                    Loading your dashboard...
-                </span>
             </div>
         );
     }

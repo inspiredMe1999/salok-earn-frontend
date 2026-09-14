@@ -4,7 +4,6 @@ import {
     ArrowRight,
     Clock3,
     ExternalLink,
-    LoaderCircle,
     Lock,
     ShieldCheck,
     Sparkles,
@@ -18,6 +17,8 @@ import { useAuthGate } from "../../context/AuthGateContext";
 import GuestBanner from "../../components/common/GuestBanner";
 
 import "./offerwalls.css";
+
+import Loader from "../../components/common/Loader";
 
 function formatReward(amount, currency) {
     return `${Number(amount).toLocaleString("en-US")} ${currency}`;
@@ -218,13 +219,10 @@ function OffersPage() {
 
                 {loading || !data ? (
                     <div className="offerwalls-loading">
-                        <LoaderCircle
-                            size={22}
-                            className="offerwalls-loading-spinner"
+                        <Loader
+                            size="md"
+                            label="Loading live offers..."
                         />
-                        <span>
-                            Loading live offers...
-                        </span>
                     </div>
                 ) : offers.length === 0 ? (
                     <div className="offerwalls-empty">

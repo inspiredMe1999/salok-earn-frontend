@@ -20,6 +20,8 @@ import walletService from "../../services/mock/walletService";
 import "./wallet.css";
 import "./withdraw.css";
 
+import Loader from "../../components/common/Loader";
+
 /*
 |--------------------------------------------------------------------------
 | Helpers
@@ -359,14 +361,10 @@ function WithdrawPage() {
         return (
             <div className="withdraw-page">
                 <div className="withdraw-loading">
-                    <Loader2
-                        size={30}
-                        className="withdraw-spinner"
+                    <Loader
+                        size="lg"
+                        label="Loading withdrawal options..."
                     />
-
-                    <p>
-                        Loading withdrawal options...
-                    </p>
                 </div>
             </div>
         );
@@ -617,10 +615,10 @@ function WithdrawPage() {
 
                         <div
                             className={`withdraw-amount-input ${exceedsBalance ||
-                                    belowMinimum ||
-                                    aboveMaximum
-                                    ? "has-error"
-                                    : ""
+                                belowMinimum ||
+                                aboveMaximum
+                                ? "has-error"
+                                : ""
                                 }`}
                         >
                             <input
@@ -780,8 +778,8 @@ function WithdrawPage() {
                                                     method.id
                                                 }
                                                 className={`withdraw-method-card ${selected
-                                                        ? "is-selected"
-                                                        : ""
+                                                    ? "is-selected"
+                                                    : ""
                                                     }`}
                                                 onClick={() =>
                                                     setSelectedMethodId(
@@ -832,8 +830,8 @@ function WithdrawPage() {
 
                                                 <div
                                                     className={`withdraw-radio ${selected
-                                                            ? "is-selected"
-                                                            : ""
+                                                        ? "is-selected"
+                                                        : ""
                                                         }`}
                                                 >
                                                     {selected && (

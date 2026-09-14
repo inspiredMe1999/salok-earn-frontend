@@ -4,6 +4,7 @@ import {
 } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
+import Loader from "../common/Loader";
 
 export default function ProtectedRoute({
     children,
@@ -22,21 +23,11 @@ export default function ProtectedRoute({
      */
     if (loading) {
         return (
-            <div className="auth-loading-screen">
-                <div className="auth-loading-card">
-                    <div className="auth-loading-spinner" />
-
-                    <div>
-                        <strong>
-                            Salok Earn
-                        </strong>
-
-                        <span>
-                            Checking your session...
-                        </span>
-                    </div>
-                </div>
-            </div>
+            <Loader
+                fullScreen
+                size="lg"
+                label="Checking your session..."
+            />
         );
     }
 

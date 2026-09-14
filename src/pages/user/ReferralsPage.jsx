@@ -41,6 +41,8 @@ import referralService from "../../services/mock/referralService";
 
 import "./referrals.css";
 
+import Loader from "../../components/common/Loader";
+
 
 /*
 |--------------------------------------------------------------------------
@@ -449,20 +451,10 @@ export default function ReferralsPage() {
         return (
             <div className="referrals-page">
                 <div className="referrals-loading">
-                    <div className="referrals-loading-icon">
-                        <Loader2
-                            size={28}
-                            className="referrals-spinner"
-                        />
-                    </div>
-
-                    <h2>
-                        Loading referrals
-                    </h2>
-
-                    <p>
-                        Preparing your referral dashboard...
-                    </p>
+                    <Loader
+                        size="lg"
+                        label="Preparing your referral dashboard..."
+                    />
                 </div>
             </div>
         );

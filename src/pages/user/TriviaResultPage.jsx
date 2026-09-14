@@ -25,6 +25,8 @@ import {
 
 import "./trivia.css";
 
+import Loader from "../../components/common/Loader";
+
 import trophyAnimation from "../../assets/animations/Trophy.lottie?url";
 import successAnimation from "../../assets/animations/Success celebration.json?url";
 
@@ -212,18 +214,10 @@ export default function TriviaResultPage() {
     if (loading) {
         return (
             <div className="trivia-result-loading">
-                <div className="trivia-loading-spinner">
-                    <Sparkles size={22} />
-                </div>
-
-                <h2>
-                    Calculating your result...
-                </h2>
-
-                <p>
-                    We're putting together your
-                    trivia performance.
-                </p>
+                <Loader
+                    size="lg"
+                    label="We're putting together your trivia performance."
+                />
             </div>
         );
     }

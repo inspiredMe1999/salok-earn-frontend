@@ -16,7 +16,6 @@ import {
     Clock3,
     Coins,
     ListTodo,
-    LoaderCircle,
     Lock,
     MessageSquareText,
     ShieldCheck,
@@ -33,6 +32,8 @@ import useAuth from "../../hooks/useAuth";
 import { useAuthGate } from "../../context/AuthGateContext";
 
 import "./home.css";
+
+import Loader from "../../components/common/Loader";
 
 const typeIcons = {
     surveys: MessageSquareText,
@@ -417,11 +418,10 @@ function HomePage() {
 
                 {loading || !data ? (
                     <div className="home-loading">
-                        <LoaderCircle
-                            size={22}
-                            className="home-loading-spinner"
+                        <Loader
+                            size="md"
+                            label="Loading live opportunities..."
                         />
-                        <span>Loading live opportunities...</span>
                     </div>
                 ) : (
                     <div className="home-opportunity-grid">

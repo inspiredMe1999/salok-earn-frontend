@@ -21,6 +21,8 @@ import walletService from "../../services/mock/walletService";
 import "./wallet.css";
 import "./withdrawals.css";
 
+import Loader from "../../components/common/Loader";
+
 const STATUS_FILTERS = [
     {
         id: "all",
@@ -396,11 +398,10 @@ function WithdrawalTableRow({
 function LoadingState() {
     return (
         <div className="withdrawals-loading">
-            <div className="withdrawals-spinner" />
-
-            <p>
-                Loading your withdrawals...
-            </p>
+            <Loader
+                size="lg"
+                label="Loading your withdrawals..."
+            />
         </div>
     );
 }
@@ -778,8 +779,8 @@ export default function WithdrawalsPage() {
                     <button
                         type="button"
                         className={`withdrawals-filter-toggle ${showFilters
-                                ? "is-active"
-                                : ""
+                            ? "is-active"
+                            : ""
                             }`}
                         onClick={() =>
                             setShowFilters(
@@ -795,8 +796,8 @@ export default function WithdrawalsPage() {
 
                 <div
                     className={`withdrawals-toolbar ${showFilters
-                            ? "is-visible"
-                            : ""
+                        ? "is-visible"
+                        : ""
                         }`}
                 >
                     <div className="withdrawals-search">

@@ -25,6 +25,8 @@ import settingsService from "../../services/mock/settingsService";
 
 import "./settings.css";
 
+import Loader from "../../components/common/Loader";
+
 function SettingsPage() {
     const [settings, setSettings] = useState(null);
 
@@ -260,11 +262,10 @@ function SettingsPage() {
         return (
             <div className="settings-page">
                 <div className="settings-loading">
-                    <div className="settings-spinner" />
-
-                    <p>
-                        Loading your settings...
-                    </p>
+                    <Loader
+                        size="lg"
+                        label="Loading your settings..."
+                    />
                 </div>
             </div>
         );

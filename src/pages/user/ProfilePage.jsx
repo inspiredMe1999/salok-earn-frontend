@@ -18,6 +18,8 @@ import profileService from "../../services/mock/profileService";
 
 import "./profile.css";
 
+import Loader from "../../components/common/Loader";
+
 function formatNumber(value) {
     return new Intl.NumberFormat(
         "en-US"
@@ -265,10 +267,10 @@ function ProfilePage() {
         return (
             <div className="profile-page">
                 <div className="profile-loading">
-                    <div className="profile-spinner" />
-                    <p>
-                        Loading profile...
-                    </p>
+                    <Loader
+                        size="lg"
+                        label="Loading profile..."
+                    />
                 </div>
             </div>
         );

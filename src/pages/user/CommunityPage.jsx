@@ -24,6 +24,8 @@ import { toast } from "sonner";
 import communityService from "../../services/mock/communityService";
 import "./community.css";
 
+import Loader from "../../components/common/Loader";
+
 const CURRENT_USER_ID = "mock-user-001";
 
 const QUICK_REACTIONS = [
@@ -83,8 +85,8 @@ function MessageBubble({
     return (
         <div
             className={`community-message-row ${isOwn
-                    ? "community-message-row-own"
-                    : ""
+                ? "community-message-row-own"
+                : ""
                 }`}
         >
             {!isOwn && (
@@ -97,8 +99,8 @@ function MessageBubble({
             <div className="community-message-content">
                 <div
                     className={`community-message-bubble ${isOwn
-                            ? "community-message-bubble-own"
-                            : ""
+                        ? "community-message-bubble-own"
+                        : ""
                         }`}
                 >
                     {!isOwn && (
@@ -223,8 +225,8 @@ function MessageBubble({
                                     }
                                     type="button"
                                     className={`community-reaction ${reaction.reacted
-                                            ? "reacted"
-                                            : ""
+                                        ? "reacted"
+                                        : ""
                                         }`}
                                     onClick={() =>
                                         onReaction(
@@ -613,11 +615,10 @@ function CommunityPage() {
         return (
             <div className="community-page">
                 <div className="community-loading">
-                    <div className="community-loading-spinner" />
-
-                    <p>
-                        Loading community...
-                    </p>
+                    <Loader
+                        size="lg"
+                        label="Loading community..."
+                    />
                 </div>
             </div>
         );

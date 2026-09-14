@@ -20,6 +20,8 @@ import walletService from "../../services/mock/walletService";
 import "./wallet.css";
 import "./withdrawal-details.css";
 
+import Loader from "../../components/common/Loader";
+
 function formatSAK(amount) {
     return `${Number(amount || 0).toLocaleString(undefined, {
         minimumFractionDigits: 2,
@@ -145,11 +147,10 @@ function getAccount(withdrawal) {
 function LoadingState() {
     return (
         <div className="withdrawal-detail-loading">
-            <div className="withdrawal-detail-spinner" />
-
-            <p>
-                Loading withdrawal details...
-            </p>
+            <Loader
+                size="lg"
+                label="Loading withdrawal details..."
+            />
         </div>
     );
 }

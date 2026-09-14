@@ -22,8 +22,8 @@
     position: fixed;
     z-index: 9990;
 
-    width: 58px;
-    height: 58px;
+    width: 46px;
+    height: 46px;
 
     display: grid;
     place-items: center;
@@ -82,17 +82,17 @@
 
 .floating-chat-online-dot {
     position: absolute;
-    top: 4px;
-    right: 5px;
+    top: 3px;
+    right: 4px;
 
-    width: 11px;
-    height: 11px;
+    width: 8px;
+    height: 8px;
 
     border-radius: 50%;
 
     background: var(--color-success, #48c774);
 
-    border: 2px solid var(--color-primary);
+    border: 1.5px solid var(--color-primary);
 }
 
 /* Animated "drag right to open" affordance — a double chevron that
@@ -101,7 +101,7 @@
 .floating-chat-drag-hint {
     position: absolute;
     top: 50%;
-    right: 5px;
+    right: 4px;
 
     color: var(--color-primary-text);
 
@@ -133,6 +133,55 @@
     animation: none;
 }
 
+/* Curvy "dock" backdrop the launcher rests inside — flush with the
+   page edge (straight line), curving out into a rounded cap around
+   the button, and glued to the button's own transform so it travels,
+   scales and settles right alongside it. Inverts with theme: light
+   backdrop in dark mode, dark backdrop in light mode. */
+.floating-chat-dock {
+    position: fixed;
+    z-index: 9989;
+    left: 0;
+
+    width: 72px;
+    height: 72px;
+
+    transform: translateY(-50%);
+
+    border-radius: 0 36px 36px 0;
+
+    background: linear-gradient(120deg, #fffdf9, #efe8d8);
+
+    box-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.16),
+        inset -1px 0 0 rgba(255, 255, 255, 0.4);
+
+    pointer-events: none;
+
+    transition:
+        opacity 380ms ease,
+        transform 380ms ease;
+}
+
+/* While the launcher it's glued to is actively being dragged, the
+   dock needs to move with it instantly too — no easing lag. */
+.floating-chat-dock-dragging {
+    transition: none;
+}
+
+.floating-chat-dock-hidden {
+    opacity: 0;
+    transform: translateY(-50%) scale(.7);
+}
+
+:root[data-theme="light"] .floating-chat-dock {
+    background: linear-gradient(120deg, #17160f, #080807);
+
+    box-shadow:
+        0 14px 34px rgba(20, 16, 6, 0.16),
+        inset -1px 0 0 rgba(255, 255, 255, 0.05);
+}
+
 /* =========================================================
    HOME ICON (close trigger for the full-page overlay)
    ========================================================= */
@@ -142,10 +191,10 @@
     z-index: 10001;
 
     top: 50%;
-    right: 22px;
+    right: 16px;
 
-    width: 52px;
-    height: 52px;
+    width: 42px;
+    height: 42px;
 
     display: grid;
     place-items: center;
@@ -198,6 +247,55 @@
     box-shadow:
         0 16px 36px rgba(0, 0, 0, .18),
         0 0 0 5px var(--color-primary-soft);
+}
+
+/* Curvy "dock" backdrop the home icon rests inside — mirrored from
+   the launcher's: flush with the page's right edge, curving out
+   around the button, and glued to the button's own transform. */
+.floating-home-dock {
+    position: fixed;
+    z-index: 10000;
+    top: 50%;
+    right: 0;
+
+    width: 66px;
+    height: 66px;
+
+    transform: translateY(-50%);
+
+    border-radius: 33px 0 0 33px;
+
+    background: linear-gradient(240deg, #fffdf9, #efe8d8);
+
+    box-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.16),
+        inset 1px 0 0 rgba(255, 255, 255, 0.4);
+
+    pointer-events: none;
+
+    opacity: 1;
+    transition:
+        opacity 380ms ease,
+        transform 380ms ease;
+}
+
+/* Instant tracking while the home icon it's glued to is being
+   dragged — no easing lag. */
+.floating-home-dock-dragging {
+    transition: none;
+}
+
+.floating-home-dock-hidden {
+    opacity: 0;
+    transform: translateY(-50%) scale(.7);
+}
+
+:root[data-theme="light"] .floating-home-dock {
+    background: linear-gradient(240deg, #17160f, #080807);
+
+    box-shadow:
+        0 14px 34px rgba(20, 16, 6, 0.16),
+        inset 1px 0 0 rgba(255, 255, 255, 0.05);
 }
 
 /* =========================================================
@@ -973,15 +1071,29 @@
 
 @media (max-width: 700px) {
     .floating-chat-launcher {
-        width: 52px;
-        height: 52px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .floating-chat-dock {
+        width: 62px;
+        height: 62px;
+
+        border-radius: 0 31px 31px 0;
     }
 
     .floating-home-button {
-        width: 48px;
-        height: 48px;
+        width: 38px;
+        height: 38px;
 
-        right: 14px;
+        right: 12px;
+    }
+
+    .floating-home-dock {
+        width: 58px;
+        height: 58px;
+
+        border-radius: 29px 0 0 29px;
     }
 
     .floating-chat-overlay-inner {
@@ -1026,11 +1138,11 @@
 
 @media (max-width: 420px) {
     .floating-chat-launcher {
-        left: 14px !important;
+        left: 10px !important;
     }
 
     .floating-home-button {
-        right: 14px;
+        right: 10px;
     }
 }
 
@@ -1061,6 +1173,8 @@
     .floating-chat-overlay,
     .floating-chat-launcher,
     .floating-home-button,
+    .floating-chat-dock,
+    .floating-home-dock,
     .floating-chat-composer,
     .floating-message-actions {
         transition: none;
