@@ -26,9 +26,9 @@ import {
 import "./trivia.css";
 
 import Loader from "../../components/common/Loader";
+import ConfettiBurst from "../../components/common/ConfettiBurst";
 
 import trophyAnimation from "../../assets/animations/Trophy.lottie?url";
-import successAnimation from "../../assets/animations/Success celebration.json?url";
 
 export default function TriviaResultPage() {
     const navigate = useNavigate();
@@ -43,9 +43,6 @@ export default function TriviaResultPage() {
 
     const [showConfetti, setShowConfetti] =
         useState(false);
-
-    const [confettiLottie, setConfettiLottie] =
-        useState(null);
 
     useEffect(() => {
         let mounted = true;
@@ -110,40 +107,6 @@ export default function TriviaResultPage() {
             mounted = false;
         };
     }, [sessionId]);
-
-    /*
-    |--------------------------------------------------------------------------
-    | Celebrate a strong result with a one-off confetti burst
-    |--------------------------------------------------------------------------
-    */
-
-    useEffect(() => {
-        if (!confettiLottie) {
-            return undefined;
-        }
-
-        const handleComplete = () => {
-            setShowConfetti(false);
-        };
-
-        confettiLottie.addEventListener(
-            "complete",
-            handleComplete
-        );
-
-        const fallback = setTimeout(() => {
-            setShowConfetti(false);
-        }, 4500);
-
-        return () => {
-            confettiLottie.removeEventListener(
-                "complete",
-                handleComplete
-            );
-
-            clearTimeout(fallback);
-        };
-    }, [confettiLottie]);
 
     const handlePlayAgain = async () => {
         if (!result?.categoryId) {
@@ -473,27 +436,12 @@ export default function TriviaResultPage() {
             <AnimatePresence>
                 {showConfetti && (
                     <motion.div
-                        className="trivia-result-confetti"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.4 }}
-                        aria-hidden="true"
                     >
-                        <div className="trivia-confetti-inner">
-                            <DotLottieReact
-                                src={successAnimation}
-                                autoplay
-                                loop={false}
-                                style={{
-                                    width: "100%",
-                                    height: "100%",
-                                }}
-                                dotLottieRefCallback={
-                                    setConfettiLottie
-                                }
-                            />
-                        </div>
+                        <ConfettiBurst />
                     </motion.div>
                 )}
             </AnimatePresence>

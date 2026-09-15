@@ -17,11 +17,9 @@
 
     padding: 0 30px;
 
-    background: color-mix(
-        in srgb,
-        var(--color-surface) 94%,
-        transparent
-    );
+    background: color-mix(in srgb,
+            var(--color-surface) 94%,
+            transparent);
 
     border-bottom: 1px solid var(--color-border);
 
@@ -111,83 +109,32 @@
 }
 
 /* =========================================================
-   SEARCH
+   MOBILE BRAND MARK
    ========================================================= */
 
-.header-search {
-    width: min(320px, 32vw);
+/*
+ * Hidden by default — the sidebar already carries the brand
+ * on tablet/desktop. It only appears once the sidebar is
+ * tucked away behind the hamburger menu on small screens,
+ * so there's still a sense of place instead of an empty
+ * header (see the mobile breakpoint below).
+ */
 
-    height: 40px;
+.header-logo {
+    display: none;
 
-    display: flex;
     align-items: center;
-
-    gap: 9px;
-
-    padding: 0 11px;
-
-    border: 1px solid var(--color-border);
-
-    border-radius: var(--radius-md);
-
-    background: var(--color-bg);
-
-    color: var(--color-text-muted);
-
-    transition:
-        border-color var(--transition-fast),
-        box-shadow var(--transition-fast);
-}
-
-.header-search:focus-within {
-    border-color: var(--color-primary-border);
-
-    box-shadow:
-        0 0 0 3px var(--color-primary-soft);
-}
-
-.header-search input {
-    min-width: 0;
-
-    flex: 1;
-
-    border: 0;
-    outline: 0;
-
-    background: transparent;
-
-    color: var(--color-text);
-
-    font-family: inherit;
-
-    font-size: 12px;
-}
-
-.header-search input::placeholder {
-    color: var(--color-text-light);
-}
-
-.header-search input::-webkit-search-cancel-button {
-    opacity: 0.5;
-}
-
-.search-shortcut {
-    width: 22px;
-    height: 22px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
 
     flex-shrink: 0;
+}
 
-    border: 1px solid var(--color-border);
+.header-logo img {
+    display: block;
 
-    border-radius: 5px;
+    height: 26px;
+    width: auto;
 
-    color: var(--color-text-light);
-
-    font-size: 11px;
+    object-fit: contain;
 }
 
 /* =========================================================
@@ -240,21 +187,21 @@
 }
 
 /* =========================================================
-   GUEST SIGN IN BUTTON
+   GUEST ACTIONS
    ========================================================= */
 
 .header-signin {
     min-height: 40px;
 
-    padding: 0 16px;
+    padding: 0 12px;
 
     border-radius: var(--radius-full);
 
     background: transparent;
 
-    border: 1px solid var(--color-border);
+    border: 1px solid transparent;
 
-    color: var(--color-text);
+    color: var(--color-text-secondary);
 
     font-size: 13px;
     font-weight: 600;
@@ -265,16 +212,13 @@
 
     transition:
         color var(--transition-fast),
-        background-color var(--transition-fast),
-        border-color var(--transition-fast);
+        background-color var(--transition-fast);
 }
 
 .header-signin:hover {
-    color: var(--color-primary);
+    color: var(--color-text);
 
-    border-color: var(--color-primary-border);
-
-    background: var(--color-primary-soft);
+    background: var(--color-surface-hover);
 }
 
 /* =========================================================
@@ -588,10 +532,6 @@
     .header-context {
         display: none;
     }
-
-    .header-search {
-        width: min(340px, 40vw);
-    }
 }
 
 /* =========================================================
@@ -610,38 +550,35 @@
     }
 
     .header-left {
-        gap: 7px;
+        gap: 12px;
     }
 
-    .header-search {
-        width: 40px;
-
-        padding: 0;
-
-        border: 0;
-
-        background: transparent;
-
-        box-shadow: none !important;
-    }
-
-    .header-search svg {
-        flex-shrink: 0;
-
-        color: var(--color-text-secondary);
-    }
-
-    .header-search input,
-    .search-shortcut {
-        display: none;
+    .header-logo {
+        display: flex;
     }
 
     .header-right {
-        gap: 5px;
+        gap: 4px;
     }
 
     .header-divider {
         display: none;
+    }
+
+    .header-signin {
+        min-height: 36px;
+
+        padding: 0 9px;
+
+        font-size: 12.5px;
+    }
+
+    .header-right .se-button {
+        min-height: 36px;
+
+        padding: 0 14px;
+
+        font-size: 12.5px;
     }
 
     .header-user-info,
@@ -684,6 +621,20 @@
     }
 
     .header-left {
-        gap: 3px;
+        gap: 9px;
+    }
+
+    .header-logo img {
+        height: 22px;
+    }
+
+    .header-signin {
+        padding: 0 7px;
+
+        font-size: 12px;
+    }
+
+    .header-right .se-button {
+        padding: 0 11px;
     }
 }

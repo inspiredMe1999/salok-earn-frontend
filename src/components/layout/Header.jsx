@@ -12,7 +12,6 @@ import {
 
 import {
     Menu,
-    Search,
     Bell,
     ChevronDown,
     UserRound,
@@ -23,6 +22,8 @@ import {
 
 import ThemeToggle from "../common/ThemeToggle";
 import Button from "../common/Button";
+
+import logo from "../../assets/brand/salok-earn-logo.png";
 
 import {
     getCurrentUser,
@@ -52,11 +53,7 @@ function Header({
     const location = useLocation();
     const navigate = useNavigate();
 
-    const searchRef = useRef(null);
     const profileMenuRef = useRef(null);
-
-    const [searchValue, setSearchValue] =
-        useState("");
 
     const [profileOpen, setProfileOpen] =
         useState(false);
@@ -81,37 +78,14 @@ function Header({
 
     /*
     |--------------------------------------------------------------------------
-    | Keyboard search shortcut
+    | Close the profile menu on Escape
     |--------------------------------------------------------------------------
     */
 
     useEffect(() => {
         const handleKeyboard = (event) => {
-            const target =
-                event.target;
-
-            const isTyping =
-                target instanceof
-                HTMLInputElement ||
-                target instanceof
-                HTMLTextAreaElement ||
-                target?.isContentEditable;
-
-            if (
-                event.key === "/" &&
-                !isTyping
-            ) {
-                event.preventDefault();
-
-                searchRef.current?.focus();
-            }
-
-            if (
-                event.key === "Escape"
-            ) {
+            if (event.key === "Escape") {
                 setProfileOpen(false);
-
-                searchRef.current?.blur();
             }
         };
 
@@ -210,26 +184,20 @@ function Header({
                     </strong>
                 </div>
 
-                <div className="header-search">
-                    <Search size={17} />
-
-                    <input
-                        ref={searchRef}
-                        type="search"
-                        placeholder="Search..."
-                        aria-label="Search"
-                        value={searchValue}
-                        onChange={(event) =>
-                            setSearchValue(
-                                event.target.value
-                            )
-                        }
+                <Link
+                    to={
+                        isGuest
+                            ? "/"
+                            : "/dashboard"
+                    }
+                    className="header-logo"
+                    aria-label="Salok Earn — Home"
+                >
+                    <img
+                        src={logo}
+                        alt="Salok Earn"
                     />
-
-                    <span className="search-shortcut">
-                        /
-                    </span>
-                </div>
+                </Link>
             </div>
 
             {/* =================================================
@@ -259,7 +227,8 @@ function Header({
                         </button>
 
                         <Button
-                            size="medium"
+                            size="small"
+                            icon={false}
                             onClick={() =>
                                 navigate(
                                     "/signup",
@@ -300,142 +269,142 @@ function Header({
                             ref={profileMenuRef}
                         >
                             <button
-                        type="button"
-                        className={`header-profile ${profileOpen
-                                ? "profile-open"
-                                : ""
-                            }`}
-                        onClick={() =>
-                            setProfileOpen(
-                                (current) =>
-                                    !current
-                            )
-                        }
-                        aria-expanded={
-                            profileOpen
-                        }
-                        aria-haspopup="menu"
-                    >
-                        <div className="header-avatar">
-                            {firstLetter}
-                        </div>
-
-                        <div className="header-user-info">
-                            <strong>
-                                {displayName}
-                            </strong>
-
-                            <span>
-                                Member
-                            </span>
-                        </div>
-
-                        <ChevronDown
-                            size={16}
-                            className={`header-profile-chevron ${profileOpen
-                                    ? "chevron-open"
+                                type="button"
+                                className={`header-profile ${profileOpen
+                                    ? "profile-open"
                                     : ""
-                                }`}
-                        />
-                    </button>
-
-                    {profileOpen && (
-                        <div
-                            className="profile-dropdown"
-                            role="menu"
-                        >
-                            <div className="profile-dropdown-header">
-                                <div className="profile-dropdown-avatar">
+                                    }`}
+                                onClick={() =>
+                                    setProfileOpen(
+                                        (current) =>
+                                            !current
+                                    )
+                                }
+                                aria-expanded={
+                                    profileOpen
+                                }
+                                aria-haspopup="menu"
+                            >
+                                <div className="header-avatar">
                                     {firstLetter}
                                 </div>
 
-                                <div>
+                                <div className="header-user-info">
                                     <strong>
                                         {displayName}
                                     </strong>
 
                                     <span>
-                                        {user?.email ||
-                                            "Member account"}
+                                        Member
                                     </span>
                                 </div>
-                            </div>
 
-                            <div className="profile-dropdown-divider" />
-
-                            <Link
-                                to="/profile"
-                                className="profile-dropdown-item"
-                                onClick={() =>
-                                    setProfileOpen(
-                                        false
-                                    )
-                                }
-                            >
-                                <UserRound
-                                    size={17}
+                                <ChevronDown
+                                    size={16}
+                                    className={`header-profile-chevron ${profileOpen
+                                        ? "chevron-open"
+                                        : ""
+                                        }`}
                                 />
-
-                                <span>
-                                    Profile
-                                </span>
-                            </Link>
-
-                            <Link
-                                to="/wallet"
-                                className="profile-dropdown-item"
-                                onClick={() =>
-                                    setProfileOpen(
-                                        false
-                                    )
-                                }
-                            >
-                                <Wallet
-                                    size={17}
-                                />
-
-                                <span>
-                                    Wallet
-                                </span>
-                            </Link>
-
-                            <Link
-                                to="/settings"
-                                className="profile-dropdown-item"
-                                onClick={() =>
-                                    setProfileOpen(
-                                        false
-                                    )
-                                }
-                            >
-                                <Settings
-                                    size={17}
-                                />
-
-                                <span>
-                                    Settings
-                                </span>
-                            </Link>
-
-                            <div className="profile-dropdown-divider" />
-
-                            <button
-                                type="button"
-                                className="profile-dropdown-item logout-item"
-                                onClick={
-                                    handleLogout
-                                }
-                            >
-                                <LogOut
-                                    size={17}
-                                />
-
-                                <span>
-                                    Sign out
-                                </span>
                             </button>
-                        </div>
-                    )}
+
+                            {profileOpen && (
+                                <div
+                                    className="profile-dropdown"
+                                    role="menu"
+                                >
+                                    <div className="profile-dropdown-header">
+                                        <div className="profile-dropdown-avatar">
+                                            {firstLetter}
+                                        </div>
+
+                                        <div>
+                                            <strong>
+                                                {displayName}
+                                            </strong>
+
+                                            <span>
+                                                {user?.email ||
+                                                    "Member account"}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className="profile-dropdown-divider" />
+
+                                    <Link
+                                        to="/profile"
+                                        className="profile-dropdown-item"
+                                        onClick={() =>
+                                            setProfileOpen(
+                                                false
+                                            )
+                                        }
+                                    >
+                                        <UserRound
+                                            size={17}
+                                        />
+
+                                        <span>
+                                            Profile
+                                        </span>
+                                    </Link>
+
+                                    <Link
+                                        to="/wallet"
+                                        className="profile-dropdown-item"
+                                        onClick={() =>
+                                            setProfileOpen(
+                                                false
+                                            )
+                                        }
+                                    >
+                                        <Wallet
+                                            size={17}
+                                        />
+
+                                        <span>
+                                            Wallet
+                                        </span>
+                                    </Link>
+
+                                    <Link
+                                        to="/settings"
+                                        className="profile-dropdown-item"
+                                        onClick={() =>
+                                            setProfileOpen(
+                                                false
+                                            )
+                                        }
+                                    >
+                                        <Settings
+                                            size={17}
+                                        />
+
+                                        <span>
+                                            Settings
+                                        </span>
+                                    </Link>
+
+                                    <div className="profile-dropdown-divider" />
+
+                                    <button
+                                        type="button"
+                                        className="profile-dropdown-item logout-item"
+                                        onClick={
+                                            handleLogout
+                                        }
+                                    >
+                                        <LogOut
+                                            size={17}
+                                        />
+
+                                        <span>
+                                            Sign out
+                                        </span>
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </>
                 )}
