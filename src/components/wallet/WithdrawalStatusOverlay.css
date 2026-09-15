@@ -1,0 +1,198 @@
+/* =========================================================
+   WITHDRAWAL STATUS OVERLAY
+   ========================================================= */
+
+.withdrawal-status-overlay {
+    position: fixed;
+    z-index: 1300;
+
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: var(--color-overlay);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    animation: withdrawal-status-backdrop-in 220ms ease;
+}
+
+
+@keyframes withdrawal-status-backdrop-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+.withdrawal-status-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: min(420px, 100%);
+
+    padding: 34px 30px 30px;
+
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-2xl);
+
+    background:
+        radial-gradient(circle at 50% 0%, rgba(220, 169, 47, 0.12), transparent 60%),
+        var(--color-card);
+
+    box-shadow: var(--shadow-lg);
+
+    text-align: center;
+
+    animation: withdrawal-status-card-in 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+
+@keyframes withdrawal-status-card-in {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+.withdrawal-status-lottie-stage {
+    width: 168px;
+    height: 168px;
+
+    margin-bottom: 6px;
+}
+
+
+.withdrawal-status-lottie-stage canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+
+.withdrawal-status-eyebrow {
+    display: inline-flex;
+
+    color: var(--gold-400);
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+}
+
+
+.withdrawal-status-card h2 {
+    margin: 9px 0 0;
+
+    color: var(--color-text);
+
+    font-size: 20px;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+}
+
+
+.withdrawal-status-card p {
+    max-width: 320px;
+
+    margin: 8px 0 0;
+
+    color: var(--color-text-muted);
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+.withdrawal-status-card--failed .withdrawal-status-eyebrow {
+    color: var(--color-danger);
+}
+
+
+/* Indeterminate shimmer bar — only shown during the looping
+   "transferring" phase, since it has no natural end of its own. */
+
+.withdrawal-status-progress {
+    position: relative;
+    overflow: hidden;
+
+    width: 100%;
+    height: 4px;
+
+    margin-top: 22px;
+
+    border-radius: var(--radius-pill);
+
+    background: var(--color-surface-2);
+}
+
+
+.withdrawal-status-progress span {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 40%;
+    height: 100%;
+
+    border-radius: var(--radius-pill);
+
+    background: linear-gradient(90deg, var(--gold-300), var(--gold-500));
+
+    animation: withdrawal-status-progress-slide 1.3s ease-in-out infinite;
+}
+
+
+@keyframes withdrawal-status-progress-slide {
+
+    0% {
+        left: -40%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .withdrawal-status-card {
+        padding: 28px 22px 24px;
+    }
+
+    .withdrawal-status-lottie-stage {
+        width: 140px;
+        height: 140px;
+    }
+
+    .withdrawal-status-card h2 {
+        font-size: 18px;
+    }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    .withdrawal-status-overlay,
+    .withdrawal-status-card,
+    .withdrawal-status-progress span {
+        animation: none;
+    }
+}

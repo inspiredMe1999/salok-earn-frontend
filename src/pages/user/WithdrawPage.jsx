@@ -21,6 +21,8 @@ import "./wallet.css";
 import "./withdraw.css";
 
 import Loader from "../../components/common/Loader";
+import WithdrawalStatusOverlay from "../../components/wallet/WithdrawalStatusOverlay";
+import ConfettiBurst from "../../components/common/ConfettiBurst";
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +61,8 @@ function WithdrawPage() {
 
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    const [submitPhase, setSubmitPhase] = useState(null);
+    // null | "transferring" | "celebrating" | "failed"
 
     const [error, setError] = useState("");
     const [submittedWithdrawal, setSubmittedWithdrawal] =
@@ -312,15 +316,35 @@ function WithdrawPage() {
 
         try {
             setSubmitting(true);
+            setSubmitPhase("transferring");
 
-            const response =
-                await walletService.requestWithdrawal({
+            /*
+             * Guarantee the transfer animation is on screen for at
+             * least a couple of seconds — without this, a fast mock
+             * (or a fast real API) would make it flash by unseen.
+             */
+            const MIN_TRANSFER_DISPLAY_MS = 2600;
+
+            const minDisplayDelay = new Promise(
+                (resolve) =>
+                    setTimeout(
+                        resolve,
+                        MIN_TRANSFER_DISPLAY_MS
+                    )
+            );
+
+            const [response] = await Promise.all([
+                walletService.requestWithdrawal({
                     amount: numericAmount,
                     payoutMethodId:
                         selectedMethodId,
-                });
+                }),
+                minDisplayDelay,
+            ]);
 
             if (!response?.success) {
+                setSubmitPhase("failed");
+
                 toast.error(
                     response?.message ||
                     "Withdrawal could not be submitted."
@@ -336,11 +360,15 @@ function WithdrawPage() {
             toast.success(
                 "Withdrawal request submitted."
             );
+
+            setSubmitPhase("celebrating");
         } catch (err) {
             console.error(
                 "Withdrawal submission error:",
                 err
             );
+
+            setSubmitPhase("failed");
 
             toast.error(
                 err?.message ||
@@ -349,6 +377,15 @@ function WithdrawPage() {
         } finally {
             setSubmitting(false);
         }
+    }
+
+    /*
+     * Called once a non-looping overlay phase (celebrating/failed)
+     * has played through — hides the overlay and reveals whatever
+     * is underneath (the success view, or the form again).
+     */
+    function clearSubmitPhase() {
+        setSubmitPhase(null);
     }
 
     /*
@@ -411,6 +448,13 @@ function WithdrawPage() {
     if (submittedWithdrawal) {
         return (
             <div className="withdraw-page">
+
+                <WithdrawalStatusOverlay
+                    phase={submitPhase}
+                    onComplete={clearSubmitPhase}
+                />
+
+                {!submitPhase && <ConfettiBurst />}
 
                 <div className="withdraw-success">
 
@@ -524,6 +568,11 @@ function WithdrawPage() {
 
     return (
         <div className="withdraw-page">
+
+            <WithdrawalStatusOverlay
+                phase={submitPhase}
+                onComplete={clearSubmitPhase}
+            />
 
             {/* =========================================================
                 HEADER

@@ -1,0 +1,30 @@
+/* =========================================================
+   CONFETTI BURST
+   ========================================================= */
+
+.confetti-burst {
+    position: fixed;
+    z-index: 1250;
+
+    inset: 0;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    pointer-events: none;
+}
+
+
+.confetti-burst canvas {
+    width: min(900px, 100vw) !important;
+    height: 100vh !important;
+}
+
+
+@media (max-width: 700px) {
+
+    .confetti-burst canvas {
+        width: 100vw !important;
+    }
+}
