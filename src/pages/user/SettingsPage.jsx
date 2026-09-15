@@ -29,6 +29,7 @@ import Loader from "../../components/common/Loader";
 
 function SettingsPage() {
     const [settings, setSettings] = useState(null);
+    const [activeTab, setActiveTab] = useState("appearance");
 
     const [options, setOptions] = useState({
         languages: [],
@@ -345,434 +346,492 @@ function SettingsPage() {
                 </button>
             </div>
 
+            <div className="settings-tabs" role="tablist" aria-label="Settings sections">
+                <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === "appearance"}
+                    className={`settings-tab ${activeTab === "appearance" ? "active" : ""
+                        }`}
+                    onClick={() => setActiveTab("appearance")}
+                >
+                    <Palette size={17} />
+                    <span>Appearance</span>
+                </button>
+
+                <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === "general"}
+                    className={`settings-tab ${activeTab === "general" ? "active" : ""
+                        }`}
+                    onClick={() => setActiveTab("general")}
+                >
+                    <Globe size={17} />
+                    <span>General preferences</span>
+                </button>
+
+                <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === "notifications"}
+                    className={`settings-tab ${activeTab === "notifications" ? "active" : ""
+                        }`}
+                    onClick={() => setActiveTab("notifications")}
+                >
+                    <Bell size={17} />
+                    <span>Notifications</span>
+                </button>
+
+                <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === "privacy"}
+                    className={`settings-tab ${activeTab === "privacy" ? "active" : ""
+                        }`}
+                    onClick={() => setActiveTab("privacy")}
+                >
+                    <Lock size={17} />
+                    <span>Privacy</span>
+                </button>
+            </div>
+
             <div className="settings-layout">
                 <main className="settings-main">
                     {/* Appearance */}
 
-                    <section className="settings-card">
-                        <div className="settings-card-header">
-                            <div className="settings-card-icon">
-                                <Palette size={19} />
+                    {activeTab === "appearance" && (
+                        <section className="settings-card">
+                            <div className="settings-card-header">
+                                <div className="settings-card-icon">
+                                    <Palette size={19} />
+                                </div>
+
+                                <div>
+                                    <h2>
+                                        Appearance
+                                    </h2>
+
+                                    <p>
+                                        Choose how Salok Earn
+                                        looks on your device.
+                                    </p>
+                                </div>
                             </div>
 
-                            <div>
-                                <h2>
-                                    Appearance
-                                </h2>
+                            <div className="theme-options">
+                                {options.themes.map(
+                                    (theme) => {
+                                        const isActive =
+                                            settings.theme ===
+                                            theme.id;
 
-                                <p>
-                                    Choose how Salok Earn
-                                    looks on your device.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="theme-options">
-                            {options.themes.map(
-                                (theme) => {
-                                    const isActive =
-                                        settings.theme ===
-                                        theme.id;
-
-                                    return (
-                                        <button
-                                            key={
-                                                theme.id
-                                            }
-                                            type="button"
-                                            className={`theme-option ${isActive
-                                                ? "active"
-                                                : ""
-                                                }`}
-                                            onClick={() =>
-                                                handleThemeChange(
+                                        return (
+                                            <button
+                                                key={
                                                     theme.id
-                                                )
-                                            }
-                                        >
-                                            <div className="theme-option-icon">
-                                                {theme.id ===
-                                                    "dark" && (
-                                                        <Moon
-                                                            size={
-                                                                20
-                                                            }
-                                                        />
-                                                    )}
+                                                }
+                                                type="button"
+                                                className={`theme-option ${isActive
+                                                    ? "active"
+                                                    : ""
+                                                    }`}
+                                                onClick={() =>
+                                                    handleThemeChange(
+                                                        theme.id
+                                                    )
+                                                }
+                                            >
+                                                <div className="theme-option-icon">
+                                                    {theme.id ===
+                                                        "dark" && (
+                                                            <Moon
+                                                                size={
+                                                                    20
+                                                                }
+                                                            />
+                                                        )}
 
-                                                {theme.id ===
-                                                    "light" && (
-                                                        <Sun
-                                                            size={
-                                                                20
-                                                            }
-                                                        />
-                                                    )}
+                                                    {theme.id ===
+                                                        "light" && (
+                                                            <Sun
+                                                                size={
+                                                                    20
+                                                                }
+                                                            />
+                                                        )}
 
-                                                {theme.id ===
-                                                    "system" && (
-                                                        <Palette
-                                                            size={
-                                                                20
-                                                            }
-                                                        />
-                                                    )}
-                                            </div>
+                                                    {theme.id ===
+                                                        "system" && (
+                                                            <Palette
+                                                                size={
+                                                                    20
+                                                                }
+                                                            />
+                                                        )}
+                                                </div>
 
-                                            <div className="theme-option-content">
-                                                <strong>
-                                                    {
-                                                        theme.name
-                                                    }
-                                                </strong>
-
-                                                <span>
-                                                    {
-                                                        theme.description
-                                                    }
-                                                </span>
-                                            </div>
-
-                                            <div className="theme-radio">
-                                                {isActive && (
-                                                    <Check
-                                                        size={
-                                                            14
+                                                <div className="theme-option-content">
+                                                    <strong>
+                                                        {
+                                                            theme.name
                                                         }
-                                                    />
-                                                )}
-                                            </div>
-                                        </button>
-                                    );
-                                }
-                            )}
-                        </div>
-                    </section>
+                                                    </strong>
+
+                                                    <span>
+                                                        {
+                                                            theme.description
+                                                        }
+                                                    </span>
+                                                </div>
+
+                                                <div className="theme-radio">
+                                                    {isActive && (
+                                                        <Check
+                                                            size={
+                                                                14
+                                                            }
+                                                        />
+                                                    )}
+                                                </div>
+                                            </button>
+                                        );
+                                    }
+                                )}
+                            </div>
+                        </section>
+                    )}
 
                     {/* General Preferences */}
 
-                    <section className="settings-card">
-                        <div className="settings-card-header">
-                            <div className="settings-card-icon">
-                                <Globe size={19} />
+                    {activeTab === "general" && (
+                        <section className="settings-card">
+                            <div className="settings-card-header">
+                                <div className="settings-card-icon">
+                                    <Globe size={19} />
+                                </div>
+
+                                <div>
+                                    <h2>
+                                        General preferences
+                                    </h2>
+
+                                    <p>
+                                        Customize your regional
+                                        and display preferences.
+                                    </p>
+                                </div>
                             </div>
 
-                            <div>
-                                <h2>
-                                    General preferences
-                                </h2>
+                            <div className="settings-fields">
+                                <div className="settings-field">
+                                    <label htmlFor="language">
+                                        Language
+                                    </label>
 
-                                <p>
-                                    Customize your regional
-                                    and display preferences.
-                                </p>
+                                    <select
+                                        id="language"
+                                        value={
+                                            settings.language
+                                        }
+                                        onChange={(event) =>
+                                            updateSetting(
+                                                "language",
+                                                event.target
+                                                    .value
+                                            )
+                                        }
+                                    >
+                                        {options.languages.map(
+                                            (language) => (
+                                                <option
+                                                    key={
+                                                        language
+                                                    }
+                                                    value={
+                                                        language
+                                                    }
+                                                >
+                                                    {language}
+                                                </option>
+                                            )
+                                        )}
+                                    </select>
+                                </div>
+
+                                <div className="settings-field">
+                                    <label htmlFor="timezone">
+                                        Timezone
+                                    </label>
+
+                                    <select
+                                        id="timezone"
+                                        value={
+                                            settings.timezone
+                                        }
+                                        onChange={(event) =>
+                                            updateSetting(
+                                                "timezone",
+                                                event.target
+                                                    .value
+                                            )
+                                        }
+                                    >
+                                        {options.timezones.map(
+                                            (timezone) => (
+                                                <option
+                                                    key={
+                                                        timezone
+                                                    }
+                                                    value={
+                                                        timezone
+                                                    }
+                                                >
+                                                    {timezone}
+                                                </option>
+                                            )
+                                        )}
+                                    </select>
+                                </div>
+
+                                <div className="settings-field">
+                                    <label htmlFor="currency">
+                                        Display currency
+                                    </label>
+
+                                    <select
+                                        id="currency"
+                                        value={
+                                            settings.currency
+                                        }
+                                        onChange={(event) =>
+                                            updateSetting(
+                                                "currency",
+                                                event.target
+                                                    .value
+                                            )
+                                        }
+                                    >
+                                        {options.currencies.map(
+                                            (currency) => (
+                                                <option
+                                                    key={
+                                                        currency
+                                                    }
+                                                    value={
+                                                        currency
+                                                    }
+                                                >
+                                                    {currency}
+                                                </option>
+                                            )
+                                        )}
+                                    </select>
+
+                                    <small>
+                                        SAK is the current
+                                        display currency in
+                                        this mock build.
+                                    </small>
+                                </div>
                             </div>
-                        </div>
-
-                        <div className="settings-fields">
-                            <div className="settings-field">
-                                <label htmlFor="language">
-                                    Language
-                                </label>
-
-                                <select
-                                    id="language"
-                                    value={
-                                        settings.language
-                                    }
-                                    onChange={(event) =>
-                                        updateSetting(
-                                            "language",
-                                            event.target
-                                                .value
-                                        )
-                                    }
-                                >
-                                    {options.languages.map(
-                                        (language) => (
-                                            <option
-                                                key={
-                                                    language
-                                                }
-                                                value={
-                                                    language
-                                                }
-                                            >
-                                                {language}
-                                            </option>
-                                        )
-                                    )}
-                                </select>
-                            </div>
-
-                            <div className="settings-field">
-                                <label htmlFor="timezone">
-                                    Timezone
-                                </label>
-
-                                <select
-                                    id="timezone"
-                                    value={
-                                        settings.timezone
-                                    }
-                                    onChange={(event) =>
-                                        updateSetting(
-                                            "timezone",
-                                            event.target
-                                                .value
-                                        )
-                                    }
-                                >
-                                    {options.timezones.map(
-                                        (timezone) => (
-                                            <option
-                                                key={
-                                                    timezone
-                                                }
-                                                value={
-                                                    timezone
-                                                }
-                                            >
-                                                {timezone}
-                                            </option>
-                                        )
-                                    )}
-                                </select>
-                            </div>
-
-                            <div className="settings-field">
-                                <label htmlFor="currency">
-                                    Display currency
-                                </label>
-
-                                <select
-                                    id="currency"
-                                    value={
-                                        settings.currency
-                                    }
-                                    onChange={(event) =>
-                                        updateSetting(
-                                            "currency",
-                                            event.target
-                                                .value
-                                        )
-                                    }
-                                >
-                                    {options.currencies.map(
-                                        (currency) => (
-                                            <option
-                                                key={
-                                                    currency
-                                                }
-                                                value={
-                                                    currency
-                                                }
-                                            >
-                                                {currency}
-                                            </option>
-                                        )
-                                    )}
-                                </select>
-
-                                <small>
-                                    SAK is the current
-                                    display currency in
-                                    this mock build.
-                                </small>
-                            </div>
-                        </div>
-                    </section>
+                        </section>
+                    )}
 
                     {/* Notifications */}
 
-                    <section className="settings-card">
-                        <div className="settings-card-header">
-                            <div className="settings-card-icon">
-                                <Bell size={19} />
+                    {activeTab === "notifications" && (
+                        <section className="settings-card">
+                            <div className="settings-card-header">
+                                <div className="settings-card-icon">
+                                    <Bell size={19} />
+                                </div>
+
+                                <div>
+                                    <h2>
+                                        Notifications
+                                    </h2>
+
+                                    <p>
+                                        Decide which updates
+                                        you want to receive.
+                                    </p>
+                                </div>
                             </div>
 
-                            <div>
-                                <h2>
-                                    Notifications
-                                </h2>
+                            <div className="settings-options-list">
+                                <SettingToggle
+                                    title="Earning alerts"
+                                    description="Get notified when you earn rewards or complete an earning activity."
+                                    checked={
+                                        settings
+                                            .notifications
+                                            .earningAlerts
+                                    }
+                                    onChange={(value) =>
+                                        updateNotification(
+                                            "earningAlerts",
+                                            value
+                                        )
+                                    }
+                                />
 
-                                <p>
-                                    Decide which updates
-                                    you want to receive.
-                                </p>
+                                <SettingToggle
+                                    title="Trivia reminders"
+                                    description="Receive reminders about trivia rounds and available challenges."
+                                    checked={
+                                        settings
+                                            .notifications
+                                            .triviaReminders
+                                    }
+                                    onChange={(value) =>
+                                        updateNotification(
+                                            "triviaReminders",
+                                            value
+                                        )
+                                    }
+                                />
+
+                                <SettingToggle
+                                    title="Withdrawal updates"
+                                    description="Get updates when a withdrawal changes status."
+                                    checked={
+                                        settings
+                                            .notifications
+                                            .withdrawalUpdates
+                                    }
+                                    onChange={(value) =>
+                                        updateNotification(
+                                            "withdrawalUpdates",
+                                            value
+                                        )
+                                    }
+                                />
+
+                                <SettingToggle
+                                    title="Community activity"
+                                    description="Stay informed about important community activity and interactions."
+                                    checked={
+                                        settings
+                                            .notifications
+                                            .communityActivity
+                                    }
+                                    onChange={(value) =>
+                                        updateNotification(
+                                            "communityActivity",
+                                            value
+                                        )
+                                    }
+                                />
+
+                                <SettingToggle
+                                    title="Product and promotional updates"
+                                    description="Receive occasional news, announcements and promotional messages."
+                                    checked={
+                                        settings
+                                            .notifications
+                                            .marketing
+                                    }
+                                    onChange={(value) =>
+                                        updateNotification(
+                                            "marketing",
+                                            value
+                                        )
+                                    }
+                                />
                             </div>
-                        </div>
-
-                        <div className="settings-options-list">
-                            <SettingToggle
-                                title="Earning alerts"
-                                description="Get notified when you earn rewards or complete an earning activity."
-                                checked={
-                                    settings
-                                        .notifications
-                                        .earningAlerts
-                                }
-                                onChange={(value) =>
-                                    updateNotification(
-                                        "earningAlerts",
-                                        value
-                                    )
-                                }
-                            />
-
-                            <SettingToggle
-                                title="Trivia reminders"
-                                description="Receive reminders about trivia rounds and available challenges."
-                                checked={
-                                    settings
-                                        .notifications
-                                        .triviaReminders
-                                }
-                                onChange={(value) =>
-                                    updateNotification(
-                                        "triviaReminders",
-                                        value
-                                    )
-                                }
-                            />
-
-                            <SettingToggle
-                                title="Withdrawal updates"
-                                description="Get updates when a withdrawal changes status."
-                                checked={
-                                    settings
-                                        .notifications
-                                        .withdrawalUpdates
-                                }
-                                onChange={(value) =>
-                                    updateNotification(
-                                        "withdrawalUpdates",
-                                        value
-                                    )
-                                }
-                            />
-
-                            <SettingToggle
-                                title="Community activity"
-                                description="Stay informed about important community activity and interactions."
-                                checked={
-                                    settings
-                                        .notifications
-                                        .communityActivity
-                                }
-                                onChange={(value) =>
-                                    updateNotification(
-                                        "communityActivity",
-                                        value
-                                    )
-                                }
-                            />
-
-                            <SettingToggle
-                                title="Product and promotional updates"
-                                description="Receive occasional news, announcements and promotional messages."
-                                checked={
-                                    settings
-                                        .notifications
-                                        .marketing
-                                }
-                                onChange={(value) =>
-                                    updateNotification(
-                                        "marketing",
-                                        value
-                                    )
-                                }
-                            />
-                        </div>
-                    </section>
+                        </section>
+                    )}
 
                     {/* Privacy */}
 
-                    <section className="settings-card">
-                        <div className="settings-card-header">
-                            <div className="settings-card-icon">
-                                <Lock size={19} />
+                    {activeTab === "privacy" && (
+                        <section className="settings-card">
+                            <div className="settings-card-header">
+                                <div className="settings-card-icon">
+                                    <Lock size={19} />
+                                </div>
+
+                                <div>
+                                    <h2>
+                                        Privacy
+                                    </h2>
+
+                                    <p>
+                                        Control what other
+                                        community members can
+                                        see.
+                                    </p>
+                                </div>
                             </div>
 
-                            <div>
-                                <h2>
-                                    Privacy
-                                </h2>
+                            <div className="settings-options-list">
+                                <SettingToggle
+                                    title="Show my profile to the community"
+                                    description="Allow other members to view your public community profile."
+                                    checked={
+                                        settings
+                                            .privacy
+                                            .showProfileToCommunity
+                                    }
+                                    onChange={(value) =>
+                                        updatePrivacy(
+                                            "showProfileToCommunity",
+                                            value
+                                        )
+                                    }
+                                />
 
-                                <p>
-                                    Control what other
-                                    community members can
-                                    see.
-                                </p>
+                                <SettingToggle
+                                    title="Show online status"
+                                    description="Let other community members know when you are online."
+                                    checked={
+                                        settings
+                                            .privacy
+                                            .showOnlineStatus
+                                    }
+                                    onChange={(value) =>
+                                        updatePrivacy(
+                                            "showOnlineStatus",
+                                            value
+                                        )
+                                    }
+                                />
+
+                                <SettingToggle
+                                    title="Show earnings on profile"
+                                    description="Display selected earning information on your community profile."
+                                    checked={
+                                        settings
+                                            .privacy
+                                            .showEarningsOnProfile
+                                    }
+                                    onChange={(value) =>
+                                        updatePrivacy(
+                                            "showEarningsOnProfile",
+                                            value
+                                        )
+                                    }
+                                />
+
+                                <SettingToggle
+                                    title="Allow community messages"
+                                    description="Allow other members to send you community messages."
+                                    checked={
+                                        settings
+                                            .privacy
+                                            .allowCommunityMessages
+                                    }
+                                    onChange={(value) =>
+                                        updatePrivacy(
+                                            "allowCommunityMessages",
+                                            value
+                                        )
+                                    }
+                                />
                             </div>
-                        </div>
-
-                        <div className="settings-options-list">
-                            <SettingToggle
-                                title="Show my profile to the community"
-                                description="Allow other members to view your public community profile."
-                                checked={
-                                    settings
-                                        .privacy
-                                        .showProfileToCommunity
-                                }
-                                onChange={(value) =>
-                                    updatePrivacy(
-                                        "showProfileToCommunity",
-                                        value
-                                    )
-                                }
-                            />
-
-                            <SettingToggle
-                                title="Show online status"
-                                description="Let other community members know when you are online."
-                                checked={
-                                    settings
-                                        .privacy
-                                        .showOnlineStatus
-                                }
-                                onChange={(value) =>
-                                    updatePrivacy(
-                                        "showOnlineStatus",
-                                        value
-                                    )
-                                }
-                            />
-
-                            <SettingToggle
-                                title="Show earnings on profile"
-                                description="Display selected earning information on your community profile."
-                                checked={
-                                    settings
-                                        .privacy
-                                        .showEarningsOnProfile
-                                }
-                                onChange={(value) =>
-                                    updatePrivacy(
-                                        "showEarningsOnProfile",
-                                        value
-                                    )
-                                }
-                            />
-
-                            <SettingToggle
-                                title="Allow community messages"
-                                description="Allow other members to send you community messages."
-                                checked={
-                                    settings
-                                        .privacy
-                                        .allowCommunityMessages
-                                }
-                                onChange={(value) =>
-                                    updatePrivacy(
-                                        "allowCommunityMessages",
-                                        value
-                                    )
-                                }
-                            />
-                        </div>
-                    </section>
+                        </section>
+                    )}
 
                     {/* Save */}
 

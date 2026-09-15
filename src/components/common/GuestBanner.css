@@ -1,3 +1,9 @@
+.guest-banner,
+.guest-banner *,
+.guest-banner button {
+    box-sizing: border-box;
+}
+
 .guest-banner {
     position: relative;
 
@@ -148,19 +154,42 @@
 
 @media (max-width: 640px) {
     .guest-banner {
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 32px minmax(0, 1fr) 26px;
+        align-items: start;
+        column-gap: 10px;
+        row-gap: 12px;
+
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .guest-banner-copy {
+        min-width: 0;
+        overflow-wrap: anywhere;
     }
 
     .guest-banner-actions {
-        width: 100%;
+        grid-column: 1 / -1;
 
-        margin-left: 44px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        width: 100%;
+        min-width: 0;
+        margin-left: 0;
     }
 
     .guest-banner-login,
     .guest-banner-signup {
-        flex: 1;
+        flex: 1 1 140px;
+        min-width: 0;
+        max-width: 100%;
 
         text-align: center;
+        white-space: normal;
+        overflow-wrap: anywhere;
     }
 }

@@ -40,17 +40,22 @@ const OPEN_DRAG_THRESHOLD = 70;
 // Minimum horizontal drag (px) to count as a "close" gesture.
 const CLOSE_DRAG_THRESHOLD = 70;
 
-// How far the handle / home icon travels — following the pointer
-// 1:1 — before it's fully faded out. This is also the point that
-// counts as "reaching" the opposite side.
-const DRAG_TRAVEL = 130;
+// Fallback travel distance (px), only used before a real measurement
+// is available (e.g. server render). Overwritten immediately on the
+// first real drag by an actual getBoundingClientRect() measurement.
+const DRAG_TRAVEL_FALLBACK = 260;
 
-// The crossfade (self fade-out + companion fade-in) only happens
-// in this final fraction of the travel — i.e. right as the button
-// actually arrives at the far side, not gradually the whole way
-// there. For the first (1 - EDGE_FADE_ZONE) of the drag, the
-// button stays fully visible and its companion stays fully hidden.
-const EDGE_FADE_ZONE = 0.3;
+// How much of the full drag (as a fraction, 0–1) it takes, at the
+// very end, for the crossfade (button fades out / companion fades
+// in) to happen. Kept small and deliberate — the button stays fully
+// visible for the vast majority of the drag and only fades right as
+// it arrives at the far side, not gradually along the way.
+const EDGE_FADE_ZONE = 0.08;
+
+// Fraction of the full drag that must be completed for a
+// released drag (not a tap) to commit to opening/closing — i.e. the
+// button has to actually reach (close to) the far side.
+const DRAG_COMMIT_PROGRESS = 0.9;
 
 // Below this many px of movement, a gesture hasn't committed to an
 // axis yet (see the "mode" lock in handlePointerMove).
@@ -213,6 +218,7 @@ function FloatingChat() {
     const { isAuthenticated } = useAuth();
 
     const launcherRef = useRef(null);
+    const homeButtonRef = useRef(null);
     const fileInputRef = useRef(null);
 
     const dragData = useRef({
@@ -225,12 +231,18 @@ function FloatingChat() {
         startX: 0,
         startY: 0,
         startCenterY: 0,
+        // The real, measured distance (px) to the home icon's
+        // current position — computed fresh at the start of each
+        // drag so "the far right" always means exactly where the
+        // home icon actually is, at any viewport size.
+        travelDistance: DRAG_TRAVEL_FALLBACK,
     });
 
     const homeDragData = useRef({
         dragging: false,
         moved: false,
         startX: 0,
+        travelDistance: DRAG_TRAVEL_FALLBACK,
     });
 
     const [isOpen, setIsOpen] =
@@ -250,6 +262,16 @@ function FloatingChat() {
     // snaps back to 0 on release — it never becomes the resting position.
     const [dragOffsetX, setDragOffsetX] = useState(0);
     const [homeDragOffsetX, setHomeDragOffsetX] = useState(0);
+
+    // The real measured distance (px) each button travels to reach
+    // the other's position — set fresh at the start of every drag.
+    // Render uses these as the denominator for drag progress, so
+    // "fully arrived" always lines up with the actual other icon.
+    const [launcherTravel, setLauncherTravel] =
+        useState(DRAG_TRAVEL_FALLBACK);
+
+    const [homeTravel, setHomeTravel] =
+        useState(DRAG_TRAVEL_FALLBACK);
 
     const [messages, setMessages] =
         useState([]);
@@ -385,6 +407,22 @@ function FloatingChat() {
 
         if (!launcher) return;
 
+        // Measure the real, current distance to the home icon so
+        // "the far right" means exactly where it actually sits —
+        // not an arbitrary fixed distance.
+        const ownRect =
+            launcher.getBoundingClientRect();
+
+        const targetRect =
+            homeButtonRef.current?.getBoundingClientRect();
+
+        const travelDistance = targetRect
+            ? Math.max(80, targetRect.left - ownRect.left)
+            : Math.max(
+                80,
+                window.innerWidth - ownRect.left - ownRect.width - 16
+            );
+
         dragData.current = {
             dragging: true,
             moved: false,
@@ -392,8 +430,10 @@ function FloatingChat() {
             startX: event.clientX,
             startY: event.clientY,
             startCenterY: centerY,
+            travelDistance,
         };
 
+        setLauncherTravel(travelDistance);
         setDragging(true);
 
         launcher.setPointerCapture?.(
@@ -472,11 +512,12 @@ function FloatingChat() {
         }
 
         // Horizontal drag recognized — the button now travels with
-        // the pointer (1:1, clamped), and vertical stays fully
-        // locked out no matter how the pointer moves from here on.
+        // the pointer (1:1, clamped to the real distance to the
+        // home icon), and vertical stays fully locked out no matter
+        // how the pointer moves from here on.
         const travel = Math.max(
             0,
-            Math.min(deltaX, DRAG_TRAVEL)
+            Math.min(deltaX, data.travelDistance)
         );
 
         setDragOffsetX(travel);
@@ -506,11 +547,13 @@ function FloatingChat() {
 
         /*
         |--------------------------------------------------------------------------
-        | Horizontal drag past the threshold → open
+        | Horizontal drag that reached (close to) the far right → open
         |--------------------------------------------------------------------------
         |
         | Vertical drags just reposition the handle (already applied live
-        | during the move above) and never open the chat.
+        | during the move above) and never open the chat. A horizontal
+        | drag has to actually get most of the way to the home icon's
+        | position to commit — not just move a little.
         |
         */
 
@@ -519,7 +562,13 @@ function FloatingChat() {
                 event.clientX -
                 data.startX;
 
-            if (deltaX > OPEN_DRAG_THRESHOLD) {
+            const progress =
+                Math.min(1, deltaX / data.travelDistance);
+
+            if (
+                deltaX > OPEN_DRAG_THRESHOLD &&
+                progress >= DRAG_COMMIT_PROGRESS
+            ) {
                 openChat();
             }
         }
@@ -534,15 +583,31 @@ function FloatingChat() {
     function handleHomePointerDown(event) {
         if (event.button !== 0) return;
 
+        const homeButton = event.currentTarget;
+
+        const ownRect =
+            homeButton.getBoundingClientRect();
+
+        const targetRect =
+            launcherRef.current?.getBoundingClientRect();
+
+        // Measured live, same as the launcher's — so "the far left"
+        // means exactly where the launcher actually rests.
+        const travelDistance = targetRect
+            ? Math.max(80, ownRect.left - targetRect.left)
+            : Math.max(80, ownRect.left - HANDLE_LEFT);
+
         homeDragData.current = {
             dragging: true,
             moved: false,
             startX: event.clientX,
+            travelDistance,
         };
 
+        setHomeTravel(travelDistance);
         setHomeDragging(true);
 
-        event.currentTarget.setPointerCapture?.(
+        homeButton.setPointerCapture?.(
             event.pointerId
         );
     }
@@ -559,11 +624,12 @@ function FloatingChat() {
             data.moved = true;
         }
 
-        // The icon now travels with the pointer (1:1, clamped) —
-        // only ever leftward, since it rests at the right edge.
+        // The icon now travels with the pointer (1:1, clamped to the
+        // real distance to the launcher) — only ever leftward, since
+        // it rests at the right edge.
         const travel = Math.min(
             0,
-            Math.max(deltaX, -DRAG_TRAVEL)
+            Math.max(deltaX, -data.travelDistance)
         );
 
         setHomeDragOffsetX(travel);
@@ -587,7 +653,13 @@ function FloatingChat() {
             return;
         }
 
-        if (deltaX < -CLOSE_DRAG_THRESHOLD) {
+        const progress =
+            Math.min(1, -deltaX / data.travelDistance);
+
+        if (
+            deltaX < -CLOSE_DRAG_THRESHOLD &&
+            progress >= DRAG_COMMIT_PROGRESS
+        ) {
             closeChat();
         }
     }
@@ -878,7 +950,8 @@ function FloatingChat() {
     | Drag progress → crossfade
     |--------------------------------------------------------------------------
     |
-    | Each button's own drag distance (0–DRAG_TRAVEL) is expressed as a
+    | Each button's own drag distance (0–its measured travel) is
+    | expressed as a
     | 0–1 progress value. That value drives two things at once: the
     | dragged button fading itself out as it travels, and its
     | companion button quietly "coming alive" — fading and scaling in,
@@ -887,10 +960,10 @@ function FloatingChat() {
     */
 
     const launcherDragProgress =
-        Math.min(1, dragOffsetX / DRAG_TRAVEL);
+        Math.min(1, dragOffsetX / launcherTravel);
 
     const homeDragProgress =
-        Math.min(1, -homeDragOffsetX / DRAG_TRAVEL);
+        Math.min(1, -homeDragOffsetX / homeTravel);
 
     // The actual 0–1 crossfade amounts — flat at 0 until the button
     // is nearly at the far side, then ramping to 1 exactly as it
@@ -980,6 +1053,37 @@ function FloatingChat() {
         homeDockStyle.opacity = homeStyle.opacity;
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Overlay follows the drag
+    |--------------------------------------------------------------------------
+    |
+    | The chat panel itself tracks the live drag progress — sliding
+    | out as the launcher is dragged right, sliding back if you pull
+    | back before letting go, and mirrored for the home icon's
+    | drag-to-close. Outside of an active drag, this is left alone
+    | entirely so the resting open/closed CSS transition (520ms,
+    | triggered by isOpen) handles it as before.
+    |
+    */
+
+    const overlayStyle = {};
+    let overlayDragging = false;
+
+    if (!isOpen && dragging && dragData.current.mode === "horizontal") {
+        // 0 at rest (closed, -100%) → 1 fully arrived (open, 0%).
+        overlayStyle.transform =
+            `translateX(${(launcherDragProgress - 1) * 100}%)`;
+
+        overlayDragging = true;
+    } else if (isOpen && homeDragging) {
+        // 0 at rest (open, 0%) → 1 fully arrived (closed, -100%).
+        overlayStyle.transform =
+            `translateX(${-homeDragProgress * 100}%)`;
+
+        overlayDragging = true;
+    }
+
     return (
         <>
             {/* -------------------------------------------------
@@ -1066,6 +1170,7 @@ function FloatingChat() {
 
             <button
                 type="button"
+                ref={homeButtonRef}
                 className={`floating-home-button ${isOpen
                     ? "floating-home-button-visible"
                     : ""
@@ -1099,7 +1204,11 @@ function FloatingChat() {
                 className={`floating-chat-overlay ${isOpen
                     ? "floating-chat-overlay-open"
                     : ""
+                    } ${overlayDragging
+                        ? "floating-chat-overlay-dragging"
+                        : ""
                     }`}
+                style={overlayStyle}
                 aria-hidden={!isOpen}
             >
                 <div className="floating-chat-overlay-inner">

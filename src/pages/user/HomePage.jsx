@@ -1,6 +1,7 @@
 import {
     useEffect,
     useMemo,
+    useRef,
     useState,
 } from "react";
 
@@ -11,17 +12,30 @@ import {
 
 import {
     ArrowRight,
+    Award,
     Brain,
     Check,
     Clock3,
     Coins,
+    Gamepad2,
+    Gift,
+    Globe2,
+    Landmark,
     ListTodo,
     Lock,
     MessageSquareText,
+    Medal,
+    MousePointerClick,
+    Rocket,
     ShieldCheck,
     Sparkles,
+    Star,
     Store,
+    Target,
     TrendingUp,
+    Trophy,
+    Users,
+    Wallet,
     Zap,
 } from "lucide-react";
 
@@ -31,9 +45,9 @@ import { triviaCategories } from "../../data/triviaData";
 import useAuth from "../../hooks/useAuth";
 import { useAuthGate } from "../../context/AuthGateContext";
 
-import "./home.css";
-
 import Loader from "../../components/common/Loader";
+
+import "./home.css";
 
 const typeIcons = {
     surveys: MessageSquareText,
@@ -46,57 +60,132 @@ const triviaCategoryIcons = {
     science: Zap,
     history: Clock3,
     technology: Sparkles,
-    entertainment: Sparkles,
+    entertainment: Gamepad2,
     sports: TrendingUp,
 };
 
 const REWARD_NETWORKS = [
     {
         name: "Timewall",
-        description:
-            "Surveys, app installs and quick offers.",
+        description: "Surveys, app installs and quick activities.",
+        accent: "gold",
     },
     {
         name: "Wannads",
-        description:
-            "App trials and everyday partner offers.",
+        description: "App trials and everyday partner offers.",
+        accent: "purple",
     },
     {
         name: "CPX Research",
-        description:
-            "Paid survey panels matched to your profile.",
+        description: "Survey opportunities matched to your profile.",
+        accent: "blue",
     },
     {
         name: "TheoremReach",
-        description:
-            "Academic and market research surveys.",
+        description: "Market research and opinion surveys.",
+        accent: "green",
     },
 ];
 
 const HOW_IT_WORKS = [
     {
         number: "01",
+        icon: Users,
         title: "Create your account",
         description:
-            "Takes less than a minute, free to join.",
+            "Join Salok Earn for free and set up your member profile.",
     },
     {
         number: "02",
-        title: "Pick a live activity",
+        icon: Target,
+        title: "Choose an activity",
         description:
-            "Trivia, a task, a survey or an offerwall — your call.",
+            "Explore trivia, tasks, surveys and partner offerwalls.",
     },
     {
         number: "03",
-        title: "Complete it",
+        icon: Rocket,
+        title: "Complete and collect",
         description:
-            "Everything below is the real thing, not a mockup.",
+            "Finish eligible activities and receive Salokoins in your balance.",
     },
     {
         number: "04",
-        title: "Withdraw your reward",
+        icon: Wallet,
+        title: "Enjoy your rewards",
         description:
-            "Once you hit the minimum, cash out to your payout method.",
+            "Track your earnings and request a payout when eligible.",
+    },
+];
+
+const WAYS_TO_EARN = [
+    {
+        icon: Brain,
+        title: "Trivia and games",
+        description:
+            "Test your knowledge, play quick rounds and earn from correct answers.",
+        label: "Play and earn",
+    },
+    {
+        icon: ListTodo,
+        title: "Tasks",
+        description:
+            "Complete simple activities and discover new ways to grow your balance.",
+        label: "Complete tasks",
+    },
+    {
+        icon: MessageSquareText,
+        title: "Surveys",
+        description:
+            "Share your opinions through short surveys from research partners.",
+        label: "Share opinions",
+    },
+    {
+        icon: Store,
+        title: "Offerwalls",
+        description:
+            "Explore app trials, sign ups and partner offers in one place.",
+        label: "Explore offers",
+    },
+    {
+        icon: Gift,
+        title: "Referrals",
+        description:
+            "Invite friends and grow your rewards through the referral programme.",
+        label: "Invite friends",
+    },
+];
+
+const LEADERBOARD_PREVIEW = [
+    {
+        rank: 1,
+        username: "RewardMaster",
+        earned: "48,920",
+        badge: "Top earner",
+    },
+    {
+        rank: 2,
+        username: "TriviaQueen",
+        earned: "36,480",
+        badge: "Rising star",
+    },
+    {
+        rank: 3,
+        username: "TaskHunter",
+        earned: "29,760",
+        badge: "Active member",
+    },
+    {
+        rank: 4,
+        username: "SurveyPilot",
+        earned: "24,310",
+        badge: "Consistent",
+    },
+    {
+        rank: 5,
+        username: "OfferExplorer",
+        earned: "19,850",
+        badge: "Explorer",
     },
 ];
 
@@ -104,8 +193,158 @@ function formatReward(amount, currency) {
     return `${Number(amount).toLocaleString("en-US")} ${currency}`;
 }
 
+/*
+|--------------------------------------------------------------------------
+| Reveal
+|--------------------------------------------------------------------------
+|
+| Fades + slides its children up the first time they scroll into view,
+| then leaves them alone (no re-triggering on scroll back up/down —
+| that reads as flickery on a page this long). Falls back to showing
+| content immediately if IntersectionObserver isn't available.
+|
+*/
+
+function Reveal({
+    children,
+    as: Tag = "div",
+    className = "",
+    delay = 0,
+}) {
+    const ref = useRef(null);
+
+    const [visible, setVisible] =
+        useState(false);
+
+    useEffect(() => {
+        const node = ref.current;
+
+        if (!node) return;
+
+        if (
+            typeof IntersectionObserver ===
+            "undefined"
+        ) {
+            setVisible(true);
+
+            return;
+        }
+
+        const observer =
+            new IntersectionObserver(
+                ([entry]) => {
+                    if (
+                        entry.isIntersecting
+                    ) {
+                        setVisible(true);
+
+                        observer.disconnect();
+                    }
+                },
+                {
+                    threshold: 0.15,
+                    rootMargin:
+                        "0px 0px -60px 0px",
+                }
+            );
+
+        observer.observe(node);
+
+        return () =>
+            observer.disconnect();
+    }, []);
+
+    return (
+        <Tag
+            ref={ref}
+            className={`home-reveal ${visible
+                ? "home-reveal-visible"
+                : ""
+                } ${className}`}
+            style={
+                delay
+                    ? {
+                        "--reveal-delay": `${delay}ms`,
+                    }
+                    : undefined
+            }
+        >
+            {children}
+        </Tag>
+    );
+}
+
+/*
+|--------------------------------------------------------------------------
+| useCountUp
+|--------------------------------------------------------------------------
+|
+| Animates a number counting up from 0 to `target` with an ease-out
+| curve. Stays at 0 until `start` flips true, so stats that depend on
+| async data only start counting once the real number is known.
+|
+*/
+
+function useCountUp(
+    target,
+    { duration = 900, start = false } = {}
+) {
+    const [value, setValue] = useState(0);
+
+    useEffect(() => {
+        if (
+            !start ||
+            typeof target !== "number"
+        ) {
+            return;
+        }
+
+        let raf;
+
+        const startTime =
+            performance.now();
+
+        function tick(now) {
+            const progress = Math.min(
+                1,
+                (now - startTime) /
+                duration
+            );
+
+            const eased =
+                1 -
+                Math.pow(1 - progress, 3);
+
+            setValue(
+                Math.round(
+                    target * eased
+                )
+            );
+
+            if (progress < 1) {
+                raf =
+                    requestAnimationFrame(
+                        tick
+                    );
+            }
+        }
+
+        raf =
+            requestAnimationFrame(tick);
+
+        return () =>
+            cancelAnimationFrame(raf);
+    }, [target, start, duration]);
+
+    return value;
+}
+
 function HomePage() {
-    const { isAuthenticated, loading: authLoading } = useAuth();
+    const {
+        isAuthenticated,
+        loading: authLoading,
+    } = useAuth();
+
     const { openAuthGate } = useAuthGate();
 
     const [data, setData] = useState(null);
@@ -161,13 +400,20 @@ function HomePage() {
             .slice(0, 3);
     }, [data]);
 
-    /*
-    |--------------------------------------------------------------------------
-    | Signed-in members already have a personalized dashboard — this page
-    | is specifically the guest-facing / pre-auth homepage, so send members
-    | straight there instead of showing them a duplicate, generic view.
-    |--------------------------------------------------------------------------
-    */
+    const activitiesCount = useCountUp(
+        data?.opportunities.length ?? 0,
+        { start: !loading && Boolean(data) }
+    );
+
+    const triviaCount = useCountUp(
+        triviaCategories.length,
+        { start: true, duration: 700 }
+    );
+
+    const networksCount = useCountUp(
+        REWARD_NETWORKS.length,
+        { start: true, duration: 700 }
+    );
 
     if (!authLoading && isAuthenticated) {
         return (
@@ -178,51 +424,46 @@ function HomePage() {
         );
     }
 
-    const handleGuestAction = (options) => {
+    function handleGuestAction(options) {
         openAuthGate(options);
-    };
+    }
+
+    function handleStartEarning() {
+        handleGuestAction({
+            title: "Create your free account",
+            message:
+                "Join Salok Earn to unlock trivia, tasks, surveys, offerwalls and reward withdrawals.",
+            redirectTo: "/earn",
+        });
+    }
 
     return (
         <div className="home-page">
-            {/* =================================================
-                HERO
-               ================================================= */}
+            <section className="home-hero home-hero-premium">
+                <div className="home-hero-background-glow" />
 
-            <section className="home-hero">
                 <div className="home-hero-copy">
                     <span className="home-eyebrow">
-                        <Sparkles size={13} />
-                        LIVE PLATFORM — NOT A DEMO
+                        <Sparkles size={14} />
+                        YOUR TIME HAS VALUE
                     </span>
 
                     <h1>
-                        Everything below is
-                        <span> the real thing.</span>
+                        Turn your time into
+                        <span> real rewards.</span>
                     </h1>
 
                     <p>
-                        Salok Earn pays you for trivia,
-                        tasks, surveys and offerwalls.
-                        What you see on this page is the
-                        actual, live app — browse freely,
-                        and create a free account whenever
-                        you're ready to start collecting
-                        rewards for real.
+                        Play trivia, complete tasks, answer surveys and
+                        explore partner offers. Salok Earn brings multiple
+                        ways to earn into one simple reward experience.
                     </p>
 
                     <div className="home-hero-actions">
                         <button
                             type="button"
                             className="home-primary-button"
-                            onClick={() =>
-                                handleGuestAction({
-                                    title:
-                                        "Create a free account",
-                                    message:
-                                        "Sign up to start earning from everything you see on this page.",
-                                    redirectTo: "/earn",
-                                })
-                            }
+                            onClick={handleStartEarning}
                         >
                             Start earning free
                             <ArrowRight size={17} />
@@ -232,8 +473,72 @@ function HomePage() {
                             to="/earn"
                             className="home-secondary-action"
                         >
-                            Browse all opportunities
+                            Explore opportunities
+                            <ArrowRight size={16} />
                         </Link>
+                    </div>
+
+                    <div className="home-hero-trust-row">
+                        <span>
+                            <Check size={14} />
+                            Free to join
+                        </span>
+
+                        <span>
+                            <Check size={14} />
+                            Multiple earning options
+                        </span>
+
+                        <span>
+                            <Check size={14} />
+                            Reward tracking
+                        </span>
+                    </div>
+                </div>
+
+                <div className="home-hero-visual">
+                    <div className="home-hero-orbit orbit-one" />
+                    <div className="home-hero-orbit orbit-two" />
+
+                    <div className="home-hero-medallion">
+                        <div className="home-hero-medallion-inner">
+                            <Coins size={48} />
+                            <strong>SAK</strong>
+                            <span>Salokoins</span>
+                        </div>
+                    </div>
+
+                    <div className="home-floating-card home-floating-card-top">
+                        <div className="home-floating-icon">
+                            <TrendingUp size={18} />
+                        </div>
+
+                        <div>
+                            <span>Balance growth</span>
+                            <strong>+2,480 SAK</strong>
+                        </div>
+                    </div>
+
+                    <div className="home-floating-card home-floating-card-bottom">
+                        <div className="home-floating-icon">
+                            <Gift size={18} />
+                        </div>
+
+                        <div>
+                            <span>New reward unlocked</span>
+                            <strong>Well done</strong>
+                        </div>
+                    </div>
+
+                    <div className="home-floating-card home-floating-card-side">
+                        <div className="home-floating-icon">
+                            <Trophy size={18} />
+                        </div>
+
+                        <div>
+                            <span>Member status</span>
+                            <strong>Active</strong>
+                        </div>
                     </div>
                 </div>
 
@@ -241,81 +546,170 @@ function HomePage() {
                     <div>
                         <strong>
                             {loading || !data
-                                ? "—"
-                                : data.opportunities.length}
+                                ? "..."
+                                : activitiesCount}
                         </strong>
-                        <span>Live opportunities</span>
+                        <span>Available activities</span>
                     </div>
 
                     <div>
                         <strong>
-                            {triviaCategories.length}
+                            {triviaCount}
                         </strong>
                         <span>Trivia categories</span>
                     </div>
 
                     <div>
                         <strong>
-                            {REWARD_NETWORKS.length}+
+                            {networksCount}+
                         </strong>
-                        <span>Offerwall networks</span>
+                        <span>Partner networks</span>
+                    </div>
+
+                    <div>
+                        <strong>$1</strong>
+                        <span>Minimum withdrawal</span>
                     </div>
                 </div>
             </section>
 
-            {/* =================================================
-                HOW IT WORKS
-               ================================================= */}
-
-            <section className="home-how-it-works">
-                <div className="home-section-heading">
-                    <span className="home-section-label">
-                        HOW IT WORKS
-                    </span>
-
-                    <h2>Four steps, no surprises.</h2>
+            <Reveal as="section" className="home-welcome-strip">
+                <div className="home-welcome-icon">
+                    <Globe2 size={22} />
                 </div>
 
-                <div className="home-steps-grid">
-                    {HOW_IT_WORKS.map((step) => (
-                        <div
-                            key={step.number}
-                            className="home-step-card"
-                        >
-                            <span className="home-step-number">
-                                {step.number}
-                            </span>
-
-                            <h3>{step.title}</h3>
-                            <p>{step.description}</p>
-                        </div>
-                    ))}
+                <div>
+                    <strong>Discover your next reward</strong>
+                    <p>
+                        Browse the platform freely. When you are ready to
+                        participate, create an account and unlock the full
+                        experience.
+                    </p>
                 </div>
-            </section>
 
-            {/* =================================================
-                TRIVIA & GAMES
-               ================================================= */}
+                <button
+                    type="button"
+                    onClick={handleStartEarning}
+                >
+                    Join now
+                    <ArrowRight size={15} />
+                </button>
+            </Reveal>
 
-            <section className="home-section">
+            <Reveal as="section" className="home-section home-ways-section">
                 <div className="home-section-heading">
                     <div>
                         <span className="home-section-label">
-                            TRIVIA &amp; GAMES
+                            WAYS TO EARN
                         </span>
 
                         <h2>
-                            Answer a few questions,
-                            earn instantly.
+                            One platform.
+                            <span> Many possibilities.</span>
                         </h2>
 
                         <p>
-                            Pick a category below and play
-                            a quick round. Correct answers
-                            earn rewards on the spot —
-                            these are the same categories
-                            and questions signed-in members
-                            play.
+                            Find an earning style that fits your day.
+                            Explore different activities and build your
+                            rewards at your own pace.
+                        </p>
+                    </div>
+                </div>
+
+                <div className="home-ways-grid">
+                    {WAYS_TO_EARN.map((way) => {
+                        const Icon = way.icon;
+
+                        return (
+                            <article
+                                key={way.title}
+                                className="home-way-card"
+                            >
+                                <div className="home-way-icon">
+                                    <Icon size={23} />
+                                </div>
+
+                                <span className="home-way-label">
+                                    {way.label}
+                                </span>
+
+                                <h3>{way.title}</h3>
+
+                                <p>{way.description}</p>
+
+                                <button
+                                    type="button"
+                                    onClick={handleStartEarning}
+                                >
+                                    Explore
+                                    <ArrowRight size={14} />
+                                </button>
+                            </article>
+                        );
+                    })}
+                </div>
+            </Reveal>
+
+            <Reveal as="section" className="home-how-it-works">
+                <div className="home-section-heading">
+                    <div>
+                        <span className="home-section-label">
+                            HOW IT WORKS
+                        </span>
+
+                        <h2>
+                            Start simple.
+                            <span> Keep earning.</span>
+                        </h2>
+
+                        <p>
+                            Getting started is straightforward. Choose an
+                            activity, complete it and keep track of your
+                            progress.
+                        </p>
+                    </div>
+                </div>
+
+                <div className="home-steps-grid">
+                    {HOW_IT_WORKS.map((step) => {
+                        const Icon = step.icon;
+
+                        return (
+                            <article
+                                key={step.number}
+                                className="home-step-card"
+                            >
+                                <div className="home-step-top">
+                                    <span className="home-step-number">
+                                        {step.number}
+                                    </span>
+
+                                    <Icon size={21} />
+                                </div>
+
+                                <h3>{step.title}</h3>
+                                <p>{step.description}</p>
+                            </article>
+                        );
+                    })}
+                </div>
+            </Reveal>
+
+            <Reveal as="section" className="home-section">
+                <div className="home-section-heading">
+                    <div>
+                        <span className="home-section-label">
+                            TRIVIA AND GAMES
+                        </span>
+
+                        <h2>
+                            Challenge yourself.
+                            <span> Collect rewards.</span>
+                        </h2>
+
+                        <p>
+                            Pick a category, answer questions and enjoy
+                            quick rounds designed to make earning more fun.
                         </p>
                     </div>
 
@@ -333,9 +727,8 @@ function HomePage() {
                         .slice(0, 4)
                         .map((category) => {
                             const Icon =
-                                triviaCategoryIcons[
-                                category.id
-                                ] || Brain;
+                                triviaCategoryIcons[category.id] ||
+                                Brain;
 
                             return (
                                 <article
@@ -343,8 +736,12 @@ function HomePage() {
                                     className="home-trivia-card"
                                 >
                                     <div className="home-trivia-icon">
-                                        <Icon size={20} />
+                                        <Icon size={22} />
                                     </div>
+
+                                    <span className="home-card-kicker">
+                                        QUICK ROUND
+                                    </span>
 
                                     <h3>{category.name}</h3>
 
@@ -365,8 +762,8 @@ function HomePage() {
                                             onClick={() =>
                                                 handleGuestAction({
                                                     title:
-                                                        "Sign up to start playing Trivia",
-                                                    message: `Create a free account to play "${category.name}" and start earning rewards for correct answers.`,
+                                                        "Sign up to start playing",
+                                                    message: `Create an account to play ${category.name} trivia and earn rewards for correct answers.`,
                                                     redirectTo:
                                                         "/trivia",
                                                 })
@@ -380,30 +777,24 @@ function HomePage() {
                             );
                         })}
                 </div>
-            </section>
+            </Reveal>
 
-            {/* =================================================
-                TASKS & SURVEYS
-               ================================================= */}
-
-            <section className="home-section">
+            <Reveal as="section" className="home-section">
                 <div className="home-section-heading">
                     <div>
                         <span className="home-section-label">
-                            TASKS &amp; SURVEYS
+                            TASKS AND SURVEYS
                         </span>
 
                         <h2>
-                            Short activities,
-                            real rewards.
+                            Small activities.
+                            <span> Meaningful progress.</span>
                         </h2>
 
                         <p>
-                            Quick surveys and simple tasks
-                            that pay out once completed.
-                            Rewards, time estimates and
-                            difficulty are shown up front
-                            — no guesswork.
+                            Browse available tasks and surveys with reward
+                            amounts, estimated completion times and activity
+                            details shown clearly.
                         </p>
                     </div>
 
@@ -411,7 +802,7 @@ function HomePage() {
                         to="/earn"
                         className="home-section-link"
                     >
-                        See all opportunities
+                        View all activities
                         <ArrowRight size={15} />
                     </Link>
                 </div>
@@ -420,104 +811,84 @@ function HomePage() {
                     <div className="home-loading">
                         <Loader
                             size="md"
-                            label="Loading live opportunities..."
+                            label="Loading available activities..."
                         />
                     </div>
                 ) : (
                     <div className="home-opportunity-grid">
-                        {tasksAndSurveys.map(
-                            (opportunity) => {
-                                const Icon =
-                                    typeIcons[
-                                    opportunity.type
-                                    ] || Coins;
+                        {tasksAndSurveys.map((opportunity) => {
+                            const Icon =
+                                typeIcons[opportunity.type] || Coins;
 
-                                return (
-                                    <article
-                                        key={opportunity.id}
-                                        className="home-opportunity-card"
-                                    >
-                                        <div className="home-opportunity-top">
-                                            <div className="home-opportunity-icon">
-                                                <Icon size={18} />
-                                            </div>
-
-                                            <span>
-                                                {opportunity.type}
-                                            </span>
+                            return (
+                                <article
+                                    key={opportunity.id}
+                                    className="home-opportunity-card"
+                                >
+                                    <div className="home-opportunity-top">
+                                        <div className="home-opportunity-icon">
+                                            <Icon size={19} />
                                         </div>
 
-                                        <h3>
-                                            {opportunity.title}
-                                        </h3>
+                                        <span>
+                                            {opportunity.type}
+                                        </span>
+                                    </div>
 
-                                        <p>
-                                            {
-                                                opportunity.description
+                                    <h3>{opportunity.title}</h3>
+
+                                    <p>
+                                        {opportunity.description}
+                                    </p>
+
+                                    <div className="home-opportunity-meta">
+                                        <span>
+                                            <Clock3 size={12} />
+                                            {opportunity.estimatedMinutes}{" "}
+                                            min
+                                        </span>
+
+                                        <span>
+                                            {opportunity.difficulty}
+                                        </span>
+                                    </div>
+
+                                    <div className="home-opportunity-footer">
+                                        <div>
+                                            <span>Reward</span>
+
+                                            <strong>
+                                                +
+                                                {formatReward(
+                                                    opportunity.reward,
+                                                    opportunity.currency
+                                                )}
+                                            </strong>
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleGuestAction({
+                                                    title:
+                                                        "Unlock this activity",
+                                                    message: `Create an account to start ${opportunity.title} and collect its reward.`,
+                                                    redirectTo: `/earn/${opportunity.id}`,
+                                                })
                                             }
-                                        </p>
-
-                                        <div className="home-opportunity-meta">
-                                            <span>
-                                                <Clock3
-                                                    size={12}
-                                                />
-                                                {
-                                                    opportunity.estimatedMinutes
-                                                }{" "}
-                                                min
-                                            </span>
-
-                                            <span>
-                                                {
-                                                    opportunity.difficulty
-                                                }
-                                            </span>
-                                        </div>
-
-                                        <div className="home-opportunity-footer">
-                                            <div>
-                                                <span>
-                                                    Reward
-                                                </span>
-
-                                                <strong>
-                                                    +
-                                                    {formatReward(
-                                                        opportunity.reward,
-                                                        opportunity.currency
-                                                    )}
-                                                </strong>
-                                            </div>
-
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    handleGuestAction({
-                                                        title:
-                                                            "Sign up to start this opportunity",
-                                                        message: `Create a free account to start "${opportunity.title}" and collect the reward.`,
-                                                        redirectTo: `/earn/${opportunity.id}`,
-                                                    })
-                                                }
-                                            >
-                                                Start
-                                                <Lock size={12} />
-                                            </button>
-                                        </div>
-                                    </article>
-                                );
-                            }
-                        )}
+                                        >
+                                            Start
+                                            <Lock size={12} />
+                                        </button>
+                                    </div>
+                                </article>
+                            );
+                        })}
                     </div>
                 )}
-            </section>
+            </Reveal>
 
-            {/* =================================================
-                OFFERWALLS
-               ================================================= */}
-
-            <section className="home-section">
+            <Reveal as="section" className="home-section">
                 <div className="home-section-heading">
                     <div>
                         <span className="home-section-label">
@@ -525,16 +896,14 @@ function HomePage() {
                         </span>
 
                         <h2>
-                            Partner networks,
-                            all in one place.
+                            More partners.
+                            <span> More ways to explore.</span>
                         </h2>
 
                         <p>
-                            Offerwalls are collections of
-                            offers from trusted third-party
-                            networks — app installs, sign-ups
-                            and short surveys, all paying out
-                            through your Salok balance.
+                            Discover partner networks featuring app
+                            activities, surveys, trials and other reward
+                            opportunities.
                         </p>
                     </div>
 
@@ -552,37 +921,69 @@ function HomePage() {
                         <button
                             type="button"
                             key={network.name}
-                            className="home-network-card"
+                            className={`home-network-card network-${network.accent}`}
                             onClick={() =>
                                 handleGuestAction({
-                                    title: `Sign up to explore ${network.name}`,
+                                    title: `Explore ${network.name}`,
                                     message:
-                                        "Create a free account to open this offerwall and start earning.",
+                                        "Create a free account to open this partner network and start exploring its activities.",
                                     redirectTo: "/offerwalls",
                                 })
                             }
                         >
                             <div className="home-network-icon">
-                                <Store size={17} />
+                                <Store size={19} />
                             </div>
 
-                            <strong>{network.name}</strong>
-                            <span>{network.description}</span>
+                            <span className="home-network-name">
+                                {network.name}
+                            </span>
+
+                            <strong>
+                                Explore partner offers
+                            </strong>
+
+                            <p>{network.description}</p>
+
+                            <span className="home-network-action">
+                                View network
+                                <ArrowRight size={14} />
+                            </span>
                         </button>
                     ))}
                 </div>
 
                 {featuredOffers.length > 0 && (
                     <div className="home-featured-offers">
-                        <span className="home-featured-offers-label">
-                            EXAMPLE OFFERS LIVE RIGHT NOW
-                        </span>
+                        <div className="home-featured-heading">
+                            <div>
+                                <span className="home-section-label">
+                                    FEATURED ACTIVITIES
+                                </span>
+
+                                <h3>
+                                    Opportunities worth exploring
+                                </h3>
+                            </div>
+
+                            <Sparkles size={21} />
+                        </div>
 
                         <div className="home-featured-offers-list">
                             {featuredOffers.map((offer) => (
-                                <div
+                                <button
+                                    type="button"
                                     key={offer.id}
                                     className="home-featured-offer-row"
+                                    onClick={() =>
+                                        handleGuestAction({
+                                            title:
+                                                "Unlock this featured activity",
+                                            message:
+                                                "Create an account to explore this offer and start earning rewards.",
+                                            redirectTo: "/offerwalls",
+                                        })
+                                    }
                                 >
                                     <span>{offer.title}</span>
 
@@ -593,74 +994,302 @@ function HomePage() {
                                             offer.currency
                                         )}
                                     </strong>
-                                </div>
+
+                                    <ArrowRight size={15} />
+                                </button>
                             ))}
                         </div>
                     </div>
                 )}
-            </section>
+            </Reveal>
 
-            {/* =================================================
-                TRUST
-               ================================================= */}
+            <Reveal as="section" className="home-leaderboard-section">
+                <div className="home-section-heading">
+                    <div>
+                        <span className="home-section-label">
+                            COMMUNITY LEADERBOARD
+                        </span>
 
-            <section className="home-trust">
-                <div className="home-trust-icon">
-                    <ShieldCheck size={22} />
+                        <h2>
+                            Every activity brings you
+                            <span> closer to the top.</span>
+                        </h2>
+
+                        <p>
+                            See how active members are progressing and get
+                            inspired to begin your own reward journey.
+                        </p>
+                    </div>
+
+                    <div className="home-leaderboard-heading-icon">
+                        <Trophy size={27} />
+                    </div>
                 </div>
 
-                <div className="home-trust-copy">
-                    <h3>Built for trust</h3>
+                <div className="home-leaderboard-card">
+                    <div className="home-leaderboard-top-three">
+                        <div className="home-leaderboard-podium second">
+                            <div className="home-leaderboard-avatar">
+                                <Medal size={22} />
+                            </div>
 
-                    <div className="home-trust-list">
-                        <span>
-                            <Check size={13} />
-                            Transparent reward amounts
-                        </span>
+                            <span className="home-leaderboard-rank">
+                                2
+                            </span>
 
-                        <span>
-                            <Check size={13} />
-                            Every activity logged and trackable
-                        </span>
+                            <strong>TriviaQueen</strong>
+                            <span>36,480 SAK</span>
+                        </div>
 
+                        <div className="home-leaderboard-podium first">
+                            <div className="home-leaderboard-crown">
+                                <CrownIcon />
+                            </div>
+
+                            <div className="home-leaderboard-avatar">
+                                <Trophy size={27} />
+                            </div>
+
+                            <span className="home-leaderboard-rank">
+                                1
+                            </span>
+
+                            <strong>RewardMaster</strong>
+                            <span>48,920 SAK</span>
+                        </div>
+
+                        <div className="home-leaderboard-podium third">
+                            <div className="home-leaderboard-avatar">
+                                <Award size={22} />
+                            </div>
+
+                            <span className="home-leaderboard-rank">
+                                3
+                            </span>
+
+                            <strong>TaskHunter</strong>
+                            <span>29,760 SAK</span>
+                        </div>
+                    </div>
+
+                    <div className="home-leaderboard-list">
+                        {LEADERBOARD_PREVIEW.slice(3).map((member) => (
+                            <div
+                                key={member.rank}
+                                className="home-leaderboard-row"
+                            >
+                                <span className="home-leaderboard-row-rank">
+                                    {member.rank}
+                                </span>
+
+                                <div className="home-leaderboard-row-user">
+                                    <div className="home-leaderboard-small-avatar">
+                                        <Users size={15} />
+                                    </div>
+
+                                    <div>
+                                        <strong>{member.username}</strong>
+                                        <span>{member.badge}</span>
+                                    </div>
+                                </div>
+
+                                <strong>
+                                    {member.earned} SAK
+                                </strong>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="home-leaderboard-note">
+                        <Star size={15} />
                         <span>
-                            <Check size={13} />
-                            Multiple payout methods
+                            Leaderboard values are preview data and will
+                            connect to live member activity later.
                         </span>
                     </div>
                 </div>
-            </section>
+            </Reveal>
 
-            {/* =================================================
-                FINAL CTA
-               ================================================= */}
+            <Reveal as="section" className="home-trust">
+                <div className="home-trust-visual">
+                    <div className="home-trust-visual-circle">
+                        <ShieldCheck size={46} />
+                    </div>
+                </div>
 
-            <section className="home-final-cta">
-                <h2>Ready to make it count?</h2>
+                <div className="home-trust-copy">
+                    <span className="home-section-label">
+                        BUILT AROUND YOUR EXPERIENCE
+                    </span>
+
+                    <h2>
+                        Clear activities.
+                        <span> Visible progress.</span>
+                    </h2>
+
+                    <p>
+                        Salok Earn is designed to make every step easy to
+                        understand, from discovering an activity to tracking
+                        your rewards.
+                    </p>
+
+                    <div className="home-trust-list">
+                        <span>
+                            <Check size={14} />
+                            Clear reward information
+                        </span>
+
+                        <span>
+                            <Check size={14} />
+                            Trackable earning activity
+                        </span>
+
+                        <span>
+                            <Check size={14} />
+                            Multiple earning categories
+                        </span>
+
+                        <span>
+                            <Check size={14} />
+                            Flexible reward experience
+                        </span>
+                    </div>
+                </div>
+            </Reveal>
+
+            <Reveal as="section" className="home-final-cta">
+                <div className="home-final-cta-icon">
+                    <Rocket size={28} />
+                </div>
+
+                <span className="home-section-label">
+                    YOUR NEXT REWARD STARTS HERE
+                </span>
+
+                <h2>
+                    Ready to make your time count?
+                </h2>
 
                 <p>
-                    Create your free account and
-                    everything you just browsed
-                    starts earning for real.
+                    Join Salok Earn and discover a smarter way to play,
+                    participate and collect rewards.
                 </p>
 
                 <button
                     type="button"
                     className="home-primary-button"
-                    onClick={() =>
-                        handleGuestAction({
-                            title: "Create a free account",
-                            message:
-                                "Sign up to start earning from everything you see on this page.",
-                            redirectTo: "/earn",
-                        })
-                    }
+                    onClick={handleStartEarning}
                 >
                     Get started free
                     <ArrowRight size={17} />
                 </button>
-            </section>
+            </Reveal>
+
+            <footer className="home-footer">
+                <div className="home-footer-main">
+                    <div className="home-footer-brand">
+                        <div className="home-footer-logo">
+                            <Coins size={22} />
+                        </div>
+
+                        <strong>Salok Earn</strong>
+
+                        <p>
+                            A rewarding way to make your time count through
+                            trivia, tasks, surveys and partner activities.
+                        </p>
+                    </div>
+
+                    <div className="home-footer-column">
+                        <h3>Explore</h3>
+
+                        <Link to="/">Home</Link>
+                        <Link to="/trivia">Trivia and games</Link>
+                        <Link to="/earn">Tasks and surveys</Link>
+                        <Link to="/offerwalls">Offerwalls</Link>
+                    </div>
+
+                    <div className="home-footer-column">
+                        <h3>Account</h3>
+
+                        <button
+                            type="button"
+                            onClick={handleStartEarning}
+                        >
+                            Create account
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() =>
+                                handleGuestAction({
+                                    title: "Sign in to Salok Earn",
+                                    message:
+                                        "Sign in to access your account and continue earning.",
+                                    redirectTo: "/login",
+                                })
+                            }
+                        >
+                            Sign in
+                        </button>
+
+                        <Link to="/wallet">Wallet</Link>
+                        <Link to="/profile">Profile</Link>
+                    </div>
+
+                    <div className="home-footer-column">
+                        <h3>Why Salok Earn</h3>
+
+                        <span>
+                            <ShieldCheck size={14} />
+                            Clear reward tracking
+                        </span>
+
+                        <span>
+                            <Target size={14} />
+                            Multiple earning paths
+                        </span>
+
+                        <span>
+                            <Landmark size={14} />
+                            Reward focused design
+                        </span>
+                    </div>
+                </div>
+
+                <div className="home-footer-bottom">
+                    <span>
+                        © {new Date().getFullYear()} Salok Earn. All rights
+                        reserved.
+                    </span>
+
+                    <div>
+                        <Link to="/privacy">Privacy</Link>
+                        <Link to="/terms">Terms</Link>
+                        <Link to="/help">Help</Link>
+                    </div>
+                </div>
+            </footer>
         </div>
+    );
+}
+
+function CrownIcon() {
+    return (
+        <svg
+            width="23"
+            height="23"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            <path d="m3 7 4 4 5-7 5 7 4-4-2 12H5L3 7Z" />
+            <path d="M5 19h14" />
+        </svg>
     );
 }
 

@@ -314,6 +314,13 @@
     background: var(--color-bg);
 }
 
+/* While a drag is actively controlling the overlay's position, it
+   needs to track the pointer instantly — no easing lag — same
+   reasoning as the buttons' and docks' own dragging classes. */
+.floating-chat-overlay-dragging {
+    transition: none;
+}
+
 .floating-chat-overlay-open {
     transform: translateX(0);
 }
