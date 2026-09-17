@@ -10,6 +10,8 @@ import {
     Navigate,
 } from "react-router-dom";
 
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+
 import {
     ArrowRight,
     Award,
@@ -48,6 +50,11 @@ import { useAuthGate } from "../../context/AuthGateContext";
 import Loader from "../../components/common/Loader";
 
 import "./home.css";
+
+import trophyAnimation from "../../assets/animations/Trophy.lottie?url";
+import communityIllustration from "../../assets/illustrations/community.svg";
+import secureIllustration from "../../assets/illustrations/secure.svg";
+import coinsAnimation from "../../assets/illustrations/Coins.gif";
 
 const typeIcons = {
     surveys: MessageSquareText,
@@ -670,28 +677,60 @@ function HomePage() {
                     </div>
                 </div>
 
-                <div className="home-steps-grid">
-                    {HOW_IT_WORKS.map((step) => {
-                        const Icon = step.icon;
+                <div className="home-steps-wrap">
+                    <svg
+                        className="home-connector"
+                        viewBox="0 0 100 20"
+                        preserveAspectRatio="none"
+                        aria-hidden="true"
+                    >
+                        <path
+                            className="home-connector-track"
+                            d="M12.5,10 C20,2 30,2 37.5,10 C45,18 55,18 62.5,10 C70,2 80,2 87.5,10"
+                        />
 
-                        return (
-                            <article
-                                key={step.number}
-                                className="home-step-card"
-                            >
-                                <div className="home-step-top">
-                                    <span className="home-step-number">
+                        <path
+                            className="home-connector-line"
+                            pathLength="1"
+                            d="M12.5,10 C20,2 30,2 37.5,10 C45,18 55,18 62.5,10 C70,2 80,2 87.5,10"
+                        />
+
+                        {[12.5, 37.5, 62.5, 87.5].map((x) => (
+                            <circle
+                                key={x}
+                                className="home-connector-node"
+                                cx={x}
+                                cy="10"
+                                r="1.7"
+                            />
+                        ))}
+                    </svg>
+
+                    <div className="home-steps-grid">
+                        {HOW_IT_WORKS.map((step) => {
+                            const Icon = step.icon;
+
+                            return (
+                                <div
+                                    key={step.number}
+                                    className="home-step-node"
+                                >
+                                    <span className="home-step-badge">
                                         {step.number}
                                     </span>
 
-                                    <Icon size={21} />
-                                </div>
+                                    <article className="home-step-card">
+                                        <div className="home-step-top">
+                                            <Icon size={21} />
+                                        </div>
 
-                                <h3>{step.title}</h3>
-                                <p>{step.description}</p>
-                            </article>
-                        );
-                    })}
+                                        <h3>{step.title}</h3>
+                                        <p>{step.description}</p>
+                                    </article>
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             </Reveal>
 
@@ -1027,6 +1066,21 @@ function HomePage() {
                 </div>
 
                 <div className="home-leaderboard-card">
+                    <div
+                        className="home-leaderboard-bg-lottie"
+                        aria-hidden="true"
+                    >
+                        <DotLottieReact
+                            src={trophyAnimation}
+                            loop
+                            autoplay
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                            }}
+                        />
+                    </div>
+
                     <div className="home-leaderboard-top-three">
                         <div className="home-leaderboard-podium second">
                             <div className="home-leaderboard-avatar">
@@ -1110,8 +1164,76 @@ function HomePage() {
                 </div>
             </Reveal>
 
+            <Reveal as="section" className="home-community-section">
+                <div className="home-community-card">
+                    <div className="home-community-copy">
+                        <div className="home-community-icon">
+                            <MessageSquareText size={22} />
+                        </div>
+
+                        <span className="home-section-label">
+                            JOIN THE CONVERSATION
+                        </span>
+
+                        <h2>
+                            Chat, share tips
+                            <span> and grow together.</span>
+                        </h2>
+
+                        <p>
+                            Jump into the Salok Earn community chat to swap
+                            earning strategies, get help from other members
+                            and hear about new activities first.
+                        </p>
+
+                        <div className="home-community-stats">
+                            <div>
+                                <strong>2,400+</strong>
+                                <span>Active members</span>
+                            </div>
+
+                            <div>
+                                <strong>24/7</strong>
+                                <span>Community support</span>
+                            </div>
+                        </div>
+
+                        <button
+                            type="button"
+                            className="home-primary-button"
+                            onClick={() =>
+                                handleGuestAction({
+                                    title: "Join the community",
+                                    message:
+                                        "Create a free account to join the Salok Earn community chat.",
+                                    redirectTo: "/community",
+                                })
+                            }
+                        >
+                            Join the community chat
+                            <ArrowRight size={16} />
+                        </button>
+                    </div>
+
+                    <div className="home-community-visual">
+                        <img
+                            src={communityIllustration}
+                            alt="Members chatting in the Salok Earn community"
+                            className="home-community-illustration"
+                        />
+                    </div>
+                </div>
+            </Reveal>
+
             <Reveal as="section" className="home-trust">
                 <div className="home-trust-visual">
+                    <img
+                        src={secureIllustration}
+                        alt=""
+                        className="home-trust-bg-illustration"
+                        aria-hidden="true"
+                    />
+
                     <div className="home-trust-visual-circle">
                         <ShieldCheck size={46} />
                     </div>
@@ -1158,6 +1280,13 @@ function HomePage() {
             </Reveal>
 
             <Reveal as="section" className="home-final-cta">
+                <img
+                    src={coinsAnimation}
+                    alt=""
+                    className="home-final-cta-coins"
+                    aria-hidden="true"
+                />
+
                 <div className="home-final-cta-icon">
                     <Rocket size={28} />
                 </div>
