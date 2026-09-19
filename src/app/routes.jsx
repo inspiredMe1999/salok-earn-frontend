@@ -37,6 +37,25 @@ import ProfilePage from "../pages/user/ProfilePage";
 import SettingsPage from "../pages/user/SettingsPage";
 import SecurityPage from "../pages/user/SecurityPage";
 
+import AdminLoginPage from "../pages/auth/AdminLoginPage";
+import AdminProtectedRoute from "../components/admin/AdminProtectedRoute";
+import AdminLayout from "../layouts/AdminLayout";
+import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
+import AdminUsersPage from "../pages/admin/AdminUsersPage";
+import AdminUserDetailsPage from "../pages/admin/AdminUserDetailsPage";
+import AdminWithdrawalsPage from "../pages/admin/AdminWithdrawalsPage";
+import AdminEarningsPage from "../pages/admin/AdminEarningsPage";
+import AdminTriviaPage from "../pages/admin/AdminTriviaPage";
+import AdminCommunityPage from "../pages/admin/AdminCommunityPage";
+import AdminReferralsPage from "../pages/admin/AdminReferralsPage";
+import AdminNotificationsPage from "../pages/admin/AdminNotificationsPage";
+import AdminSettingsPage from "../pages/admin/AdminSettingsPage";
+import AdminTasksPage from "../pages/admin/AdminTasksPage";
+import AdminDevicesPage from "../pages/admin/AdminDevicesPage";
+import AdminBroadcastsPage from "../pages/admin/AdminBroadcastsPage";
+import AdminAuditPage from "../pages/admin/AdminAuditPage";
+import AdminSystemPage from "../pages/admin/AdminSystemPage";
+
 function PlaceholderPage({
     title,
 }) {
@@ -339,6 +358,77 @@ export function AppRouter() {
                                 </ProtectedRoute>
                             }
                         />
+                    </Route>
+
+                    <Route
+                        path="/admin/login"
+                        element={<AdminLoginPage />}
+                    />
+
+                    <Route element={<AdminProtectedRoute />}>
+                        <Route element={<AdminLayout />}>
+                            <Route
+                                path="/admin"
+                                element={<AdminDashboardPage />}
+                            />
+
+                            <Route
+                                path="/admin/users"
+                                element={<AdminUsersPage />}
+                            />
+                            <Route
+                                path="/admin/users/:uid"
+                                element={<AdminUserDetailsPage />}
+                            />
+                            <Route
+                                path="/admin/withdrawals"
+                                element={<AdminWithdrawalsPage />}
+                            />
+                            <Route
+                                path="/admin/earnings"
+                                element={<AdminEarningsPage />}
+                            />
+                            <Route
+                                path="/admin/trivia"
+                                element={<AdminTriviaPage />}
+                            />
+                            <Route
+                                path="/admin/community"
+                                element={<AdminCommunityPage />}
+                            />
+                            <Route
+                                path="/admin/referrals"
+                                element={<AdminReferralsPage />}
+                            />
+                            <Route
+                                path="/admin/notifications"
+                                element={<AdminNotificationsPage />}
+                            />
+                            <Route
+                                path="/admin/tasks"
+                                element={<AdminTasksPage />}
+                            />
+                            <Route
+                                path="/admin/devices"
+                                element={<AdminDevicesPage />}
+                            />
+                            <Route
+                                path="/admin/settings"
+                                element={<AdminSettingsPage />}
+                            />
+                            <Route
+                                path="/admin/broadcasts"
+                                element={<AdminBroadcastsPage />}
+                            />
+                            <Route
+                                path="/admin/audit"
+                                element={<AdminAuditPage />}
+                            />
+                            <Route
+                                path="/admin/system"
+                                element={<AdminSystemPage />}
+                            />
+                        </Route>
                     </Route>
                 </Routes>
 

@@ -1,0 +1,296 @@
+export const adminNotificationSummary = {
+    totalNotifications: 28,
+    activeNotifications: 21,
+    draftNotifications: 4,
+    disabledNotifications: 3,
+    totalRecipients: 18420,
+    totalRead: 13680,
+    unreadNotifications: 4740,
+};
+
+export const adminNotificationTypes = [
+    {
+        id: "system",
+        label: "System",
+    },
+    {
+        id: "earning",
+        label: "Earnings",
+    },
+    {
+        id: "withdrawal",
+        label: "Withdrawals",
+    },
+    {
+        id: "trivia",
+        label: "Trivia",
+    },
+    {
+        id: "community",
+        label: "Community",
+    },
+    {
+        id: "promotion",
+        label: "Promotion",
+    },
+];
+
+export const adminNotifications = [
+    {
+        id: "notification-001",
+        title: "Welcome to Salok Earn",
+        message:
+            "Welcome to Salok Earn. Explore offerwalls, trivia and other ways to earn SAK.",
+        type: "system",
+        status: "active",
+        audience: "all",
+        recipients: 18420,
+        readCount: 15620,
+        unreadCount: 2800,
+        createdAt: "2026-09-01T08:00:00.000Z",
+        updatedAt: "2026-09-01T08:00:00.000Z",
+        scheduledAt: null,
+        sentAt: "2026-09-01T08:05:00.000Z",
+        createdBy: "Admin",
+    },
+
+    {
+        id: "notification-002",
+        title: "Your withdrawal has been processed",
+        message:
+            "Your recent withdrawal request has been processed successfully.",
+        type: "withdrawal",
+        status: "active",
+        audience: "withdrawal_users",
+        recipients: 248,
+        readCount: 221,
+        unreadCount: 27,
+        createdAt: "2026-09-03T10:15:00.000Z",
+        updatedAt: "2026-09-03T10:15:00.000Z",
+        scheduledAt: null,
+        sentAt: "2026-09-03T10:20:00.000Z",
+        createdBy: "Admin",
+    },
+
+    {
+        id: "notification-003",
+        title: "New trivia questions available",
+        message:
+            "Fresh trivia questions are now available. Test your knowledge and earn SAK.",
+        type: "trivia",
+        status: "active",
+        audience: "all",
+        recipients: 18420,
+        readCount: 12140,
+        unreadCount: 6280,
+        createdAt: "2026-09-05T07:30:00.000Z",
+        updatedAt: "2026-09-05T07:30:00.000Z",
+        scheduledAt: null,
+        sentAt: "2026-09-05T07:35:00.000Z",
+        createdBy: "Admin",
+    },
+
+    {
+        id: "notification-004",
+        title: "Referral milestone bonus",
+        message:
+            "Invite more users and unlock additional referral milestone bonuses.",
+        type: "promotion",
+        status: "active",
+        audience: "active_users",
+        recipients: 12380,
+        readCount: 8640,
+        unreadCount: 3740,
+        createdAt: "2026-09-06T12:00:00.000Z",
+        updatedAt: "2026-09-06T12:00:00.000Z",
+        scheduledAt: null,
+        sentAt: "2026-09-06T12:05:00.000Z",
+        createdBy: "Admin",
+    },
+
+    {
+        id: "notification-005",
+        title: "Your referral earned you SAK",
+        message:
+            "One of your referrals has completed the required activity. Your reward has been added.",
+        type: "earning",
+        status: "active",
+        audience: "referrers",
+        recipients: 936,
+        readCount: 720,
+        unreadCount: 216,
+        createdAt: "2026-09-08T09:20:00.000Z",
+        updatedAt: "2026-09-08T09:20:00.000Z",
+        scheduledAt: null,
+        sentAt: "2026-09-08T09:22:00.000Z",
+        createdBy: "Admin",
+    },
+
+    {
+        id: "notification-006",
+        title: "Community guidelines reminder",
+        message:
+            "Please keep the Salok Earn community respectful, helpful and safe for everyone.",
+        type: "community",
+        status: "active",
+        audience: "all",
+        recipients: 18420,
+        readCount: 9450,
+        unreadCount: 8970,
+        createdAt: "2026-09-09T15:00:00.000Z",
+        updatedAt: "2026-09-09T15:00:00.000Z",
+        scheduledAt: null,
+        sentAt: "2026-09-09T15:05:00.000Z",
+        createdBy: "Admin",
+    },
+
+    {
+        id: "notification-007",
+        title: "Scheduled maintenance",
+        message:
+            "Some Salok Earn services may be temporarily unavailable during scheduled maintenance.",
+        type: "system",
+        status: "scheduled",
+        audience: "all",
+        recipients: 18420,
+        readCount: 0,
+        unreadCount: 0,
+        createdAt: "2026-09-10T08:30:00.000Z",
+        updatedAt: "2026-09-10T08:45:00.000Z",
+        scheduledAt: "2026-09-20T02:00:00.000Z",
+        sentAt: null,
+        createdBy: "Admin",
+    },
+
+    {
+        id: "notification-008",
+        title: "New earning opportunities",
+        message:
+            "New surveys and offers have been added to the Earn section.",
+        type: "earning",
+        status: "active",
+        audience: "active_users",
+        recipients: 12380,
+        readCount: 10120,
+        unreadCount: 2260,
+        createdAt: "2026-09-11T11:10:00.000Z",
+        updatedAt: "2026-09-11T11:10:00.000Z",
+        scheduledAt: null,
+        sentAt: "2026-09-11T11:15:00.000Z",
+        createdBy: "Admin",
+    },
+
+    {
+        id: "notification-009",
+        title: "Weekend earning challenge",
+        message:
+            "Complete selected earning activities this weekend and discover additional rewards.",
+        type: "promotion",
+        status: "draft",
+        audience: "all",
+        recipients: 0,
+        readCount: 0,
+        unreadCount: 0,
+        createdAt: "2026-09-12T14:00:00.000Z",
+        updatedAt: "2026-09-12T14:30:00.000Z",
+        scheduledAt: null,
+        sentAt: null,
+        createdBy: "Admin",
+    },
+
+    {
+        id: "notification-010",
+        title: "Trivia energy restored",
+        message:
+            "Your trivia energy has been restored. You can continue playing now.",
+        type: "trivia",
+        status: "disabled",
+        audience: "trivia_users",
+        recipients: 4200,
+        readCount: 3180,
+        unreadCount: 1020,
+        createdAt: "2026-09-13T08:40:00.000Z",
+        updatedAt: "2026-09-13T08:40:00.000Z",
+        scheduledAt: null,
+        sentAt: "2026-09-13T08:45:00.000Z",
+        createdBy: "Admin",
+    },
+
+    {
+        id: "notification-011",
+        title: "Withdrawal minimum updated",
+        message:
+            "Please review the current withdrawal minimum before submitting a new request.",
+        type: "withdrawal",
+        status: "draft",
+        audience: "wallet_users",
+        recipients: 0,
+        readCount: 0,
+        unreadCount: 0,
+        createdAt: "2026-09-14T10:00:00.000Z",
+        updatedAt: "2026-09-14T10:20:00.000Z",
+        scheduledAt: null,
+        sentAt: null,
+        createdBy: "Admin",
+    },
+
+    {
+        id: "notification-012",
+        title: "Community feature update",
+        message:
+            "New community improvements are being prepared to make conversations easier to follow.",
+        type: "community",
+        status: "disabled",
+        audience: "all",
+        recipients: 18420,
+        readCount: 7100,
+        unreadCount: 11320,
+        createdAt: "2026-09-14T16:00:00.000Z",
+        updatedAt: "2026-09-14T16:00:00.000Z",
+        scheduledAt: null,
+        sentAt: "2026-09-14T16:05:00.000Z",
+        createdBy: "Admin",
+    },
+
+    {
+        id: "notification-013",
+        title: "Referral system update",
+        message:
+            "Referral tracking improvements are being introduced to improve reward accuracy.",
+        type: "system",
+        status: "draft",
+        audience: "referrers",
+        recipients: 0,
+        readCount: 0,
+        unreadCount: 0,
+        createdAt: "2026-09-15T09:00:00.000Z",
+        updatedAt: "2026-09-15T09:10:00.000Z",
+        scheduledAt: null,
+        sentAt: null,
+        createdBy: "Admin",
+    },
+
+    {
+        id: "notification-014",
+        title: "Earn more with Salok Earn",
+        message:
+            "Explore today's available earning opportunities and keep building your SAK balance.",
+        type: "promotion",
+        status: "disabled",
+        audience: "active_users",
+        recipients: 12380,
+        readCount: 8460,
+        unreadCount: 3920,
+        createdAt: "2026-09-15T13:00:00.000Z",
+        updatedAt: "2026-09-15T13:00:00.000Z",
+        scheduledAt: null,
+        sentAt: "2026-09-15T13:05:00.000Z",
+        createdBy: "Admin",
+    },
+];
+
+export const adminNotificationPageData = {
+    summary: adminNotificationSummary,
+    types: adminNotificationTypes,
+    notifications: adminNotifications,
+};
