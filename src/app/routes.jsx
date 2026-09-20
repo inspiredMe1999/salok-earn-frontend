@@ -2,6 +2,7 @@ import {
     BrowserRouter,
     Routes,
     Route,
+    useLocation,
 } from "react-router-dom";
 
 import LoginPage from "../pages/auth/LoginPage";
@@ -87,6 +88,20 @@ function PlaceholderPage({
             </div>
         </div>
     );
+}
+
+function GlobalFloatingChat() {
+    const location = useLocation();
+
+    const isAdminRoute =
+        location.pathname === "/admin" ||
+        location.pathname.startsWith("/admin/");
+
+    if (isAdminRoute) {
+        return null;
+    }
+
+    return <FloatingChat />;
 }
 
 export function AppRouter() {
@@ -442,7 +457,7 @@ export function AppRouter() {
                     check, so guests get the same modal used elsewhere.
                    ------------------------------------------------- */}
 
-                <FloatingChat />
+                <GlobalFloatingChat />
 
                 <AuthGateModal />
             </AuthGateProvider>

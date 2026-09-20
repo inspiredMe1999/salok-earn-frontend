@@ -1,96 +1,133 @@
 import {
     Activity,
     BarChart3,
+    Bell,
+    Brain,
     ClipboardList,
     FileText,
-    Flag,
     LayoutDashboard,
+    MessageSquare,
     MonitorSmartphone,
+    Server,
     Settings,
     ShieldCheck,
     Users,
-    Brain,
     Wallet,
-    MessageSquare,
-    Bell,
-    Server,
     X,
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
 
+import logo from "../../assets/brand/salok-earn-logo.png";
+
 import "./AdminLayout.css";
+
+/*
+|--------------------------------------------------------------------------
+| Navigation groups
+|--------------------------------------------------------------------------
+|
+| Grouped so a 14-item list reads as a handful of short, scannable
+| sections instead of one long undifferentiated list — this also makes
+| the sidebar naturally scrollable in chunks on short/mobile viewports.
+|
+*/
 
 const adminNavigation = [
     {
-        label: "Overview",
-        path: "/admin",
-        icon: LayoutDashboard,
+        section: "Menu",
+        items: [
+            {
+                label: "Overview",
+                path: "/admin",
+                icon: LayoutDashboard,
+            },
+        ],
     },
     {
-        label: "Users",
-        path: "/admin/users",
-        icon: Users,
+        section: "Management",
+        items: [
+            {
+                label: "Users",
+                path: "/admin/users",
+                icon: Users,
+            },
+            {
+                label: "Devices & Fraud",
+                path: "/admin/devices",
+                icon: MonitorSmartphone,
+            },
+            {
+                label: "Withdrawals",
+                path: "/admin/withdrawals",
+                icon: Wallet,
+            },
+            {
+                label: "Earnings",
+                path: "/admin/earnings",
+                icon: BarChart3,
+            },
+        ],
     },
     {
-        label: "Devices & Fraud",
-        path: "/admin/devices",
-        icon: MonitorSmartphone,
+        section: "Engagement",
+        items: [
+            {
+                label: "Tasks",
+                path: "/admin/tasks",
+                icon: ClipboardList,
+            },
+            {
+                label: "Trivia",
+                path: "/admin/trivia",
+                icon: Brain,
+            },
+            {
+                label: "Community",
+                path: "/admin/community",
+                icon: MessageSquare,
+            },
+            {
+                label: "Referrals",
+                path: "/admin/referrals",
+                icon: Users,
+            },
+        ],
     },
     {
-        label: "Withdrawals",
-        path: "/admin/withdrawals",
-        icon: Wallet,
+        section: "Communications",
+        items: [
+            {
+                label: "Notifications",
+                path: "/admin/notifications",
+                icon: Bell,
+            },
+            {
+                label: "Broadcasts",
+                path: "/admin/broadcasts",
+                icon: FileText,
+            },
+        ],
     },
     {
-        label: "Earnings",
-        path: "/admin/earnings",
-        icon: BarChart3,
-    },
-    {
-        label: "Tasks",
-        path: "/admin/tasks",
-        icon: ClipboardList,
-    },
-    {
-        label: "Trivia",
-        icon: Brain,
-        path: "/admin/trivia",
-    },
-    {
-        label: "Community",
-        icon: MessageSquare,
-        path: "/admin/community",
-    },
-    {
-        label: "Referrals",
-        icon: Users,
-        path: "/admin/referrals",
-    },
-    {
-        label: "Notifications",
-        icon: Bell,
-        path: "/admin/notifications",
-    },
-    {
-        label: "Broadcasts",
-        path: "/admin/broadcasts",
-        icon: FileText,
-    },
-    {
-        label: "Audit Logs",
-        path: "/admin/audit",
-        icon: Activity,
-    },
-    {
-        label: "Settings",
-        icon: Settings,
-        path: "/admin/settings",
-    },
-    {
-        label: "System",
-        path: "/admin/system",
-        icon: Server,
+        section: "System",
+        items: [
+            {
+                label: "Audit Logs",
+                path: "/admin/audit",
+                icon: Activity,
+            },
+            {
+                label: "Settings",
+                path: "/admin/settings",
+                icon: Settings,
+            },
+            {
+                label: "System",
+                path: "/admin/system",
+                icon: Server,
+            },
+        ],
     },
 ];
 
@@ -102,9 +139,11 @@ function AdminSidebar({ isOpen, onClose }) {
         >
             <div className="admin-sidebar-header">
                 <div className="admin-brand">
-                    <div className="admin-brand-icon">
-                        <ShieldCheck size={22} />
-                    </div>
+                    <img
+                        src={logo}
+                        alt="Salok Earn"
+                        className="admin-brand-icon"
+                    />
 
                     <div>
                         <strong>Salok Earn</strong>
@@ -122,33 +161,48 @@ function AdminSidebar({ isOpen, onClose }) {
                 </button>
             </div>
 
-            <div className="admin-sidebar-label">
-                Management
+            {/* -------------------------------------------------
+                Only this region scrolls — the brand header above
+                and the security badge below stay put, so a long
+                nav list never gets clipped on short viewports.
+               ------------------------------------------------- */}
+
+            <div className="admin-sidebar-scroll">
+                {adminNavigation.map((group) => (
+                    <div
+                        className="admin-nav-group"
+                        key={group.section}
+                    >
+                        <div className="admin-sidebar-label">
+                            {group.section}
+                        </div>
+
+                        <nav className="admin-navigation">
+                            {group.items.map((item) => {
+                                const Icon = item.icon;
+
+                                return (
+                                    <NavLink
+                                        key={item.path}
+                                        to={item.path}
+                                        end={item.path === "/admin"}
+                                        onClick={onClose}
+                                        className={({ isActive }) =>
+                                            `admin-nav-link ${isActive
+                                                ? "active"
+                                                : ""
+                                            }`
+                                        }
+                                    >
+                                        <Icon size={18} />
+                                        <span>{item.label}</span>
+                                    </NavLink>
+                                );
+                            })}
+                        </nav>
+                    </div>
+                ))}
             </div>
-
-            <nav className="admin-navigation">
-                {adminNavigation.map((item) => {
-                    const Icon = item.icon;
-
-                    return (
-                        <NavLink
-                            key={item.path}
-                            to={item.path}
-                            end={item.path === "/admin"}
-                            onClick={onClose}
-                            className={({ isActive }) =>
-                                `admin-nav-link ${isActive
-                                    ? "active"
-                                    : ""
-                                }`
-                            }
-                        >
-                            <Icon size={18} />
-                            <span>{item.label}</span>
-                        </NavLink>
-                    );
-                })}
-            </nav>
 
             <div className="admin-sidebar-footer">
                 <div className="admin-security-badge">

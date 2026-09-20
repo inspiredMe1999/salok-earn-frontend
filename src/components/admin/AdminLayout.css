@@ -12,6 +12,7 @@
     display: flex;
     flex-direction: column;
     width: 265px;
+    overflow: hidden;
     border-right: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
     background: var(--bg-card, #11182b);
     transition: transform 0.25s ease;
@@ -22,6 +23,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    flex-shrink: 0;
     padding: 24px 20px;
     border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
 }
@@ -30,16 +32,15 @@
     display: flex;
     align-items: center;
     gap: 11px;
+    min-width: 0;
 }
 
 .admin-brand-icon {
-    display: grid;
-    place-items: center;
+    display: block;
+    flex-shrink: 0;
     width: 42px;
     height: 42px;
-    color: #17130a;
-    background: linear-gradient(135deg, #f4d27c, #c99532);
-    border-radius: 13px;
+    object-fit: contain;
 }
 
 .admin-brand strong,
@@ -48,6 +49,9 @@
 }
 
 .admin-brand strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-size: 0.98rem;
 }
 
@@ -62,6 +66,7 @@
 .admin-icon-button {
     display: grid;
     place-items: center;
+    flex-shrink: 0;
     border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
     color: var(--text-secondary, #aab2c8);
     background: transparent;
@@ -75,13 +80,62 @@
     height: 34px;
 }
 
+/*
+|--------------------------------------------------------------------------
+| Scrollable nav region
+|--------------------------------------------------------------------------
+|
+| This is the fix for the sidebar clipping navigation on short/mobile
+| viewports: the header above and the footer badge below are
+| flex-shrink: 0 (fixed), and this region is the only thing that grows
+| and scrolls. `min-height: 0` is required here — without it a flex
+| child defaults to min-height: auto, which stops it from ever
+| shrinking below its content size, and overflow-y: auto silently does
+| nothing.
+|--------------------------------------------------------------------------
+*/
+
+.admin-sidebar-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+.admin-sidebar-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.admin-sidebar-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.admin-sidebar-scroll::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.admin-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.28);
+}
+
+.admin-nav-group + .admin-nav-group {
+    margin-top: 6px;
+}
+
 .admin-sidebar-label {
-    padding: 25px 22px 12px;
+    padding: 22px 22px 10px;
     color: var(--text-muted, #8993aa);
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
+}
+
+.admin-nav-group:first-child .admin-sidebar-label {
+    padding-top: 16px;
 }
 
 .admin-navigation {
@@ -102,6 +156,12 @@
     transition: background 0.2s ease, color 0.2s ease;
 }
 
+.admin-nav-link span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .admin-nav-link.active {
     color: #17130a;
     background: linear-gradient(135deg, #f4d27c, #c99532);
@@ -114,8 +174,9 @@
 }
 
 .admin-sidebar-footer {
-    margin-top: auto;
+    flex-shrink: 0;
     padding: 18px;
+    border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
 }
 
 .admin-security-badge {
@@ -147,7 +208,14 @@
 .admin-main {
     min-width: 0;
     width: 100%;
+    height: 100vh;
     margin-left: 265px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    /* iOS momentum scrolling for the independent scroll pane */
+    -webkit-overflow-scrolling: touch;
 }
 
 .admin-header {
@@ -155,6 +223,7 @@
     top: 0;
     z-index: 50;
     display: flex;
+    flex-wrap: nowrap;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
@@ -172,28 +241,42 @@
 }
 
 .admin-header-left {
+    min-width: 0;
+    flex: 1;
     gap: 14px;
+}
+
+.admin-header-left > div {
+    min-width: 0;
 }
 
 .admin-header-label {
     display: block;
     margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     color: var(--text-muted, #8993aa);
     font-size: 0.72rem;
 }
 
 .admin-header h1 {
     margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-size: 1.25rem;
 }
 
 .admin-menu-button {
     display: none;
+    flex-shrink: 0;
     width: 38px;
     height: 38px;
 }
 
 .admin-header-actions {
+    flex-shrink: 0;
     gap: 14px;
 }
 
@@ -216,6 +299,7 @@
 
 .admin-user-menu {
     position: relative;
+    flex-shrink: 0;
 }
 
 .admin-user-trigger {
@@ -231,6 +315,7 @@
 .admin-user-avatar {
     display: grid;
     place-items: center;
+    flex-shrink: 0;
     width: 36px;
     height: 36px;
     color: #17130a;
@@ -242,10 +327,14 @@
 
 .admin-user-details {
     display: grid;
+    min-width: 0;
     text-align: left;
 }
 
 .admin-user-details strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-size: 0.78rem;
 }
 
@@ -346,7 +435,12 @@
 
 @media (max-width: 700px) {
     .admin-header {
+        gap: 12px;
         padding: 14px 18px;
+    }
+
+    .admin-header-actions {
+        gap: 8px;
     }
 
     .admin-content {
@@ -356,9 +450,25 @@
     .admin-user-details {
         display: none;
     }
+
+    .admin-user-trigger {
+        padding: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-sidebar {
+        width: 82vw;
+        max-width: 300px;
+    }
 }
 
 @media (max-width: 430px) {
+    .admin-header {
+        gap: 10px;
+        padding: 12px 14px;
+    }
+
     .admin-header h1 {
         font-size: 1.05rem;
     }
@@ -368,6 +478,11 @@
     }
 
     .admin-header-actions {
-        gap: 8px;
+        gap: 6px;
+    }
+
+    .admin-icon-button {
+        width: 36px;
+        height: 36px;
     }
 }
