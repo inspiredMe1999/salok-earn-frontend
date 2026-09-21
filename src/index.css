@@ -906,6 +906,19 @@ ol {
     }
 }
 
+@media (max-width: 820px) {
+  html, body {
+    height: auto;
+    overflow-x: hidden;
+  }
+
+  body *:has(.au) {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+
 
 /* =========================================================
    REDUCED MOTION

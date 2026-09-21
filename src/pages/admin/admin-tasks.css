@@ -1,233 +1,290 @@
+/* =========================================================
+   Admin Tasks — Premium Task Studio
+   ========================================================= */
 .admin-tasks-page {
-    width: 100%;
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 8px 0 40px;
+    --task-gold: #d5a43a;
+    --task-gold-soft: rgba(213, 164, 58, 0.11);
+    --task-success: #229b68;
+    --task-warning: #c9911c;
+    --task-danger: #d45e66;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-bottom: 28px;
 }
 
+.admin-tasks-page > * {
+    min-width: 0;
+}
+
+/* -------------------- Heading -------------------- */
 .admin-tasks-header {
     display: flex;
-    align-items: flex-start;
+    align-items: flex-end;
     justify-content: space-between;
-    gap: 24px;
-    margin-bottom: 22px;
+    gap: 20px;
+    padding: 2px 1px 1px;
 }
 
-.admin-tasks-header h1 {
-    margin: 5px 0 7px;
-    font-size: clamp(28px, 3vw, 38px);
-    line-height: 1.1;
-    letter-spacing: -0.03em;
+.admin-tasks-header > div:first-child {
+    min-width: 0;
 }
 
-.admin-tasks-header p {
-    margin: 0;
-    color: var(--text-secondary, #8f96a3);
-    font-size: 14px;
-}
-
-.admin-tasks-header-actions {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.admin-page-eyebrow {
-    color: var(--accent, #d7a83d);
-    font-size: 11px;
-    font-weight: 700;
+.admin-tasks-header .admin-page-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--task-gold);
+    font-size: 9px;
+    font-weight: 800;
     letter-spacing: 0.13em;
     text-transform: uppercase;
 }
 
+.admin-tasks-header h1 {
+    margin: 8px 0 6px;
+    color: var(--text-primary);
+    font-size: clamp(25px, 3vw, 35px);
+    line-height: 1.06;
+    letter-spacing: -0.035em;
+}
+
+.admin-tasks-header p {
+    max-width: 720px;
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+.admin-tasks-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+}
+
+.admin-task-refresh-button,
 .admin-task-primary-button,
-.admin-task-secondary-button,
-.admin-task-refresh-button {
-    min-height: 42px;
-    border-radius: 10px;
-    padding: 0 15px;
-    border: 1px solid transparent;
+.admin-task-secondary-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 7px;
+    min-height: 39px;
+    padding: 0 12px;
+    border-radius: 10px;
     font: inherit;
-    font-size: 13px;
-    font-weight: 700;
+    font-size: 10px;
+    font-weight: 800;
     cursor: pointer;
-    transition:
-        transform 0.18s ease,
-        border-color 0.18s ease,
-        background 0.18s ease;
+}
+
+.admin-task-refresh-button {
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    background: var(--bg-card);
+}
+
+.admin-task-refresh-button:hover {
+    border-color: rgba(213, 164, 58, 0.35);
+    background: var(--bg-secondary);
+}
+
+.admin-task-refresh-button:disabled,
+.admin-task-primary-button:disabled,
+.admin-task-secondary-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.62;
 }
 
 .admin-task-primary-button {
-    background: var(--accent, #d7a83d);
-    color: #111;
+    border: 1px solid rgba(213, 164, 58, 0.38);
+    color: #181208;
+    background: linear-gradient(135deg, #e3c16d, #c99528);
+    box-shadow: 0 8px 22px rgba(213, 164, 58, 0.13);
+    transition: transform 0.18s ease;
 }
 
-.admin-task-primary-button:hover {
+.admin-task-primary-button:hover:not(:disabled) {
     transform: translateY(-1px);
 }
 
-.admin-task-secondary-button,
-.admin-task-refresh-button {
-    background: var(--surface, rgba(255, 255, 255, 0.04));
-    border-color: var(--border, rgba(255, 255, 255, 0.1));
-    color: var(--text-primary, #fff);
+.admin-task-secondary-button {
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    background: var(--bg-card);
 }
 
-.admin-task-secondary-button:hover,
-.admin-task-refresh-button:hover {
-    border-color: rgba(215, 168, 61, 0.45);
+.admin-task-secondary-button:hover:not(:disabled) {
+    background: var(--bg-secondary);
 }
 
-.admin-task-primary-button:disabled,
-.admin-task-secondary-button:disabled,
-.admin-task-refresh-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
+/* -------------------- Notice -------------------- */
 .admin-task-notice {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    padding: 14px 16px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(215, 168, 61, 0.22);
-    border-radius: 13px;
-    background: rgba(215, 168, 61, 0.06);
-    color: var(--text-secondary, #a7adb8);
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid rgba(213, 164, 58, 0.18);
+    border-radius: 14px;
+    background: linear-gradient(90deg, rgba(213, 164, 58, 0.065), transparent);
 }
 
 .admin-task-notice svg {
     flex: 0 0 auto;
-    color: var(--accent, #d7a83d);
     margin-top: 1px;
+    color: var(--task-gold);
 }
 
 .admin-task-notice div {
     display: grid;
-    gap: 3px;
+    gap: 2px;
 }
 
 .admin-task-notice strong {
-    color: var(--text-primary, #fff);
-    font-size: 13px;
+    color: var(--text-primary);
+    font-size: 10px;
 }
 
 .admin-task-notice span {
-    font-size: 12px;
-    line-height: 1.5;
+    color: var(--text-secondary);
+    font-size: 9px;
+    line-height: 1.55;
 }
 
+/* -------------------- Stat cards -------------------- */
 .admin-task-stat-grid {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 13px;
-    margin-bottom: 20px;
+    gap: 12px;
 }
 
 .admin-task-stat-card {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 12px;
-    min-height: 90px;
-    padding: 16px;
-    border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
-    border-radius: 14px;
-    background: var(--card, rgba(255, 255, 255, 0.035));
+    gap: 10px;
+    min-width: 0;
+    min-height: 103px;
+    overflow: hidden;
+    padding: 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-card, 0 10px 28px rgba(0, 0, 0, 0.04));
+    transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.admin-task-stat-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(213, 164, 58, 0.25);
+}
+
+.admin-task-stat-card::after {
+    content: "";
+    position: absolute;
+    right: -30px;
+    bottom: -40px;
+    width: 95px;
+    height: 95px;
+    border-radius: 50%;
+    background: rgba(213, 164, 58, 0.045);
+    pointer-events: none;
 }
 
 .admin-task-stat-icon {
-    width: 39px;
-    height: 39px;
-    flex: 0 0 39px;
+    position: relative;
+    z-index: 1;
     display: grid;
     place-items: center;
-    border-radius: 11px;
-    background: rgba(215, 168, 61, 0.1);
-    color: var(--accent, #d7a83d);
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    color: var(--task-gold);
+    background: var(--task-gold-soft);
 }
 
-.admin-task-stat-card div:last-child {
+.admin-task-stat-card > div:last-child {
+    position: relative;
+    z-index: 1;
     min-width: 0;
 }
 
-.admin-task-stat-card span {
+.admin-task-stat-card span:not(.admin-task-stat-icon) {
     display: block;
-    margin-bottom: 5px;
-    color: var(--text-secondary, #8f96a3);
-    font-size: 11px;
+    color: var(--text-secondary);
+    font-size: 9px;
+    font-weight: 700;
 }
 
 .admin-task-stat-card strong {
     display: block;
-    color: var(--text-primary, #fff);
-    font-size: 19px;
-    line-height: 1.1;
+    margin-top: 7px;
+    color: var(--text-primary);
+    font-size: 22px;
+    line-height: 1;
+    letter-spacing: -0.035em;
 }
 
+/* -------------------- Toolbar -------------------- */
 .admin-task-toolbar {
     display: grid;
-    grid-template-columns: minmax(240px, 1fr) 180px 190px;
-    gap: 10px;
-    margin-bottom: 14px;
+    grid-template-columns: minmax(250px, 1fr) minmax(155px, auto) minmax(155px, auto);
+    gap: 9px;
+    padding: 11px;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: var(--bg-card);
 }
 
 .admin-task-search,
 .admin-task-filter {
-    min-height: 44px;
-    position: relative;
     display: flex;
     align-items: center;
-    border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
-    border-radius: 11px;
-    background: var(--surface, rgba(255, 255, 255, 0.035));
+    min-width: 0;
+    min-height: 42px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--bg-secondary, rgba(127, 127, 127, 0.035));
 }
 
 .admin-task-search {
-    padding: 0 13px;
-    gap: 9px;
+    gap: 8px;
+    padding: 0 11px;
+    color: var(--text-secondary);
 }
 
-.admin-task-search svg {
-    color: var(--text-secondary, #8f96a3);
-    flex: 0 0 auto;
+.admin-task-search:focus-within,
+.admin-task-filter:focus-within {
+    border-color: rgba(213, 164, 58, 0.4);
+    box-shadow: 0 0 0 3px rgba(213, 164, 58, 0.055);
 }
 
 .admin-task-search input,
 .admin-task-filter select {
     width: 100%;
-    height: 42px;
+    min-width: 0;
     border: 0;
     outline: 0;
+    color: var(--text-primary);
     background: transparent;
-    color: var(--text-primary, #fff);
     font: inherit;
-    font-size: 13px;
+    font-size: 10px;
 }
 
 .admin-task-search input::placeholder {
-    color: var(--text-secondary, #777f8d);
+    color: var(--text-secondary);
+    opacity: 0.76;
 }
 
 .admin-task-filter {
-    padding-right: 11px;
+    padding: 0 10px;
 }
 
 .admin-task-filter select {
-    appearance: none;
-    padding: 0 35px 0 12px;
     cursor: pointer;
-}
-
-.admin-task-filter svg {
-    position: absolute;
-    right: 12px;
-    pointer-events: none;
-    color: var(--text-secondary, #8f96a3);
 }
 
 .admin-task-filter option {
@@ -235,29 +292,33 @@
     background: #fff;
 }
 
+/* -------------------- Table -------------------- */
 .admin-task-table-card {
     overflow: hidden;
-    border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
-    border-radius: 15px;
-    background: var(--card, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--border-color);
+    border-radius: 19px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-card, 0 12px 30px rgba(0, 0, 0, 0.04));
 }
 
 .admin-task-table-header {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
-    padding: 17px 18px;
-    border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+    gap: 15px;
+    padding: 19px 20px 15px;
 }
 
 .admin-task-table-header h2 {
     margin: 0 0 4px;
-    font-size: 15px;
+    color: var(--text-primary);
+    font-size: 18px;
+    letter-spacing: -0.025em;
 }
 
 .admin-task-table-header span {
-    color: var(--text-secondary, #8f96a3);
-    font-size: 11px;
+    color: var(--text-secondary);
+    font-size: 9px;
 }
 
 .admin-task-table-wrap {
@@ -267,28 +328,31 @@
 
 .admin-task-table-wrap table {
     width: 100%;
-    min-width: 1050px;
+    min-width: 1120px;
     border-collapse: collapse;
 }
 
-.admin-task-table-wrap th {
-    padding: 12px 15px;
+.admin-task-table-wrap th,
+.admin-task-table-wrap td {
+    padding: 13px 15px;
+    border-top: 1px solid var(--border-color);
     text-align: left;
-    color: var(--text-secondary, #858c99);
-    background: rgba(255, 255, 255, 0.018);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.07em;
+    vertical-align: middle;
+}
+
+.admin-task-table-wrap th {
+    color: var(--text-secondary);
+    background: var(--bg-secondary, rgba(127, 127, 127, 0.035));
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     white-space: nowrap;
 }
 
 .admin-task-table-wrap td {
-    padding: 14px 15px;
-    border-top: 1px solid var(--border, rgba(255, 255, 255, 0.06));
-    color: var(--text-secondary, #a3a9b3);
-    font-size: 12px;
-    white-space: nowrap;
+    color: var(--text-primary);
+    font-size: 10px;
 }
 
 .admin-task-table-wrap tbody tr {
@@ -296,33 +360,47 @@
 }
 
 .admin-task-table-wrap tbody tr:hover {
-    background: rgba(255, 255, 255, 0.025);
+    background: rgba(213, 164, 58, 0.025);
 }
 
 .admin-task-name {
     display: grid;
-    gap: 4px;
-    min-width: 190px;
+    gap: 3px;
+    min-width: 210px;
     white-space: normal;
 }
 
 .admin-task-name strong {
-    color: var(--text-primary, #fff);
-    font-size: 13px;
+    max-width: 255px;
+    overflow: hidden;
+    color: var(--text-primary);
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .admin-task-name span {
-    color: var(--text-secondary, #7e8693);
-    font-size: 11px;
+    color: var(--text-secondary);
+    font-size: 8px;
 }
 
 .admin-task-category,
 .admin-task-target {
-    color: var(--text-secondary, #a0a7b1);
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 0 8px;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    background: var(--bg-secondary, rgba(127, 127, 127, 0.055));
+    font-size: 8px;
+    font-weight: 700;
 }
 
 .admin-task-reward {
-    color: var(--accent, #d7a83d);
+    color: var(--task-gold);
+    font-size: 10px;
+    white-space: nowrap;
 }
 
 .admin-task-status {
@@ -331,112 +409,127 @@
     gap: 5px;
     padding: 5px 8px;
     border-radius: 999px;
-    font-size: 10px;
-    font-weight: 700;
+    font-size: 8px;
+    font-weight: 800;
 }
 
 .admin-task-status-active {
-    color: #63d39a;
-    background: rgba(56, 189, 120, 0.1);
+    color: #198254;
+    background: rgba(34, 197, 94, 0.1);
 }
 
 .admin-task-status-paused {
-    color: #e8b55b;
-    background: rgba(232, 181, 91, 0.1);
+    color: #b47d0b;
+    background: rgba(234, 179, 8, 0.1);
 }
 
 .admin-task-status-draft {
-    color: #8fb8f4;
-    background: rgba(96, 165, 250, 0.1);
+    color: #4c82d0;
+    background: rgba(59, 130, 246, 0.09);
 }
 
 .admin-task-actions {
     display: flex;
-    align-items: center;
-    gap: 5px;
+    justify-content: flex-end;
+    gap: 4px;
 }
 
 .admin-task-actions button {
-    width: 32px;
-    height: 32px;
     display: grid;
     place-items: center;
+    width: 31px;
+    height: 31px;
     border: 1px solid transparent;
     border-radius: 8px;
+    color: var(--text-secondary);
     background: transparent;
-    color: var(--text-secondary, #89919d);
     cursor: pointer;
 }
 
 .admin-task-actions button:hover {
-    border-color: var(--border, rgba(255, 255, 255, 0.12));
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-primary, #fff);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    background: var(--bg-secondary);
 }
 
 .admin-task-actions button.danger:hover {
-    color: #ef7373;
-    border-color: rgba(239, 115, 115, 0.2);
-    background: rgba(239, 115, 115, 0.06);
+    border-color: rgba(212, 94, 102, 0.2);
+    color: var(--task-danger);
+    background: rgba(212, 94, 102, 0.06);
 }
 
-.admin-task-empty {
-    min-height: 280px;
+/* -------------------- Empty/loading -------------------- */
+.admin-task-empty,
+.admin-tasks-loading {
+    min-height: 270px;
     display: grid;
     place-items: center;
     align-content: center;
     gap: 7px;
-    padding: 40px;
+    padding: 30px;
+    color: var(--text-secondary);
     text-align: center;
-    color: var(--text-secondary, #8f96a3);
 }
 
-.admin-task-empty svg {
-    color: var(--accent, #d7a83d);
+.admin-task-empty svg,
+.admin-tasks-loading svg {
+    color: var(--task-gold);
 }
 
 .admin-task-empty h3 {
-    margin: 5px 0 0;
-    color: var(--text-primary, #fff);
+    margin: 3px 0 0;
+    color: var(--text-primary);
+    font-size: 14px;
 }
 
 .admin-task-empty p {
     margin: 0;
-    font-size: 12px;
+    color: var(--text-secondary);
+    font-size: 9px;
 }
 
-.admin-tasks-loading {
-    min-height: 400px;
-    display: grid;
-    place-items: center;
-    align-content: center;
-    gap: 10px;
-    color: var(--text-secondary, #8f96a3);
-}
-
+/* -------------------- Modal system -------------------- */
 .admin-task-modal-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    display: grid;
-    place-items: center;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 1100 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100vw;
+    height: 100vh;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.68);
-    backdrop-filter: blur(7px);
+    box-sizing: border-box;
+    background: rgba(4, 6, 10, 0.72) !important;
+    backdrop-filter: blur(11px);
+    -webkit-backdrop-filter: blur(11px);
+    animation: taskBackdropIn 0.18s ease-out;
 }
 
 .admin-task-modal {
-    width: min(620px, 100%);
-    max-height: calc(100vh - 40px);
+    position: relative;
+    width: min(720px, 100%) !important;
+    max-height: min(89vh, 820px) !important;
     overflow-y: auto;
-    border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
-    border-radius: 17px;
-    background: var(--background, #111318);
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+    box-sizing: border-box;
+    padding: 0 !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 21px !important;
+    background: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 34px 110px rgba(0, 0, 0, 0.45) !important;
+    animation: taskModalIn 0.2s ease-out;
 }
 
 .admin-task-form-modal {
-    width: min(760px, 100%);
+    width: min(800px, 100%) !important;
+}
+
+.admin-task-modal::before {
+    content: "";
+    display: block;
+    height: 3px;
+    background: linear-gradient(90deg, var(--task-gold), #f1d27b 45%, transparent 92%);
 }
 
 .admin-task-modal-header {
@@ -444,78 +537,100 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 15px;
-    padding: 20px;
-    border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+    padding: 19px 21px 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.admin-task-modal-header > div {
+    min-width: 0;
 }
 
 .admin-task-modal-header span {
-    color: var(--accent, #d7a83d);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
+    color: var(--task-gold);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
 }
 
 .admin-task-modal-header h2 {
-    margin: 5px 0 0;
-    color: var(--text-primary, #fff);
-    font-size: 20px;
+    margin: 6px 0 4px;
+    color: var(--text-primary);
+    font-size: 21px;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    overflow-wrap: anywhere;
 }
 
 .admin-task-modal-header > button {
-    width: 34px;
-    height: 34px;
     display: grid;
     place-items: center;
-    border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
-    border-radius: 9px;
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-secondary);
     background: transparent;
-    color: var(--text-secondary, #8f96a3);
     cursor: pointer;
+}
+
+.admin-task-modal-header > button:hover {
+    color: var(--text-primary);
+    background: var(--bg-secondary);
 }
 
 .admin-task-detail-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    padding: 18px 20px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 9px;
+    padding: 17px 21px 0;
 }
 
 .admin-task-detail-grid > div {
+    min-width: 0;
     padding: 12px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--bg-secondary, rgba(127, 127, 127, 0.035));
+}
+
+.admin-task-detail-grid span,
+.admin-task-detail-grid strong {
+    display: block;
 }
 
 .admin-task-detail-grid span,
 .admin-task-detail-section > span {
-    display: block;
     margin-bottom: 5px;
-    color: var(--text-secondary, #858c99);
-    font-size: 10px;
+    color: var(--text-secondary);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
 }
 
 .admin-task-detail-grid strong {
-    color: var(--text-primary, #fff);
-    font-size: 12px;
+    color: var(--text-primary);
+    font-size: 10px;
+    overflow-wrap: anywhere;
 }
 
 .admin-task-detail-section {
-    padding: 0 20px 18px;
+    padding: 15px 21px 0;
 }
 
 .admin-task-detail-section p {
     margin: 0;
-    color: var(--text-secondary, #a4aab4);
-    font-size: 13px;
+    color: var(--text-secondary);
+    font-size: 10px;
     line-height: 1.65;
 }
 
 .admin-task-detail-section ul {
     display: grid;
-    gap: 7px;
+    gap: 6px;
     padding: 0;
     margin: 0;
     list-style: none;
@@ -525,29 +640,35 @@
     display: flex;
     align-items: flex-start;
     gap: 8px;
-    color: var(--text-secondary, #a4aab4);
-    font-size: 12px;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 9px;
+    color: var(--text-secondary);
+    background: var(--bg-secondary, rgba(127, 127, 127, 0.03));
+    font-size: 9px;
+    line-height: 1.5;
 }
 
 .admin-task-detail-section li svg {
     flex: 0 0 auto;
-    color: #63d39a;
     margin-top: 1px;
+    color: var(--task-success);
 }
 
 .admin-task-modal-footer {
     display: flex;
     justify-content: flex-end;
-    gap: 9px;
-    padding: 15px 20px;
-    border-top: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 17px 21px 20px;
 }
 
+/* -------------------- Form -------------------- */
 .admin-task-form-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 15px;
-    padding: 20px;
+    gap: 12px;
+    padding: 18px 21px 10px;
 }
 
 .admin-task-form-grid label {
@@ -556,9 +677,9 @@
 }
 
 .admin-task-form-grid label > span {
-    color: var(--text-secondary, #969daa);
-    font-size: 11px;
-    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 9px;
+    font-weight: 700;
 }
 
 .admin-task-form-grid input,
@@ -566,30 +687,32 @@
 .admin-task-form-grid textarea {
     width: 100%;
     box-sizing: border-box;
-    border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--border-color);
     border-radius: 10px;
     outline: 0;
-    background: var(--surface, rgba(255, 255, 255, 0.035));
-    color: var(--text-primary, #fff);
+    color: var(--text-primary);
+    background: var(--bg-secondary, rgba(127, 127, 127, 0.035));
     font: inherit;
-    font-size: 13px;
+    font-size: 10px;
 }
 
 .admin-task-form-grid input,
 .admin-task-form-grid select {
-    height: 43px;
-    padding: 0 12px;
+    height: 41px;
+    padding: 0 11px;
 }
 
 .admin-task-form-grid textarea {
-    padding: 11px 12px;
+    min-height: 96px;
+    padding: 10px 11px;
     resize: vertical;
 }
 
 .admin-task-form-grid input:focus,
 .admin-task-form-grid select:focus,
 .admin-task-form-grid textarea:focus {
-    border-color: rgba(215, 168, 61, 0.55);
+    border-color: rgba(213, 164, 58, 0.48);
+    box-shadow: 0 0 0 3px rgba(213, 164, 58, 0.055);
 }
 
 .admin-task-form-grid option {
@@ -602,60 +725,183 @@
 }
 
 .admin-task-form-grid small {
-    color: var(--text-secondary, #777f8b);
-    font-size: 10px;
+    color: var(--text-secondary);
+    font-size: 8px;
+    line-height: 1.45;
 }
 
 .admin-task-form-warning {
     display: flex;
     align-items: flex-start;
     gap: 9px;
-    margin: 0 20px 15px;
+    margin: 7px 21px 0;
     padding: 11px 12px;
-    border-radius: 9px;
-    color: var(--text-secondary, #959ca7);
-    background: rgba(215, 168, 61, 0.06);
-    font-size: 11px;
-    line-height: 1.5;
+    border: 1px solid rgba(213, 164, 58, 0.15);
+    border-radius: 10px;
+    background: rgba(213, 164, 58, 0.045);
 }
 
 .admin-task-form-warning svg {
     flex: 0 0 auto;
-    color: var(--accent, #d7a83d);
+    color: var(--task-gold);
 }
 
+.admin-task-form-warning span {
+    color: var(--text-secondary);
+    font-size: 8px;
+    line-height: 1.5;
+}
+
+/* -------------------- Animations -------------------- */
 .spin {
     animation: adminTaskSpin 0.9s linear infinite;
 }
 
 @keyframes adminTaskSpin {
-    to {
-        transform: rotate(360deg);
+    to { transform: rotate(360deg); }
+}
+
+@keyframes taskBackdropIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes taskModalIn {
+    from { opacity: 0; transform: translateY(8px) scale(0.985); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-task-modal-backdrop,
+    .admin-task-modal,
+    .admin-task-stat-card,
+    .admin-task-primary-button {
+        animation: none;
+        transition: none;
     }
 }
 
+/* -------------------- Responsive -------------------- */
 @media (max-width: 1200px) {
     .admin-task-stat-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
-@media (max-width: 850px) {
+@media (max-width: 880px) {
     .admin-tasks-header {
+        align-items: flex-start;
         flex-direction: column;
     }
 
     .admin-tasks-header-actions {
         width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
     }
 
-    .admin-task-primary-button,
-    .admin-task-refresh-button {
-        flex: 1;
+    .admin-task-toolbar {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .admin-task-search {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 620px) {
+    .admin-tasks-page {
+        gap: 15px;
+    }
+
+    .admin-tasks-header h1 {
+        font-size: 24px;
+    }
+
+    .admin-tasks-header p {
+        font-size: 10px;
+    }
+
+    .admin-tasks-header-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .admin-tasks-header-actions button {
+        width: 100%;
+    }
+
+    .admin-task-notice {
+        padding: 11px 12px;
+    }
+
+    .admin-task-stat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .admin-task-stat-card {
+        min-height: 90px;
+        padding: 12px;
+        border-radius: 14px;
+    }
+
+    .admin-task-stat-card strong {
+        font-size: 19px;
     }
 
     .admin-task-toolbar {
         grid-template-columns: 1fr;
+        padding: 9px;
+    }
+
+    .admin-task-search {
+        grid-column: auto;
+    }
+
+    .admin-task-filter {
+        width: 100%;
+    }
+
+    .admin-task-table-card {
+        border-radius: 16px;
+    }
+
+    .admin-task-table-header {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 16px;
+    }
+
+    .admin-task-table-wrap table {
+        min-width: 1060px;
+    }
+
+    .admin-task-modal-backdrop {
+        align-items: center !important;
+        padding: 10px;
+    }
+
+    .admin-task-modal {
+        width: 100% !important;
+        max-height: calc(100vh - 20px) !important;
+        border-radius: 17px !important;
+    }
+
+    .admin-task-modal-header,
+    .admin-task-detail-grid,
+    .admin-task-modal-footer,
+    .admin-task-form-grid {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .admin-task-detail-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .admin-task-detail-section {
+        padding-left: 16px;
+        padding-right: 16px;
     }
 
     .admin-task-form-grid {
@@ -665,72 +911,24 @@
     .admin-task-form-full {
         grid-column: auto;
     }
-}
 
-@media (max-width: 600px) {
-    .admin-tasks-page {
-        padding-bottom: 25px;
-    }
-
-    .admin-task-stat-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .admin-task-stat-card {
-        min-height: 78px;
-        padding: 12px;
-    }
-
-    .admin-task-stat-card strong {
-        font-size: 16px;
-    }
-
-    .admin-task-stat-icon {
-        width: 34px;
-        height: 34px;
-        flex-basis: 34px;
-    }
-
-    .admin-task-modal-backdrop {
-        padding: 10px;
-    }
-
-    .admin-task-modal {
-        max-height: calc(100vh - 20px);
-        border-radius: 14px;
-    }
-
-    .admin-task-detail-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .admin-task-modal-header,
-    .admin-task-form-grid {
-        padding: 16px;
-    }
-
-    .admin-task-detail-section {
-        padding-left: 16px;
-        padding-right: 16px;
+    .admin-task-form-warning {
+        margin-left: 16px;
+        margin-right: 16px;
     }
 
     .admin-task-modal-footer {
-        padding: 13px 16px;
-    }
-}
-
-@media (max-width: 400px) {
-    .admin-task-stat-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .admin-tasks-header-actions {
         flex-direction: column;
     }
 
-    .admin-task-primary-button,
-    .admin-task-refresh-button {
+    .admin-task-modal-footer button {
         width: 100%;
+    }
+}
+
+@media (max-width: 420px) {
+    .admin-task-stat-grid {
+        grid-template-columns: 1fr;
     }
 
     .admin-task-detail-grid {

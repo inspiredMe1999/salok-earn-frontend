@@ -1,77 +1,237 @@
+/* =========================================================
+   Admin Withdrawals — Premium Operations Workspace
+   ========================================================= */
 .admin-withdrawals-page {
+    --withdrawal-gold: #d5a43a;
+    --withdrawal-gold-strong: #bd8a1e;
+    --withdrawal-gold-soft: rgba(213, 164, 58, 0.11);
+    --withdrawal-success: #229b68;
+    --withdrawal-success-soft: rgba(34, 155, 104, 0.1);
+    --withdrawal-danger: #d35d66;
+    --withdrawal-danger-soft: rgba(211, 93, 102, 0.1);
+    --withdrawal-info: #4d89dc;
+    --withdrawal-info-soft: rgba(77, 137, 220, 0.1);
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
+    padding-bottom: 28px;
 }
 
+.admin-withdrawals-page > * {
+    min-width: 0;
+}
+
+/* -------------------- Heading -------------------- */
+.admin-withdrawals-page .admin-page-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 2px 1px 1px;
+    margin: 0;
+}
+
+.admin-withdrawals-page .admin-page-heading > div:first-child {
+    min-width: 0;
+}
+
+.admin-withdrawals-page .admin-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--withdrawal-gold);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.admin-withdrawals-page .admin-page-heading h1 {
+    margin: 8px 0 6px;
+    color: var(--text-primary);
+    font-size: clamp(24px, 3vw, 34px);
+    line-height: 1.06;
+    letter-spacing: -0.035em;
+}
+
+.admin-withdrawals-page .admin-page-heading p {
+    max-width: 720px;
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+.admin-withdrawals-page .admin-heading-actions {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex: 0 0 auto;
+}
+
+.admin-withdrawals-page .admin-demo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 38px;
+    padding: 0 11px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    background: var(--bg-card);
+    font-size: 9px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.admin-withdrawals-page .admin-demo-badge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--withdrawal-gold);
+    box-shadow: 0 0 0 4px var(--withdrawal-gold-soft);
+}
+
+.admin-withdrawals-page .admin-secondary-button {
+    min-height: 38px;
+    padding: 0 12px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+/* -------------------- Summary -------------------- */
 .withdrawal-summary-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 16px;
+    gap: 13px;
 }
 
 .withdrawal-summary-card {
-    padding: 22px;
+    position: relative;
+    overflow: hidden;
+    min-height: 132px;
+    padding: 17px;
     border: 1px solid var(--border-color);
-    border-radius: 20px;
+    border-radius: 17px;
     background: var(--bg-card);
-    box-shadow: var(--shadow-card, 0 12px 30px rgba(0, 0, 0, 0.04));
+    box-shadow: var(--shadow-card, 0 12px 34px rgba(0, 0, 0, 0.045));
+    transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.withdrawal-summary-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(213, 164, 58, 0.25);
+}
+
+.withdrawal-summary-card::after {
+    content: "";
+    position: absolute;
+    right: -35px;
+    bottom: -42px;
+    width: 105px;
+    height: 105px;
+    border-radius: 50%;
+    background: rgba(213, 164, 58, 0.045);
+    pointer-events: none;
+}
+
+.withdrawal-summary-card.warning::after {
+    background: rgba(234, 179, 8, 0.05);
+}
+
+.withdrawal-summary-card.success::after {
+    background: rgba(34, 197, 94, 0.05);
+}
+
+.withdrawal-summary-card.danger::after {
+    background: rgba(239, 68, 68, 0.05);
 }
 
 .withdrawal-summary-card span,
 .withdrawal-summary-card small {
     display: block;
+    position: relative;
+    z-index: 1;
     color: var(--text-secondary);
 }
 
 .withdrawal-summary-card span {
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
 }
 
 .withdrawal-summary-card strong {
+    position: relative;
+    z-index: 1;
     display: block;
-    margin: 12px 0 6px;
+    margin: 14px 0 7px;
     color: var(--text-primary);
-    font-size: 30px;
-    line-height: 1;
+    font-size: clamp(27px, 3vw, 35px);
+    line-height: 0.95;
+    letter-spacing: -0.045em;
 }
 
 .withdrawal-summary-card small {
-    font-size: 12px;
+    max-width: 85%;
+    font-size: 9px;
+    line-height: 1.45;
 }
 
 .withdrawal-summary-card.warning {
-    border-color: rgba(234, 179, 8, 0.35);
+    border-color: rgba(234, 179, 8, 0.22);
+}
+
+.withdrawal-summary-card.warning strong {
+    color: var(--text-primary);
 }
 
 .withdrawal-summary-card.success {
-    border-color: rgba(34, 197, 94, 0.3);
+    border-color: rgba(34, 197, 94, 0.2);
 }
 
 .withdrawal-summary-card.danger {
-    border-color: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.2);
 }
 
+/* -------------------- Toolbar -------------------- */
 .withdrawal-toolbar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: minmax(250px, 1fr) minmax(155px, auto) minmax(150px, auto) auto;
+    gap: 9px;
+    align-items: stretch;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-card, 0 10px 24px rgba(0, 0, 0, 0.03));
+}
+
+.withdrawal-search,
+.withdrawal-filter,
+.withdrawal-filter-select {
+    min-width: 0;
+    min-height: 43px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--bg-secondary, rgba(127, 127, 127, 0.035));
 }
 
 .withdrawal-search {
     display: flex;
     align-items: center;
-    gap: 10px;
-    flex: 1 1 280px;
-    min-width: 220px;
-    padding: 0 14px;
-    height: 46px;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    background: var(--bg-card);
+    gap: 9px;
+    padding: 0 12px;
     color: var(--text-secondary);
+}
+
+.withdrawal-search:focus-within,
+.withdrawal-filter:focus-within,
+.withdrawal-filter-select:focus {
+    border-color: rgba(213, 164, 58, 0.42);
+    box-shadow: 0 0 0 3px rgba(213, 164, 58, 0.06);
 }
 
 .withdrawal-search input {
@@ -79,68 +239,95 @@
     min-width: 0;
     border: 0;
     outline: 0;
-    background: transparent;
     color: var(--text-primary);
+    background: transparent;
     font: inherit;
+    font-size: 11px;
+}
+
+.withdrawal-search input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.75;
 }
 
 .withdrawal-filter,
 .withdrawal-filter-select {
-    height: 46px;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    background: var(--bg-card);
     color: var(--text-primary);
+    font: inherit;
+    font-size: 10px;
 }
 
 .withdrawal-filter {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 0 12px;
+    gap: 7px;
+    padding: 0 10px;
+    color: var(--text-secondary);
 }
 
 .withdrawal-filter select,
 .withdrawal-filter-select {
-    padding: 0 12px;
+    width: 100%;
+    border: 0;
     outline: 0;
+    color: var(--text-primary);
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
 }
 
 .withdrawal-filter select {
-    border: 0;
-    background: transparent;
-    color: inherit;
-    font: inherit;
+    min-width: 112px;
+}
+
+.withdrawal-filter-select {
+    padding: 0 10px;
+}
+
+.withdrawal-filter select option,
+.withdrawal-filter-select option {
+    color: #111;
+    background: #fff;
 }
 
 .admin-text-button {
-    border: 0;
+    min-width: 64px;
+    padding: 0 11px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-secondary);
     background: transparent;
-    color: var(--color-primary);
     cursor: pointer;
     font: inherit;
-    font-weight: 700;
+    font-size: 10px;
+    font-weight: 800;
 }
 
+.admin-text-button:hover {
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+}
+
+/* -------------------- Batch actions -------------------- */
 .withdrawal-batch-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-    padding: 14px 18px;
-    border: 1px solid rgba(212, 166, 63, 0.4);
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid rgba(213, 164, 58, 0.22);
     border-radius: 14px;
-    background: rgba(212, 166, 63, 0.09);
+    background: linear-gradient(90deg, rgba(213, 164, 58, 0.09), transparent);
 }
 
-.withdrawal-batch-bar strong {
+.withdrawal-batch-bar > strong {
     color: var(--text-primary);
+    font-size: 11px;
 }
 
-.withdrawal-batch-bar div {
+.withdrawal-batch-bar > div {
     display: flex;
-    gap: 8px;
+    gap: 7px;
     flex-wrap: wrap;
 }
 
@@ -148,19 +335,66 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 9px 12px;
+    min-height: 33px;
+    padding: 0 10px;
     border: 1px solid var(--border-color);
     border-radius: 9px;
-    background: var(--bg-card);
     color: var(--text-primary);
+    background: var(--bg-card);
     cursor: pointer;
     font: inherit;
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 9px;
+    font-weight: 800;
+    transition: border-color 0.17s ease, background 0.17s ease;
 }
 
-.withdrawal-table-panel {
+.withdrawal-batch-bar button:hover {
+    border-color: rgba(213, 164, 58, 0.35);
+    background: var(--bg-secondary);
+}
+
+/* -------------------- Table workspace -------------------- */
+.admin-withdrawals-page .admin-panel {
     overflow: hidden;
+    border: 1px solid var(--border-color);
+    border-radius: 19px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-card, 0 12px 30px rgba(0, 0, 0, 0.04));
+}
+
+.admin-withdrawals-page .admin-panel-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 19px 20px 15px;
+}
+
+.admin-withdrawals-page .admin-panel-heading h2 {
+    margin: 0 0 4px;
+    color: var(--text-primary);
+    font-size: 18px;
+    letter-spacing: -0.025em;
+}
+
+.admin-withdrawals-page .admin-panel-heading p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 9px;
+}
+
+.admin-withdrawals-page .admin-panel-label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 25px;
+    padding: 0 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 7px;
+    color: var(--text-secondary);
+    background: var(--bg-secondary, rgba(127, 127, 127, 0.035));
+    font-size: 8px;
+    font-weight: 800;
+    white-space: nowrap;
 }
 
 .withdrawal-table-wrapper {
@@ -170,29 +404,46 @@
 
 .withdrawal-table {
     width: 100%;
-    min-width: 1050px;
+    min-width: 1080px;
     border-collapse: collapse;
 }
 
 .withdrawal-table th,
 .withdrawal-table td {
-    padding: 16px;
-    border-bottom: 1px solid var(--border-color);
+    padding: 13px 15px;
+    border-top: 1px solid var(--border-color);
     text-align: left;
     vertical-align: middle;
 }
 
 .withdrawal-table th {
     color: var(--text-secondary);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.07em;
+    background: var(--bg-secondary, rgba(127, 127, 127, 0.035));
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .withdrawal-table td {
     color: var(--text-primary);
-    font-size: 13px;
+    font-size: 10px;
+}
+
+.withdrawal-table tbody tr {
+    transition: background 0.16s ease;
+}
+
+.withdrawal-table tbody tr:hover {
+    background: rgba(213, 164, 58, 0.024);
+}
+
+.withdrawal-table input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: var(--withdrawal-gold);
+    cursor: pointer;
 }
 
 .withdrawal-table td strong,
@@ -201,18 +452,18 @@
 }
 
 .withdrawal-table td strong {
-    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 10px;
 }
 
 .withdrawal-table td small {
-    margin-top: 4px;
+    margin-top: 3px;
     color: var(--text-secondary);
-    font-size: 11px;
+    font-size: 8px;
 }
 
-.withdrawal-table input[type="checkbox"] {
-    accent-color: var(--color-primary);
-    cursor: pointer;
+.withdrawal-table td:nth-child(2) strong {
+    letter-spacing: 0.02em;
 }
 
 .withdrawal-status,
@@ -220,258 +471,488 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 5px 9px;
+    padding: 5px 8px;
     border-radius: 999px;
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 8px;
+    font-weight: 800;
     text-transform: capitalize;
+    white-space: nowrap;
 }
 
 .withdrawal-status-pending {
-    background: rgba(234, 179, 8, 0.14);
-    color: #ca8a04;
+    color: #b47c0b;
+    background: rgba(234, 179, 8, 0.1);
 }
 
 .withdrawal-status-completed {
-    background: rgba(34, 197, 94, 0.14);
-    color: #16a34a;
+    color: #188253;
+    background: var(--withdrawal-success-soft);
 }
 
 .withdrawal-status-rejected {
-    background: rgba(239, 68, 68, 0.14);
-    color: #dc2626;
+    color: #c84d58;
+    background: var(--withdrawal-danger-soft);
 }
 
 .withdrawal-status-refunded {
-    background: rgba(59, 130, 246, 0.14);
-    color: #3b82f6;
+    color: #4c82d0;
+    background: var(--withdrawal-info-soft);
 }
 
 .withdrawal-risk-low {
-    background: rgba(34, 197, 94, 0.12);
-    color: #16a34a;
+    color: #188253;
+    background: var(--withdrawal-success-soft);
 }
 
 .withdrawal-risk-medium {
-    background: rgba(234, 179, 8, 0.14);
-    color: #ca8a04;
+    color: #b47c0b;
+    background: rgba(234, 179, 8, 0.1);
 }
 
 .withdrawal-risk-high {
-    background: rgba(239, 68, 68, 0.14);
-    color: #dc2626;
+    color: #c84d58;
+    background: var(--withdrawal-danger-soft);
 }
 
 .withdrawal-view-button {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 11px;
+    justify-content: center;
+    gap: 5px;
+    min-height: 31px;
+    padding: 0 9px;
     border: 1px solid var(--border-color);
-    border-radius: 9px;
-    background: transparent;
+    border-radius: 8px;
     color: var(--text-primary);
+    background: transparent;
     cursor: pointer;
     font: inherit;
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 9px;
+    font-weight: 800;
 }
 
+.withdrawal-view-button:hover {
+    border-color: rgba(213, 164, 58, 0.35);
+    color: var(--withdrawal-gold);
+    background: var(--withdrawal-gold-soft);
+}
+
+/* -------------------- States -------------------- */
+.admin-withdrawals-page .admin-loading-state,
+.admin-withdrawals-page .admin-error-state,
+.admin-withdrawals-page .admin-empty-state {
+    min-height: 270px;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 8px;
+    padding: 28px;
+    color: var(--text-secondary);
+    text-align: center;
+    font-size: 10px;
+}
+
+.admin-withdrawals-page .admin-loading-state::before,
+.admin-withdrawals-page .admin-empty-state::before,
+.admin-withdrawals-page .admin-error-state::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--withdrawal-gold);
+    box-shadow: 0 0 0 6px var(--withdrawal-gold-soft);
+}
+
+.admin-withdrawals-page .admin-error-state {
+    color: var(--withdrawal-danger);
+}
+
+.admin-withdrawals-page .admin-error-state svg {
+    color: var(--withdrawal-danger);
+}
+
+.admin-withdrawals-page .admin-error-state button {
+    min-height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 9px;
+    color: var(--text-primary);
+    background: var(--bg-card);
+    cursor: pointer;
+    font: inherit;
+    font-size: 9px;
+    font-weight: 800;
+}
+
+/* -------------------- Modal -------------------- */
 .withdrawal-modal-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 1100 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100vw;
+    height: 100vh;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.65);
+    box-sizing: border-box;
+    background: rgba(4, 6, 10, 0.72) !important;
+    backdrop-filter: blur(11px);
+    -webkit-backdrop-filter: blur(11px);
+    animation: withdrawalBackdropIn 0.18s ease-out;
 }
 
 .withdrawal-modal {
-    width: min(680px, 100%);
-    max-height: 90vh;
+    position: relative;
+    width: min(720px, 100%) !important;
+    max-height: min(88vh, 780px) !important;
     overflow-y: auto;
-    padding: 26px;
-    border: 1px solid var(--border-color);
-    border-radius: 22px;
-    background: var(--bg-card);
-    color: var(--text-primary);
+    box-sizing: border-box;
+    padding: 0 !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 21px !important;
+    background: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 34px 110px rgba(0, 0, 0, 0.45) !important;
+    animation: withdrawalModalIn 0.2s ease-out;
+}
+
+.withdrawal-modal::before {
+    content: "";
+    display: block;
+    height: 3px;
+    background: linear-gradient(90deg, var(--withdrawal-gold), #f1d27b 45%, transparent 92%);
 }
 
 .withdrawal-modal-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: 15px;
+    margin: 0 !important;
+    padding: 19px 21px 16px !important;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.withdrawal-modal-header > div {
+    min-width: 0;
 }
 
 .withdrawal-modal-header h2 {
-    margin: 5px 0 0;
-    font-size: 25px;
+    margin: 6px 0 4px !important;
+    color: var(--text-primary);
+    font-size: 21px !important;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    overflow-wrap: anywhere;
 }
 
 .withdrawal-modal-header button {
-    width: 34px;
-    height: 34px;
-    border: 1px solid var(--border-color);
-    border-radius: 50%;
-    background: transparent;
-    color: var(--text-primary);
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 34px !important;
+    height: 34px !important;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 10px !important;
+    color: var(--text-secondary);
+    background: transparent !important;
     cursor: pointer;
-    font-size: 22px;
+    font-size: 0 !important;
+}
+
+.withdrawal-modal-header button:hover {
+    color: var(--text-primary);
+    background: var(--bg-secondary) !important;
+}
+
+.withdrawal-modal .admin-eyebrow {
+    color: var(--withdrawal-gold);
+    font-size: 8px;
+    letter-spacing: 0.12em;
 }
 
 .withdrawal-detail-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
+    gap: 9px;
+    padding: 17px 21px 0 !important;
 }
 
 .withdrawal-detail-grid > div {
-    padding: 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 14px;
-    background: var(--bg-secondary, transparent);
-}
-
-.withdrawal-detail-grid span,
-.withdrawal-detail-grid strong,
-.withdrawal-detail-grid small {
-    display: block;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    background: var(--bg-secondary, rgba(127, 127, 127, 0.035)) !important;
 }
 
 .withdrawal-detail-grid span {
-    margin-bottom: 8px;
-    color: var(--text-secondary);
-    font-size: 11px;
-    font-weight: 700;
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-secondary) !important;
+    font-size: 8px !important;
+    font-weight: 800;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
 }
 
 .withdrawal-detail-grid strong {
-    font-size: 14px;
+    display: block;
+    color: var(--text-primary);
+    font-size: 11px;
+    overflow-wrap: anywhere;
 }
 
 .withdrawal-detail-grid small {
-    margin-top: 5px;
+    display: block;
+    margin-top: 4px;
     color: var(--text-secondary);
-    font-size: 12px;
+    font-size: 8px;
+    overflow-wrap: anywhere;
 }
 
 .withdrawal-detail-note {
-    margin-top: 16px;
-    padding: 16px;
-    border-radius: 14px;
-    background: var(--bg-secondary, rgba(127, 127, 127, 0.08));
+    margin: 14px 21px 0 !important;
+    padding: 12px !important;
+    border: 1px solid rgba(213, 164, 58, 0.16);
+    border-radius: 12px !important;
+    background: rgba(213, 164, 58, 0.045) !important;
 }
 
 .withdrawal-detail-note strong {
-    font-size: 13px;
+    display: block;
+    margin-bottom: 5px;
+    color: var(--withdrawal-gold);
+    font-size: 8px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 .withdrawal-detail-note p {
-    margin: 8px 0 0;
-    color: var(--text-secondary);
-    font-size: 13px;
-    line-height: 1.6;
+    margin: 0;
+    color: var(--text-secondary) !important;
+    font-size: 9px !important;
+    line-height: 1.55;
 }
 
 .withdrawal-modal-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
+    align-items: center;
+    gap: 7px;
     flex-wrap: wrap;
-    margin-top: 24px;
+    margin-top: 15px !important;
+    padding: 0 21px 18px;
 }
 
 .withdrawal-action {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 11px 15px;
-    border: 0;
-    border-radius: 10px;
-    color: white;
-    cursor: pointer;
-    font: inherit;
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.withdrawal-action:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
+    min-height: 37px;
+    padding: 0 12px;
+    border-radius: 9px;
+    font-size: 9px;
+    font-weight: 800;
 }
 
 .withdrawal-action.approve {
-    background: #16a34a;
+    background: var(--withdrawal-success);
 }
 
 .withdrawal-action.reject {
-    background: #dc2626;
+    background: var(--withdrawal-danger);
 }
 
 .withdrawal-action.refund {
-    background: #2563eb;
+    background: var(--withdrawal-info);
+}
+
+.withdrawal-modal-actions .admin-secondary-button {
+    min-height: 37px;
+    padding: 0 12px;
+    border-radius: 9px;
+    font-size: 9px;
+    font-weight: 800;
 }
 
 .withdrawal-demo-note {
-    margin: 18px 0 0;
+    margin: 0 !important;
+    padding: 0 21px 20px;
     color: var(--text-secondary);
-    font-size: 11px;
+    font-size: 8px !important;
+    line-height: 1.5;
     text-align: center;
 }
 
+@keyframes withdrawalBackdropIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes withdrawalModalIn {
+    from { opacity: 0; transform: translateY(8px) scale(0.985); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .withdrawal-modal-backdrop,
+    .withdrawal-modal,
+    .withdrawal-summary-card {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* -------------------- Responsive -------------------- */
 @media (max-width: 1100px) {
     .withdrawal-summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .withdrawal-toolbar {
+        grid-template-columns: minmax(220px, 1fr) 1fr 1fr auto;
+    }
 }
 
-@media (max-width: 640px) {
-    .withdrawal-summary-grid {
-        grid-template-columns: 1fr;
+@media (max-width: 800px) {
+    .admin-withdrawals-page .admin-page-heading {
+        align-items: flex-start;
+        flex-direction: column;
     }
 
-    .withdrawal-summary-card strong {
-        font-size: 26px;
+    .admin-withdrawals-page .admin-heading-actions {
+        width: 100%;
+        justify-content: flex-start;
     }
 
     .withdrawal-toolbar {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .withdrawal-search {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 620px) {
+    .admin-withdrawals-page {
+        gap: 15px;
+    }
+
+    .admin-withdrawals-page .admin-page-heading h1 {
+        font-size: 24px;
+    }
+
+    .admin-withdrawals-page .admin-page-heading p {
+        font-size: 10px;
+    }
+
+    .admin-withdrawals-page .admin-heading-actions {
         align-items: stretch;
         flex-direction: column;
     }
 
+    .admin-withdrawals-page .admin-demo-badge,
+    .admin-withdrawals-page .admin-secondary-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .withdrawal-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .withdrawal-summary-card {
+        min-height: 118px;
+        padding: 15px;
+    }
+
+    .withdrawal-summary-card strong {
+        font-size: 30px;
+    }
+
+    .withdrawal-toolbar {
+        grid-template-columns: 1fr;
+        padding: 10px;
+    }
+
+    .withdrawal-search {
+        grid-column: auto;
+    }
+
     .withdrawal-search,
     .withdrawal-filter,
-    .withdrawal-filter-select {
+    .withdrawal-filter-select,
+    .admin-text-button {
         width: 100%;
+        box-sizing: border-box;
     }
 
-    .withdrawal-filter {
-        justify-content: space-between;
+    .withdrawal-filter-select,
+    .admin-text-button {
+        min-height: 43px;
     }
 
-    .withdrawal-filter-select {
-        height: 46px;
+    .withdrawal-batch-bar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .withdrawal-batch-bar > div {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .withdrawal-batch-bar button {
+        justify-content: center;
+    }
+
+    .admin-withdrawals-page .admin-panel-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 16px;
+    }
+
+    .withdrawal-table {
+        min-width: 1020px;
+    }
+
+    .withdrawal-modal-backdrop {
+        align-items: center !important;
+        padding: 10px;
     }
 
     .withdrawal-modal {
-        padding: 20px;
+        width: 100% !important;
+        max-height: calc(100vh - 20px) !important;
+        border-radius: 17px !important;
     }
 
+    .withdrawal-modal-header,
     .withdrawal-detail-grid {
-        grid-template-columns: 1fr;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+
+    .withdrawal-detail-note {
+        margin-left: 16px !important;
+        margin-right: 16px !important;
     }
 
     .withdrawal-modal-actions {
         flex-direction: column;
+        padding-left: 16px;
+        padding-right: 16px;
     }
 
     .withdrawal-modal-actions button {
         width: 100%;
         justify-content: center;
+    }
+
+    .withdrawal-demo-note {
+        padding-left: 16px;
+        padding-right: 16px;
     }
 }

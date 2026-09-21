@@ -36,6 +36,13 @@
     gap: 22px;
     color: var(--au-text);
     font-variant-numeric: tabular-nums;
+
+    /* A grid/flex item defaults to min-height:auto, which lets a
+       fixed-height ancestor squash and clip this page instead of
+       letting it grow. These two lines opt out of that. */
+    min-width: 0;
+    min-height: auto;
+    height: auto;
 }
 
 .au :where(h1, h2, h3, p, dl, dd, figure) {
@@ -952,6 +959,28 @@
 
     .au-cards {
         display: block;
+    }
+
+    /* The panel only clipped to round off the table's scroll edges.
+       On mobile there is no scroll area, and overflow:hidden on a
+       long list is what turns an ancestor height constraint into a
+       visible cut. The cards carry no background, so nothing needs
+       clipping here. */
+    .au-panel {
+        overflow: visible;
+    }
+
+    .au-card:first-child {
+        border-top: 0;
+    }
+
+    /* Clear the floating chat launcher. */
+    .au-pager {
+        padding-bottom: calc(13px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .au > :last-child {
+        margin-bottom: 72px;
     }
 }
 

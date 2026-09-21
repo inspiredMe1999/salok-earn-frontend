@@ -30,7 +30,7 @@ function AdminHeader({ onMenuClick }) {
     }
 
     return (
-        <header className="admin-header">
+        <header className="admin-topbar">
             <div className="admin-header-left">
                 <button
                     type="button"
@@ -41,7 +41,7 @@ function AdminHeader({ onMenuClick }) {
                     <Menu size={21} />
                 </button>
 
-                <div>
+                <div className="admin-topbar-title">
                     <span className="admin-header-label">
                         Control center
                     </span>
@@ -62,6 +62,7 @@ function AdminHeader({ onMenuClick }) {
                     }
                 >
                     <Bell size={19} />
+
                     <span className="admin-notification-dot" />
                 </button>
 
@@ -72,6 +73,8 @@ function AdminHeader({ onMenuClick }) {
                         onClick={() =>
                             setMenuOpen((current) => !current)
                         }
+                        aria-expanded={menuOpen}
+                        aria-haspopup="menu"
                     >
                         <span className="admin-user-avatar">
                             SA
