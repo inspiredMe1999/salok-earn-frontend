@@ -31,44 +31,66 @@ const QUICK_REACTIONS = [
     "💯",
 ];
 
-// How far from the left edge the drag handle rests.
-const HANDLE_LEFT = 16;
+// Diameter (px) of a single icon slot — also the pill's height.
+const ICON_SIZE = 44;
 
-// Minimum horizontal drag (px) to count as an "open" gesture.
-const OPEN_DRAG_THRESHOLD = 70;
+// Gap (px) between the two icons inside the pill, and also the
+// margin left between the visible icon and the true page edge at
+// rest — using the same number for both keeps the spacing rhythm
+// consistent, and (not coincidentally) is what makes the hidden
+// icon land at exactly 0px visible, not peeking or over-hidden.
+const ICON_GAP = 6;
 
-// Minimum horizontal drag (px) to count as a "close" gesture.
-const CLOSE_DRAG_THRESHOLD = 70;
+// The pill's total width — both icons, side by side, plus the gap
+// between them. This NEVER changes. The pill doesn't resize or
+// clip its own content; it's a fixed-size object that gets
+// positioned mostly off the page, and the browser's own viewport
+// edge is what hides whichever icon is currently off-screen.
+const PILL_WIDTH = ICON_SIZE * 2 + ICON_GAP;
+
+// The pill's resting "left" (px) when closed: far enough negative
+// that the home icon (the first, left-hand icon in the pill) sits
+// completely past the page's left edge — 0px of it visible — while
+// the chat icon (second, right-hand) ends up sitting ICON_GAP in
+// from the true edge.
+const PILL_REST_LEFT_CLOSED = -ICON_SIZE;
 
 // Fallback travel distance (px), only used before a real measurement
-// is available (e.g. server render). Overwritten immediately on the
-// first real drag by an actual getBoundingClientRect() measurement.
+// is available (e.g. before mount). Recomputed on mount, on resize,
+// and fresh at the start of every drag.
 const DRAG_TRAVEL_FALLBACK = 260;
 
-// How much of the full drag (as a fraction, 0–1) it takes, at the
-// very end, for the crossfade (button fades out / companion fades
-// in) to happen. Kept small and deliberate — the button stays fully
-// visible for the vast majority of the drag and only fades right as
-// it arrives at the far side, not gradually along the way.
-const EDGE_FADE_ZONE = 0.08;
+// Minimum horizontal drag (px) to count as a real gesture, not a tap.
+const OPEN_DRAG_THRESHOLD = 70;
 
-// Fraction of the full drag that must be completed for a
-// released drag (not a tap) to commit to opening/closing — i.e. the
-// button has to actually reach (close to) the far side.
+// Fraction of the full drag that must be completed for a released
+// drag to commit to opening/closing — i.e. it has to actually reach
+// (close to) the far side, not just start moving that way.
 const DRAG_COMMIT_PROGRESS = 0.9;
 
 // Below this many px of movement, a gesture hasn't committed to an
 // axis yet (see the "mode" lock in handlePointerMove).
 const AXIS_LOCK_THRESHOLD = 6;
 
-// Maps overall drag progress (0–1) to the 0–1 crossfade amount,
-// which stays at 0 until the final EDGE_FADE_ZONE stretch.
-function edgeFade(progress) {
-    const start = 1 - EDGE_FADE_ZONE;
+// The pill's resting "left" (px) when open: mirrors the closed
+// position — the chat icon (second, right-hand) sits completely
+// past the page's right edge, and the home icon (first, left-hand)
+// ends up ICON_GAP in from the true right edge.
+function computeRestLeftOpen() {
+    if (typeof window === "undefined") {
+        return DRAG_TRAVEL_FALLBACK;
+    }
 
-    if (progress <= start) return 0;
+    return window.innerWidth - ICON_GAP - ICON_SIZE;
+}
 
-    return (progress - start) / EDGE_FADE_ZONE;
+// The real, on-screen distance the pill travels between its two
+// resting positions, given the current viewport width.
+function computeTravelDistance() {
+    return Math.max(
+        80,
+        computeRestLeftOpen() - PILL_REST_LEFT_CLOSED
+    );
 }
 
 function formatTime(timestamp) {
@@ -217,8 +239,7 @@ function FloatingChat() {
 
     const { isAuthenticated } = useAuth();
 
-    const launcherRef = useRef(null);
-    const homeButtonRef = useRef(null);
+    const pillRef = useRef(null);
     const fileInputRef = useRef(null);
 
     const dragData = useRef({
@@ -228,28 +249,26 @@ function FloatingChat() {
         // gesture crosses AXIS_LOCK_THRESHOLD on one axis, and never
         // re-evaluated for the rest of that drag.
         mode: null,
+        // +1 when the gesture opens (started from the chat icon),
+        // -1 when it closes (started from the home icon). Set once,
+        // at pointerdown, and used to interpret every delta after.
+        direction: 1,
         startX: 0,
         startY: 0,
         startCenterY: 0,
-        // The real, measured distance (px) to the home icon's
-        // current position — computed fresh at the start of each
-        // drag so "the far right" always means exactly where the
-        // home icon actually is, at any viewport size.
-        travelDistance: DRAG_TRAVEL_FALLBACK,
-    });
-
-    const homeDragData = useRef({
-        dragging: false,
-        moved: false,
-        startX: 0,
+        // The real, measured distance (px) the pill travels between
+        // its closed and open resting positions — computed fresh at
+        // the start of each drag so "the far side" always means
+        // exactly that, at any viewport size.
         travelDistance: DRAG_TRAVEL_FALLBACK,
     });
 
     const [isOpen, setIsOpen] =
         useState(false);
 
-    // Vertical center (px) of the drag handle. Horizontal position is
-    // always fixed at HANDLE_LEFT — only up/down dragging is allowed.
+    // Vertical center (px) of the pill. Horizontal position is driven
+    // entirely by drag progress — see PILL_REST_LEFT_CLOSED and
+    // computeRestLeftOpen() above.
     const [centerY, setCenterY] = useState(() => {
         if (typeof window === "undefined") {
             return 320;
@@ -258,19 +277,15 @@ function FloatingChat() {
         return window.innerHeight / 2;
     });
 
-    // Transient rubber-band offset while a drag is in progress. Always
-    // snaps back to 0 on release — it never becomes the resting position.
+    // Transient offset (px) while a drag is in progress — how far the
+    // current gesture has traveled toward its target so far. Always
+    // snaps back to 0 on release; it's never a resting position.
     const [dragOffsetX, setDragOffsetX] = useState(0);
-    const [homeDragOffsetX, setHomeDragOffsetX] = useState(0);
 
-    // The real measured distance (px) each button travels to reach
-    // the other's position — set fresh at the start of every drag.
-    // Render uses these as the denominator for drag progress, so
-    // "fully arrived" always lines up with the actual other icon.
-    const [launcherTravel, setLauncherTravel] =
-        useState(DRAG_TRAVEL_FALLBACK);
-
-    const [homeTravel, setHomeTravel] =
+    // The real measured distance (px) the pill travels between its
+    // two resting positions. Render uses this as the denominator for
+    // drag progress, so "fully arrived" always lines up with reality.
+    const [travelDistance, setTravelDistance] =
         useState(DRAG_TRAVEL_FALLBACK);
 
     const [messages, setMessages] =
@@ -303,18 +318,16 @@ function FloatingChat() {
     const [dragging, setDragging] =
         useState(false);
 
-    const [homeDragging, setHomeDragging] =
-        useState(false);
-
     useEffect(() => {
         loadMessages();
     }, []);
 
-    // Keep the handle within the viewport if the window is resized.
+    // Keep the pill within the viewport, and the travel distance
+    // accurate, if the window is resized.
     useEffect(() => {
         function handleResize() {
             const height =
-                launcherRef.current?.offsetHeight || 58;
+                pillRef.current?.offsetHeight || ICON_SIZE;
 
             const margin = 12;
 
@@ -329,7 +342,11 @@ function FloatingChat() {
                     )
                 )
             );
+
+            setTravelDistance(computeTravelDistance());
         }
+
+        handleResize();
 
         window.addEventListener(
             "resize",
@@ -394,49 +411,45 @@ function FloatingChat() {
 
     /*
     |--------------------------------------------------------------------------
-    | Dragging — handle (vertical reposition + drag-right-to-open)
+    | Dragging — the pill (vertical reposition + horizontal open/close)
+    |--------------------------------------------------------------------------
+    |
+    | One set of handlers services both the chat icon (direction +1,
+    | opens) and the home icon (direction -1, closes) — whichever one
+    | is currently showing is the one that can start a gesture.
     |--------------------------------------------------------------------------
     */
 
-    function handlePointerDown(event) {
+    function handlePointerDown(event, direction) {
         if (event.button !== 0) return;
-        if (isOpen) return;
 
-        const launcher =
-            launcherRef.current;
+        // Only the icon currently at rest can start a gesture — the
+        // chat icon opens (only while closed), the home icon closes
+        // (only while open).
+        if (direction === 1 && isOpen) return;
+        if (direction === -1 && !isOpen) return;
 
-        if (!launcher) return;
+        const pill = pillRef.current;
 
-        // Measure the real, current distance to the home icon so
-        // "the far right" means exactly where it actually sits —
-        // not an arbitrary fixed distance.
-        const ownRect =
-            launcher.getBoundingClientRect();
+        if (!pill) return;
 
-        const targetRect =
-            homeButtonRef.current?.getBoundingClientRect();
-
-        const travelDistance = targetRect
-            ? Math.max(80, targetRect.left - ownRect.left)
-            : Math.max(
-                80,
-                window.innerWidth - ownRect.left - ownRect.width - 16
-            );
+        const measuredTravel = computeTravelDistance();
 
         dragData.current = {
             dragging: true,
             moved: false,
             mode: null,
+            direction,
             startX: event.clientX,
             startY: event.clientY,
             startCenterY: centerY,
-            travelDistance,
+            travelDistance: measuredTravel,
         };
 
-        setLauncherTravel(travelDistance);
+        setTravelDistance(measuredTravel);
         setDragging(true);
 
-        launcher.setPointerCapture?.(
+        event.currentTarget.setPointerCapture?.(
             event.pointerId
         );
     }
@@ -459,7 +472,7 @@ function FloatingChat() {
         |--------------------------------------------------------------------------
         | Axis lock — decided once, on the first meaningful movement,
         | then held for the rest of the gesture. This is what keeps a
-        | horizontal drag from also nudging the handle up/down (and
+        | horizontal drag from also nudging the pill up/down (and
         | vice versa) if the pointer wanders slightly off-axis mid-drag.
         |--------------------------------------------------------------------------
         */
@@ -483,11 +496,11 @@ function FloatingChat() {
         if (data.mode === "vertical") {
             // Vertical reposition only — horizontal offset stays
             // locked at 0 for the rest of this drag.
-            const launcher =
-                launcherRef.current;
+            const pill =
+                pillRef.current;
 
             const height =
-                launcher?.offsetHeight || 58;
+                pill?.offsetHeight || ICON_SIZE;
 
             const viewportHeight =
                 window.innerHeight;
@@ -511,13 +524,18 @@ function FloatingChat() {
             return;
         }
 
-        // Horizontal drag recognized — the button now travels with
-        // the pointer (1:1, clamped to the real distance to the
-        // home icon), and vertical stays fully locked out no matter
-        // how the pointer moves from here on.
+        // Horizontal drag recognized — the pill now travels with the
+        // pointer (1:1, clamped to the real distance between its two
+        // resting positions), and vertical stays fully locked out no
+        // matter how the pointer moves from here on. deltaX is
+        // flipped by direction so "progress" always means "closer to
+        // the target," whichever way that physically is.
         const travel = Math.max(
             0,
-            Math.min(deltaX, data.travelDistance)
+            Math.min(
+                deltaX * data.direction,
+                data.travelDistance
+            )
         );
 
         setDragOffsetX(travel);
@@ -536,31 +554,33 @@ function FloatingChat() {
 
         /*
         |--------------------------------------------------------------------------
-        | Plain click → open
+        | Plain tap → toggle
         |--------------------------------------------------------------------------
         */
 
         if (!data.moved) {
-            openChat();
+            if (data.direction === 1) openChat();
+            else closeChat();
+
             return;
         }
 
         /*
         |--------------------------------------------------------------------------
-        | Horizontal drag that reached (close to) the far right → open
+        | Horizontal drag that reached (close to) the far side → commit
         |--------------------------------------------------------------------------
         |
-        | Vertical drags just reposition the handle (already applied live
-        | during the move above) and never open the chat. A horizontal
-        | drag has to actually get most of the way to the home icon's
-        | position to commit — not just move a little.
+        | Vertical drags just reposition the pill (already applied live
+        | during the move above) and never open or close the chat. A
+        | horizontal drag has to actually get most of the way across —
+        | not just start moving that way — to commit.
         |
         */
 
         if (data.mode === "horizontal") {
             const deltaX =
-                event.clientX -
-                data.startX;
+                (event.clientX - data.startX) *
+                data.direction;
 
             const progress =
                 Math.min(1, deltaX / data.travelDistance);
@@ -569,98 +589,9 @@ function FloatingChat() {
                 deltaX > OPEN_DRAG_THRESHOLD &&
                 progress >= DRAG_COMMIT_PROGRESS
             ) {
-                openChat();
+                if (data.direction === 1) openChat();
+                else closeChat();
             }
-        }
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Dragging — home icon (drag-left-to-close)
-    |--------------------------------------------------------------------------
-    */
-
-    function handleHomePointerDown(event) {
-        if (event.button !== 0) return;
-
-        const homeButton = event.currentTarget;
-
-        const ownRect =
-            homeButton.getBoundingClientRect();
-
-        const targetRect =
-            launcherRef.current?.getBoundingClientRect();
-
-        // Measured live, same as the launcher's — so "the far left"
-        // means exactly where the launcher actually rests.
-        const travelDistance = targetRect
-            ? Math.max(80, ownRect.left - targetRect.left)
-            : Math.max(80, ownRect.left - HANDLE_LEFT);
-
-        homeDragData.current = {
-            dragging: true,
-            moved: false,
-            startX: event.clientX,
-            travelDistance,
-        };
-
-        setHomeTravel(travelDistance);
-        setHomeDragging(true);
-
-        homeButton.setPointerCapture?.(
-            event.pointerId
-        );
-    }
-
-    function handleHomePointerMove(event) {
-        const data = homeDragData.current;
-
-        if (!data.dragging) return;
-
-        const deltaX =
-            event.clientX - data.startX;
-
-        if (Math.abs(deltaX) > 5) {
-            data.moved = true;
-        }
-
-        // The icon now travels with the pointer (1:1, clamped to the
-        // real distance to the launcher) — only ever leftward, since
-        // it rests at the right edge.
-        const travel = Math.min(
-            0,
-            Math.max(deltaX, -data.travelDistance)
-        );
-
-        setHomeDragOffsetX(travel);
-    }
-
-    function handleHomePointerUp(event) {
-        const data = homeDragData.current;
-
-        if (!data.dragging) return;
-
-        data.dragging = false;
-
-        setHomeDragging(false);
-        setHomeDragOffsetX(0);
-
-        const deltaX =
-            event.clientX - data.startX;
-
-        if (!data.moved) {
-            closeChat();
-            return;
-        }
-
-        const progress =
-            Math.min(1, -deltaX / data.travelDistance);
-
-        if (
-            deltaX < -CLOSE_DRAG_THRESHOLD &&
-            progress >= DRAG_COMMIT_PROGRESS
-        ) {
-            closeChat();
         }
     }
 
@@ -947,254 +878,122 @@ function FloatingChat() {
 
     /*
     |--------------------------------------------------------------------------
-    | Drag progress → crossfade
+    | Open progress → everything
     |--------------------------------------------------------------------------
     |
-    | Each button's own drag distance (0–its measured travel) is
-    | expressed as a
-    | 0–1 progress value. That value drives two things at once: the
-    | dragged button fading itself out as it travels, and its
-    | companion button quietly "coming alive" — fading and scaling in,
-    | in place — as a live preview of what letting go will do.
+    | One number drives the whole pill: 0 = fully closed (resting at
+    | the left, chat icon showing), 1 = fully open (resting at the
+    | right, home icon showing). Outside of an active drag it's just
+    | whichever of those isOpen says; during a drag it's read live off
+    | the gesture, in whichever direction that gesture is going.
+    |
+    | The pill itself never resizes and never clips its own content —
+    | it's always the full width of both icons side by side. What
+    | changes is purely its "left" position: at progress 0 it sits far
+    | enough left that the home icon is entirely past the page's left
+    | edge (hidden by the viewport itself, not by the pill); at
+    | progress 1, mirrored, with the chat icon pushed off the right
+    | edge instead. In between, both icons are genuinely on-screen at
+    | once, in the same pill, side by side.
     |
     */
 
-    const launcherDragProgress =
-        Math.min(1, dragOffsetX / launcherTravel);
+    const rawDragProgress =
+        Math.min(1, dragOffsetX / travelDistance);
 
-    const homeDragProgress =
-        Math.min(1, -homeDragOffsetX / homeTravel);
+    const openProgress = dragging
+        ? (isOpen ? 1 - rawDragProgress : rawDragProgress)
+        : (isOpen ? 1 : 0);
 
-    // The actual 0–1 crossfade amounts — flat at 0 until the button
-    // is nearly at the far side, then ramping to 1 exactly as it
-    // arrives. See EDGE_FADE_ZONE above.
-    const launcherEdgeFade =
-        edgeFade(launcherDragProgress);
+    const pillLeft =
+        PILL_REST_LEFT_CLOSED +
+        openProgress * travelDistance;
 
-    const homeEdgeFade =
-        edgeFade(homeDragProgress);
-
-    const launcherStyle = {
-        left: `${HANDLE_LEFT}px`,
+    const pillStyle = {
+        left: `${pillLeft}px`,
         top: `${centerY}px`,
     };
 
-    if (isOpen) {
-        // Resting hidden, unless the home icon is mid-drag toward
-        // it — in which case the launcher previews coming back to
-        // life in place (it doesn't travel; only the dragged icon
-        // travels), only once the home icon has nearly arrived.
-        if (homeDragging && homeEdgeFade > 0) {
-            launcherStyle.transform =
-                `translateY(-50%) scale(${(0.7 + 0.3 * homeEdgeFade).toFixed(3)})`;
-
-            launcherStyle.opacity = homeEdgeFade;
-            launcherStyle.pointerEvents = "none";
-        }
-    } else {
-        // Visible, and — while being dragged — following the
-        // pointer horizontally. It only starts fading once it's
-        // nearly at the far right, not from the first pixel of
-        // movement.
-        launcherStyle.transform =
-            `translateY(-50%) translateX(${dragOffsetX}px)`;
-
-        if (dragging && dragOffsetX > 0) {
-            launcherStyle.opacity =
-                Math.max(0, 1 - launcherEdgeFade);
-        }
-    }
-
-    const homeStyle = {};
-
-    if (!isOpen) {
-        // Resting hidden, unless the launcher is mid-drag toward
-        // it — same preview treatment, mirrored, only kicking in
-        // once the launcher has nearly reached it.
-        if (dragging && launcherEdgeFade > 0) {
-            homeStyle.transform =
-                `translateY(-50%) scale(${(0.7 + 0.3 * launcherEdgeFade).toFixed(3)})`;
-
-            homeStyle.opacity = launcherEdgeFade;
-            homeStyle.pointerEvents = "none";
-        }
-    } else {
-        homeStyle.transform =
-            `translateY(-50%) translateX(${homeDragOffsetX}px)`;
-
-        if (homeDragging && homeDragOffsetX < 0) {
-            homeStyle.opacity =
-                Math.max(0, 1 - homeEdgeFade);
-        }
-    }
-
-    // The docks are glued to their buttons — same transform (so they
-    // travel, scale and settle together) and the same opacity, just
-    // read straight off the button's own computed style.
-    const launcherDockStyle = {
-        top: `${centerY}px`,
+    // The chat panel tracks the exact same progress — sliding out as
+    // the pill travels right, sliding back the moment you pull back
+    // before letting go, in real time, whichever icon is driving it.
+    const overlayStyle = {
+        transform: `translateX(${(openProgress - 1) * 100}%)`,
     };
-
-    if (launcherStyle.transform !== undefined) {
-        launcherDockStyle.transform = launcherStyle.transform;
-    }
-
-    if (launcherStyle.opacity !== undefined) {
-        launcherDockStyle.opacity = launcherStyle.opacity;
-    }
-
-    const homeDockStyle = {};
-
-    if (homeStyle.transform !== undefined) {
-        homeDockStyle.transform = homeStyle.transform;
-    }
-
-    if (homeStyle.opacity !== undefined) {
-        homeDockStyle.opacity = homeStyle.opacity;
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Overlay follows the drag
-    |--------------------------------------------------------------------------
-    |
-    | The chat panel itself tracks the live drag progress — sliding
-    | out as the launcher is dragged right, sliding back if you pull
-    | back before letting go, and mirrored for the home icon's
-    | drag-to-close. Outside of an active drag, this is left alone
-    | entirely so the resting open/closed CSS transition (520ms,
-    | triggered by isOpen) handles it as before.
-    |
-    */
-
-    const overlayStyle = {};
-    let overlayDragging = false;
-
-    if (!isOpen && dragging && dragData.current.mode === "horizontal") {
-        // 0 at rest (closed, -100%) → 1 fully arrived (open, 0%).
-        overlayStyle.transform =
-            `translateX(${(launcherDragProgress - 1) * 100}%)`;
-
-        overlayDragging = true;
-    } else if (isOpen && homeDragging) {
-        // 0 at rest (open, 0%) → 1 fully arrived (closed, -100%).
-        overlayStyle.transform =
-            `translateX(${-homeDragProgress * 100}%)`;
-
-        overlayDragging = true;
-    }
 
     return (
         <>
             {/* -------------------------------------------------
-                LAUNCHER DOCK
-                The curvy backdrop the launcher "lives inside" —
-                flush with the page edge, curving out around the
-                button.
+                PILL
+                A fixed-size container holding both icons, always
+                side by side — it never resizes and never clips its
+                own content. What moves is purely its own on-screen
+                position: at rest it sits mostly off one edge of the
+                page, so the browser's own viewport boundary is what
+                hides the inactive icon, not the pill itself. See
+                the "Open progress → everything" block above.
             ------------------------------------------------- */}
 
             <div
-                className={`floating-chat-dock ${dragging
-                    ? "floating-chat-dock-dragging"
+                ref={pillRef}
+                className={`floating-pill ${dragging
+                    ? "floating-pill-dragging"
                     : ""
-                    } ${isOpen
-                        ? "floating-chat-dock-hidden"
-                        : ""
                     }`}
-                style={launcherDockStyle}
-                aria-hidden="true"
-            />
-
-            {/* -------------------------------------------------
-                DRAG HANDLE (vertical drag only · click / drag-right to open)
-            ------------------------------------------------- */}
-
-            <button
-                ref={launcherRef}
-                type="button"
-                className={`floating-chat-launcher ${dragging
-                    ? "floating-chat-launcher-dragging"
-                    : ""
-                    } ${isOpen
-                        ? "floating-chat-launcher-hidden"
-                        : ""
-                    }`}
-                style={launcherStyle}
-                onPointerDown={
-                    handlePointerDown
-                }
-                onPointerMove={
-                    handlePointerMove
-                }
-                onPointerUp={
-                    handlePointerUp
-                }
-                tabIndex={isOpen ? -1 : 0}
-                aria-hidden={isOpen}
-                aria-label="Open community chat"
-                title="Drag up or down to move · drag right or tap to open"
+                style={pillStyle}
             >
-                <MessageCircle
-                    size={18}
-                />
+                <div className="floating-pill-row">
+                    <button
+                        type="button"
+                        className="floating-pill-icon floating-pill-icon-home"
+                        onPointerDown={(event) =>
+                            handlePointerDown(event, -1)
+                        }
+                        onPointerMove={
+                            handlePointerMove
+                        }
+                        onPointerUp={
+                            handlePointerUp
+                        }
+                        tabIndex={isOpen ? 0 : -1}
+                        aria-hidden={!isOpen}
+                        aria-label="Close community chat"
+                        title="Drag left or tap to close"
+                    >
+                        <Home size={16} />
+                    </button>
 
-                <span className="floating-chat-online-dot" />
+                    <button
+                        type="button"
+                        className="floating-pill-icon floating-pill-icon-chat"
+                        onPointerDown={(event) =>
+                            handlePointerDown(event, 1)
+                        }
+                        onPointerMove={
+                            handlePointerMove
+                        }
+                        onPointerUp={
+                            handlePointerUp
+                        }
+                        tabIndex={isOpen ? -1 : 0}
+                        aria-hidden={isOpen}
+                        aria-label="Open community chat"
+                        title="Drag right or tap to open"
+                    >
+                        <MessageCircle
+                            size={18}
+                        />
 
-                <ChevronsRight
-                    size={10}
-                    className="floating-chat-drag-hint"
-                    aria-hidden="true"
-                />
-            </button>
+                        <span className="floating-chat-online-dot" />
 
-            {/* -------------------------------------------------
-                HOME DOCK
-                Same idea, mirrored — flush with the right edge.
-            ------------------------------------------------- */}
-
-            <div
-                className={`floating-home-dock ${homeDragging
-                    ? "floating-home-dock-dragging"
-                    : ""
-                    } ${isOpen
-                        ? ""
-                        : "floating-home-dock-hidden"
-                    }`}
-                style={homeDockStyle}
-                aria-hidden="true"
-            />
-
-            {/* -------------------------------------------------
-                HOME ICON (appears while chat is open · click / drag-left to close)
-            ------------------------------------------------- */}
-
-            <button
-                type="button"
-                ref={homeButtonRef}
-                className={`floating-home-button ${isOpen
-                    ? "floating-home-button-visible"
-                    : ""
-                    } ${homeDragging
-                        ? "floating-home-button-dragging"
-                        : ""
-                    }`}
-                style={homeStyle}
-                onPointerDown={
-                    handleHomePointerDown
-                }
-                onPointerMove={
-                    handleHomePointerMove
-                }
-                onPointerUp={
-                    handleHomePointerUp
-                }
-                tabIndex={isOpen ? 0 : -1}
-                aria-hidden={!isOpen}
-                aria-label="Close community chat"
-                title="Drag left or tap to close"
-            >
-                <Home size={16} />
-            </button>
+                        <ChevronsRight
+                            size={10}
+                            className="floating-chat-drag-hint"
+                            aria-hidden="true"
+                        />
+                    </button>
+                </div>
+            </div>
 
             {/* -------------------------------------------------
                 FULL-PAGE COMMUNITY CHAT OVERLAY
@@ -1204,7 +1003,7 @@ function FloatingChat() {
                 className={`floating-chat-overlay ${isOpen
                     ? "floating-chat-overlay-open"
                     : ""
-                    } ${overlayDragging
+                    } ${dragging
                         ? "floating-chat-overlay-dragging"
                         : ""
                     }`}
@@ -1233,14 +1032,14 @@ function FloatingChat() {
                         </div>
 
                         <div className="floating-chat-header-actions">
-                            <Link
+                            {/* <Link
                                 to="/community"
                                 title="Open full community"
                             >
                                 <ArrowUpRight
                                     size={16}
                                 />
-                            </Link>
+                            </Link> */}
 
                             <button
                                 type="button"

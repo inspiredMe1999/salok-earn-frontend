@@ -1571,3 +1571,48 @@ html.dark .auth-loading-card {
     box-shadow:
         0 24px 70px rgba(0, 0, 0, 0.28);
 }
+
+
+.auth-back-home {
+display: inline-flex;
+align-items: center;
+gap: 7px;
+width: fit-content;
+margin-bottom: 28px;
+
+color: var(--color-text-muted);
+
+font-size: 0.8rem;
+font-weight: 600;
+text-decoration: none;
+
+transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+
+}
+
+.auth-back-home:hover {
+color: var(--color-primary);
+transform: translateX(-2px);
+}
+
+.auth-back-home svg {
+transition: transform 0.2s ease;
+}
+
+.auth-back-home:hover svg {
+transform: translateX(-3px);
+}
+
+.auth-back-home:focus-visible {
+outline: 2px solid rgba(213, 167, 68, 0.65);
+outline-offset: 4px;
+border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+.auth-back-home {
+margin-bottom: 22px;
+}
+}

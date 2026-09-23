@@ -1,0 +1,388 @@
+/*
+|--------------------------------------------------------------------------
+| ADMIN DESIGN FOUNDATION
+|--------------------------------------------------------------------------
+|
+| WHY THIS FILE EXISTS
+|
+| Every admin page (admin-audit.css, admin-broadcasts.css, admin-users.css,
+| AdminLayout.css, ...) was built independently and each one invented its
+| own CSS custom properties — --text-primary, --bg-card, --border-color,
+| --au-*, --audit-*, --broadcast-*, --device-*, --system-*, --task-*,
+| --withdrawal-*, and more. None of those names were ever actually
+| *defined* anywhere. Every single usage was silently falling back to
+| its own hand-typed fallback color (var(--text-primary, #171717) in one
+| file, var(--text-primary, #f8fafc) in another, var(--text-primary, #fff)
+| in a third...), which is exactly why every admin page ends up looking
+| like a different theme — they're not reading from a shared palette at
+| all, they're each running on whatever fallback the person who wrote
+| that file happened to type that day.
+|
+| THE FIX
+|
+| Rather than rewrite the structural CSS in all fourteen page files
+| (very high risk, very little payoff — the *values* those pages want
+| are almost all reasonable), this file simply *defines* every one of
+| those variable names, once, aliased to the real Salok Earn design
+| tokens from index.css. Once defined here — on .admin-layout, which
+| wraps the sidebar, header and every routed page — every existing
+| var(--text-primary, ...) style declaration across the whole admin
+| section resolves to the same real value instead of its own private
+| fallback. The fallback becomes dead code; the alias wins.
+|
+| This is intentionally the single highest-leverage fix available:
+| ~70 previously-undefined names, corrected in one place, with zero
+| changes needed to the structural CSS or markup of any existing page.
+|
+| DARK-ONLY, BUT NOT DARK-ONLY-FOREVER
+|
+| The admin section intentionally does not expose a light/dark toggle.
+| AdminLayout.jsx forces `data-theme="dark"` on <html> for as long as
+| an admin route is mounted (and restores whatever the signed-in
+| person's own frontend preference was when they leave). Because that
+| reuses the exact same [data-theme] attribute and the exact same
+| --color-* variables the public/user side already defines in
+| index.css, adding an admin light mode later is NOT a rewrite — it's:
+|
+|   1. Stop forcing data-theme="dark" in AdminLayout (or make it
+|      conditional on an admin preference).
+|   2. index.css already has a complete :root[data-theme="light"]
+|      block with every one of these variables defined — nothing
+|      below needs to change, because everything here reads *through*
+|      --color-* rather than hardcoding values itself.
+|
+|--------------------------------------------------------------------------
+*/
+
+.admin-layout {
+
+    /* =====================================================
+       TYPOGRAPHY
+       Poppins is the primary/default admin typeface (same
+       --font-primary the public site uses — already loaded
+       once in index.css). A couple of pages layer an accent
+       typeface on top for specific decorative moments (a
+       serif for one big hero figure, tabular mono for ledger
+       numbers) — that's a deliberate, scoped enhancement, not
+       something this file should strip out.
+       ===================================================== */
+
+    font-family: var(--font-primary);
+
+
+    /* =====================================================
+       GENERIC "FAKE GLOBAL" ALIASES
+       The names most admin files assumed would exist.
+       ===================================================== */
+
+    --text-primary: var(--color-text);
+    --text-secondary: var(--color-text-secondary);
+    --text-muted: var(--color-text-muted);
+    --text-color: var(--color-text);
+
+    --bg-card: var(--color-card);
+    --bg-secondary: var(--color-surface-2);
+    --bg-page: var(--color-bg);
+    --bg-hover: var(--color-surface-hover);
+    --bg-primary: var(--color-bg);
+
+    --border-color: var(--color-border);
+
+    --card-bg: var(--color-card);
+    --surface-bg: var(--color-surface);
+    --surface-hover: var(--color-surface-hover);
+    --input-bg: var(--color-surface-2);
+
+    --shadow-card: var(--shadow-sm);
+
+
+    /* =====================================================
+       SHARED ADMIN ACCENT PALETTE
+       (already established in admin.css's .admin-page scope —
+       repeated here so it's available to the sidebar/header
+       chrome too, not just routed page content.)
+       ===================================================== */
+
+    --admin-gold: var(--color-primary);
+    --admin-gold-bg: var(--color-primary-soft);
+    --admin-teal: #4fa89f;
+    --admin-teal-bg: rgba(79, 168, 159, 0.12);
+    --admin-danger: var(--color-danger);
+    --admin-danger-bg: color-mix(in srgb, var(--color-danger) 12%, transparent);
+    --admin-positive: var(--color-success);
+    --admin-positive-bg: color-mix(in srgb, var(--color-success) 12%, transparent);
+    --admin-blue: var(--color-info);
+    --admin-blue-bg: color-mix(in srgb, var(--color-info) 13%, transparent);
+    --admin-slate: #8593a8;
+    --admin-slate-bg: rgba(133, 147, 168, 0.16);
+    --admin-brown: #b98b63;
+    --admin-brown-bg: rgba(185, 139, 99, 0.15);
+
+    --admin-line: var(--color-border);
+    --admin-hover: var(--color-surface-hover);
+
+
+    /* =====================================================
+       PAGE-NAMESPACED ALIASES
+       One family per page that invented its own prefix.
+       Every one just points back at the same real tokens.
+       ===================================================== */
+
+    /* --au-* — AdminUsersPage */
+    --au-amber: var(--color-warning);
+    --au-blue: var(--color-info);
+    --au-faint: var(--color-text-faint);
+    --au-gold: var(--color-primary);
+    --au-gold-deep: var(--gold-600);
+    --au-gold-wash: var(--color-primary-soft);
+    --au-green: var(--color-success);
+    --au-ink: var(--color-text);
+    --au-line: var(--color-border);
+    --au-line-soft: var(--color-border);
+    --au-muted: var(--color-text-muted);
+    --au-panel: var(--color-card);
+    --au-r-lg: var(--radius-lg);
+    --au-r-md: var(--radius-md);
+    --au-r-sm: var(--radius-sm);
+    --au-red: var(--color-danger);
+    --au-shadow: var(--shadow-sm);
+    --au-text: var(--color-text);
+
+    /* --audit-* — AdminAuditPage */
+    --audit-border: var(--color-border);
+    --audit-gold: var(--color-primary);
+    --audit-gold-soft: var(--color-primary-soft);
+    --audit-muted: var(--color-text-muted);
+
+    /* --broadcast-* — AdminBroadcastsPage */
+    --broadcast-border: var(--color-border);
+    --broadcast-gold: var(--color-primary);
+    --broadcast-gold-soft: var(--color-primary-soft);
+    --broadcast-muted: var(--color-text-muted);
+    --broadcast-panel: var(--color-card);
+
+    /* --device-* — AdminDevicesPage */
+    --device-border: var(--color-border);
+    --device-card: var(--color-card);
+    --device-faint: var(--color-text-faint);
+    --device-gold: var(--color-primary);
+    --device-gold-border: var(--color-primary-border);
+    --device-gold-soft: var(--color-primary-soft);
+    --device-muted: var(--color-text-muted);
+    --device-surface: var(--color-surface);
+    --device-surface-2: var(--color-surface-2);
+    --device-text: var(--color-text);
+
+    /* --system-* — AdminSystemPage */
+    --system-border: var(--color-border);
+    --system-gold: var(--color-primary);
+    --system-gold-soft: var(--color-primary-soft);
+    --system-muted: var(--color-text-muted);
+
+    /* --task-* — AdminTasksPage */
+    --task-danger: var(--color-danger);
+    --task-gold: var(--color-primary);
+    --task-gold-soft: var(--color-primary-soft);
+    --task-success: var(--color-success);
+
+    /* --withdrawal-* — AdminWithdrawalsPage */
+    --withdrawal-danger: var(--color-danger);
+    --withdrawal-danger-soft: color-mix(in srgb, var(--color-danger) 12%, transparent);
+    --withdrawal-gold: var(--color-primary);
+    --withdrawal-gold-soft: var(--color-primary-soft);
+    --withdrawal-info: var(--color-info);
+    --withdrawal-info-soft: color-mix(in srgb, var(--color-info) 13%, transparent);
+    --withdrawal-success: var(--color-success);
+    --withdrawal-success-soft: color-mix(in srgb, var(--color-success) 12%, transparent);
+
+
+    /* =====================================================
+       SPACING SCALE
+       Promoted from admin.css's .admin-page scope so it's
+       available admin-wide, including inside AdminSidebar/
+       AdminHeader.
+       ===================================================== */
+
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-7: 32px;
+    --space-8: 40px;
+}
+
+
+/* =========================================================
+   BASE
+   ========================================================= */
+
+.admin-layout {
+    min-height: 100vh;
+
+    background: var(--color-bg);
+    color: var(--color-text);
+}
+
+
+/* =========================================================
+   SHARED PAGE HEADER PATTERN
+   The canonical "hero / page introduction" block. Existing
+   page-specific classes (.admin-audit-header, .au-head, ...)
+   keep working as their own selectors — this block is the
+   default for any page using the plain, shared class names
+   (.admin-page-heading is what AdminTriviaPage and
+   AdminWithdrawalsPage already reach for), and the template
+   any future admin page should copy instead of inventing a
+   new one-off header.
+   ========================================================= */
+
+.admin-page-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+
+    margin-bottom: var(--space-6);
+}
+
+
+.admin-page-heading h1 {
+    margin: 0 0 7px;
+
+    color: var(--color-text);
+
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+}
+
+
+.admin-page-heading p {
+    margin: 0;
+    max-width: 46ch;
+
+    color: var(--color-text-muted);
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+.admin-heading-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+
+.admin-panel-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+
+    margin-bottom: var(--space-4);
+}
+
+
+.admin-panel-heading h2 {
+    margin: 0;
+
+    color: var(--color-text);
+
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+
+.admin-panel-heading p {
+    margin: 4px 0 0;
+
+    color: var(--color-text-muted);
+
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   SHARED SURFACES
+   Generic building blocks any admin page can reach for
+   instead of redefining its own card/table/badge look.
+   ========================================================= */
+
+.admin-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+
+    background: var(--color-card);
+}
+
+
+.admin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 4px 10px;
+
+    border-radius: var(--radius-pill);
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+.admin-badge--gold {
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+}
+
+
+.admin-badge--success {
+    color: var(--color-success);
+    background: color-mix(in srgb, var(--color-success) 12%, transparent);
+}
+
+
+.admin-badge--danger {
+    color: var(--color-danger);
+    background: color-mix(in srgb, var(--color-danger) 12%, transparent);
+}
+
+
+.admin-badge--warning {
+    color: var(--color-warning);
+    background: color-mix(in srgb, var(--color-warning) 12%, transparent);
+}
+
+
+.admin-badge--info {
+    color: var(--color-info);
+    background: color-mix(in srgb, var(--color-info) 13%, transparent);
+}
+
+
+.admin-badge--neutral {
+    color: var(--color-text-muted);
+    background: var(--color-surface-2);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .admin-page-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

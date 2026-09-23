@@ -42,19 +42,20 @@
 }
 
 .admin-tasks-header h1 {
+    font-weight: 700;
     margin: 8px 0 6px;
     color: var(--text-primary);
-    font-size: clamp(25px, 3vw, 35px);
-    line-height: 1.06;
-    letter-spacing: -0.035em;
+    font-size: clamp(26px, 3vw, 34px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
 }
 
 .admin-tasks-header p {
     max-width: 720px;
     margin: 0;
     color: var(--text-secondary);
-    font-size: 12px;
-    line-height: 1.65;
+    font-size: 13px;
+    line-height: 1.6;
 }
 
 .admin-tasks-header-actions {

@@ -57,11 +57,12 @@
 }
 
 .admin-earnings-heading h1 {
+    font-weight: 700;
     margin: 0;
     color: var(--color-text, #181714);
-    font-size: clamp(29px, 3vw, 41px);
-    line-height: 1.06;
-    letter-spacing: -1.35px;
+    font-size: clamp(26px, 3vw, 34px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
 }
 
 .admin-earnings-heading-copy > p {

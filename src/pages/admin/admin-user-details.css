@@ -34,13 +34,17 @@
 .admin-details-heading h2 {
     margin: 8px 0;
     color: var(--text-primary, #fff);
-    font-size: clamp(1.6rem, 3vw, 2.15rem);
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
 }
 
 .admin-details-heading p {
     margin: 0;
     color: var(--text-secondary, #aab2c8);
     line-height: 1.6;
+    font-size: 13px;
 }
 
 .admin-details-actions {

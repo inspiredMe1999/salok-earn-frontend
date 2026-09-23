@@ -98,15 +98,15 @@
 
 .au-head h1 {
     margin: 10px 0 6px;
-    font-size: clamp(1.7rem, 2.6vw, 2.2rem);
-    font-weight: 600;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 700;
     letter-spacing: -0.02em;
-    line-height: 1.1;
+    line-height: 1.15;
 }
 
 .au-head p {
     color: var(--au-muted);
-    font-size: 0.9rem;
+    font-size: 13px;
     line-height: 1.6;
 }
 

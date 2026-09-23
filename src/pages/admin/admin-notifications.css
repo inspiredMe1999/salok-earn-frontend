@@ -30,16 +30,19 @@
 }
 
 .admin-notifications-header h1 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
     margin: 0;
     color: var(--text-primary);
-    font-size: clamp(1.7rem, 3vw, 2.35rem);
-    line-height: 1.1;
+    font-size: clamp(26px, 3vw, 34px);
+    line-height: 1.15;
 }
 
 .admin-notifications-header p {
+    line-height: 1.6;
     margin: 9px 0 0;
     color: var(--text-secondary);
-    font-size: 0.92rem;
+    font-size: 13px;
 }
 
 .admin-notifications-header-actions {

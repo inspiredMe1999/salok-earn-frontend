@@ -15,69 +15,101 @@
    ========================================================= */
 
 /* =========================================================
-   DRAG HANDLE
+   PILL
+   A fixed-size container holding both the home and chat icons,
+   always side by side — it never resizes and never clips its own
+   content. It's positioned mostly off one edge of the page at
+   rest, so the browser's own viewport boundary hides whichever
+   icon is currently off-screen (giving the "straight line at the
+   page edge, curving around the visible icon" look for free, since
+   the pill is simply cut off there — not the pill's own overflow).
+   The whole pill travels horizontally with the drag and can be
+   repositioned vertically. Inverts with theme: light backdrop in
+   dark mode, dark backdrop in light mode.
    ========================================================= */
 
-.floating-chat-launcher {
+.floating-pill {
     position: fixed;
-    z-index: 9990;
+    z-index: 10001;
 
-    width: 46px;
-    height: 46px;
+    width: 94px;
+    height: 44px;
+
+    transform: translateY(-50%);
+
+    border-radius: 22px;
+
+    background: linear-gradient(120deg, #fffdf9, #efe8d8);
+
+    box-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.16),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+
+    transition:
+        left 380ms ease,
+        box-shadow var(--transition-normal);
+        padding: 6px;
+}
+
+/* While actively being dragged, position changes should be
+   instant, not eased — the eased transition above is only for the
+   resting-state open/close settle. */
+.floating-pill-dragging {
+    transition: box-shadow var(--transition-normal);
+}
+
+:root[data-theme="light"] .floating-pill {
+    background: linear-gradient(120deg, #17160f, #080807);
+
+    box-shadow:
+        0 14px 34px rgba(20, 16, 6, 0.16),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.floating-pill-row {
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.floating-pill-icon {
+    position: relative;
+    flex: 0 0 auto;
+
+    width: 44px;
+    height: 44px;
 
     display: grid;
     place-items: center;
 
-    border: 1px solid var(--color-primary-border);
+    border: 0;
     border-radius: 50%;
+
+    background: transparent;
+
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+}
+
+.floating-pill-icon:active {
+    cursor: grabbing;
+}
+
+.floating-pill-icon-home {
+    color: var(--color-primary);
+}
+
+.floating-pill-icon-chat {
+    color: var(--color-primary-text);
 
     background:
         radial-gradient(circle at 30% 20%, rgba(255, 255, 255, .25), transparent 40%),
         linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
 
-    color: var(--color-primary-text);
-
-    box-shadow:
-        var(--shadow-gold),
-        0 0 0 5px var(--color-primary-soft);
-
-    cursor: grab;
-    touch-action: none;
-
-    user-select: none;
-
-    transition:
-        box-shadow var(--transition-normal),
-        opacity 380ms ease,
-        transform 380ms ease,
-        background var(--transition-normal);
-}
-
-/* While actively being dragged, position/rubber-band changes should be
-   instant, not eased — the eased transform above is only for the
-   open/close hide-and-reveal transition. */
-.floating-chat-launcher-dragging {
-    transition:
-        box-shadow var(--transition-normal),
-        background var(--transition-normal);
-}
-
-.floating-chat-launcher:hover {
-    box-shadow:
-        0 16px 36px var(--color-primary-soft),
-        0 0 0 7px var(--color-primary-soft);
-}
-
-.floating-chat-launcher:active,
-.floating-chat-launcher-dragging {
-    cursor: grabbing;
-}
-
-.floating-chat-launcher-hidden {
-    opacity: 0;
-    transform: translateY(-50%) scale(.7);
-
-    pointer-events: none;
+    border-radius: 50%;
 }
 
 .floating-chat-online-dot {
@@ -96,12 +128,12 @@
 }
 
 /* Animated "drag right to open" affordance — a double chevron that
-   beeps/nudges toward the right edge of the button. Fades out the
-   moment an actual drag starts, and never shows while hidden. */
+   beeps/nudges toward the right edge of the chat icon. Fades out
+   the moment an actual drag starts. */
 .floating-chat-drag-hint {
     position: absolute;
     top: 50%;
-    right: 4px;
+    right: 2px;
 
     color: var(--color-primary-text);
 
@@ -127,175 +159,9 @@
     }
 }
 
-.floating-chat-launcher-dragging .floating-chat-drag-hint,
-.floating-chat-launcher-hidden .floating-chat-drag-hint {
+.floating-pill-dragging .floating-chat-drag-hint {
     opacity: 0;
     animation: none;
-}
-
-/* Curvy "dock" backdrop the launcher rests inside — flush with the
-   page edge (straight line), curving out into a rounded cap around
-   the button, and glued to the button's own transform so it travels,
-   scales and settles right alongside it. Inverts with theme: light
-   backdrop in dark mode, dark backdrop in light mode. */
-.floating-chat-dock {
-    position: fixed;
-    z-index: 9989;
-    left: 0;
-
-    width: 72px;
-    height: 72px;
-
-    transform: translateY(-50%);
-
-    border-radius: 0 36px 36px 0;
-
-    background: linear-gradient(120deg, #fffdf9, #efe8d8);
-
-    box-shadow:
-        0 14px 34px rgba(0, 0, 0, 0.16),
-        inset -1px 0 0 rgba(255, 255, 255, 0.4);
-
-    pointer-events: none;
-
-    transition:
-        opacity 380ms ease,
-        transform 380ms ease;
-}
-
-/* While the launcher it's glued to is actively being dragged, the
-   dock needs to move with it instantly too — no easing lag. */
-.floating-chat-dock-dragging {
-    transition: none;
-}
-
-.floating-chat-dock-hidden {
-    opacity: 0;
-    transform: translateY(-50%) scale(.7);
-}
-
-:root[data-theme="light"] .floating-chat-dock {
-    background: linear-gradient(120deg, #17160f, #080807);
-
-    box-shadow:
-        0 14px 34px rgba(20, 16, 6, 0.16),
-        inset -1px 0 0 rgba(255, 255, 255, 0.05);
-}
-
-/* =========================================================
-   HOME ICON (close trigger for the full-page overlay)
-   ========================================================= */
-
-.floating-home-button {
-    position: fixed;
-    z-index: 10001;
-
-    top: 50%;
-    right: 16px;
-
-    width: 42px;
-    height: 42px;
-
-    display: grid;
-    place-items: center;
-
-    border: 1px solid var(--color-border);
-    border-radius: 50%;
-
-    background: var(--color-card);
-
-    color: var(--color-primary);
-
-    box-shadow: var(--shadow-lg);
-
-    cursor: grab;
-    touch-action: none;
-
-    user-select: none;
-
-    opacity: 0;
-    transform: translateY(-50%) scale(.7);
-
-    pointer-events: none;
-
-    transition:
-        opacity 380ms ease 90ms,
-        transform 380ms ease 90ms,
-        box-shadow var(--transition-normal);
-}
-
-.floating-home-button:active {
-    cursor: grabbing;
-}
-
-/* While actively being dragged, position/fade changes should be
-   instant, not eased — same reasoning as the launcher's dragging
-   class above. */
-.floating-home-button-dragging {
-    transition:
-        box-shadow var(--transition-normal);
-}
-
-.floating-home-button-visible {
-    opacity: 1;
-    transform: translateY(-50%) scale(1);
-
-    pointer-events: auto;
-}
-
-.floating-home-button:hover {
-    box-shadow:
-        0 16px 36px rgba(0, 0, 0, .18),
-        0 0 0 5px var(--color-primary-soft);
-}
-
-/* Curvy "dock" backdrop the home icon rests inside — mirrored from
-   the launcher's: flush with the page's right edge, curving out
-   around the button, and glued to the button's own transform. */
-.floating-home-dock {
-    position: fixed;
-    z-index: 10000;
-    top: 50%;
-    right: 0;
-
-    width: 66px;
-    height: 66px;
-
-    transform: translateY(-50%);
-
-    border-radius: 33px 0 0 33px;
-
-    background: linear-gradient(240deg, #fffdf9, #efe8d8);
-
-    box-shadow:
-        0 14px 34px rgba(0, 0, 0, 0.16),
-        inset 1px 0 0 rgba(255, 255, 255, 0.4);
-
-    pointer-events: none;
-
-    opacity: 1;
-    transition:
-        opacity 380ms ease,
-        transform 380ms ease;
-}
-
-/* Instant tracking while the home icon it's glued to is being
-   dragged — no easing lag. */
-.floating-home-dock-dragging {
-    transition: none;
-}
-
-.floating-home-dock-hidden {
-    opacity: 0;
-    transform: translateY(-50%) scale(.7);
-}
-
-:root[data-theme="light"] .floating-home-dock {
-    background: linear-gradient(240deg, #17160f, #080807);
-
-    box-shadow:
-        0 14px 34px rgba(20, 16, 6, 0.16),
-        inset 1px 0 0 rgba(255, 255, 255, 0.05);
 }
 
 /* =========================================================
@@ -1077,32 +943,6 @@
    ========================================================= */
 
 @media (max-width: 700px) {
-    .floating-chat-launcher {
-        width: 40px;
-        height: 40px;
-    }
-
-    .floating-chat-dock {
-        width: 62px;
-        height: 62px;
-
-        border-radius: 0 31px 31px 0;
-    }
-
-    .floating-home-button {
-        width: 38px;
-        height: 38px;
-
-        right: 12px;
-    }
-
-    .floating-home-dock {
-        width: 58px;
-        height: 58px;
-
-        border-radius: 29px 0 0 29px;
-    }
-
     .floating-chat-overlay-inner {
         max-width: none;
 
@@ -1144,12 +984,8 @@
 }
 
 @media (max-width: 420px) {
-    .floating-chat-launcher {
+    .floating-pill {
         left: 10px !important;
-    }
-
-    .floating-home-button {
-        right: 10px;
     }
 }
 
@@ -1157,14 +993,8 @@
    LIGHT MODE
    ========================================================= */
 
-:root[data-theme="light"] .floating-chat-launcher {
-    box-shadow:
-        0 10px 26px rgba(191, 139, 24, 0.24),
-        0 0 0 5px var(--color-primary-soft);
-}
-
-:root[data-theme="light"] .floating-home-button {
-    box-shadow: 0 20px 50px rgba(40, 35, 20, 0.14);
+:root[data-theme="light"] .floating-pill-icon-chat {
+    box-shadow: 0 10px 26px rgba(191, 139, 24, 0.24);
 }
 
 :root[data-theme="light"] .floating-chat-emoji-picker {
@@ -1178,10 +1008,8 @@
 @media (prefers-reduced-motion: reduce) {
 
     .floating-chat-overlay,
-    .floating-chat-launcher,
-    .floating-home-button,
-    .floating-chat-dock,
-    .floating-home-dock,
+    .floating-pill,
+    .floating-pill-row,
     .floating-chat-composer,
     .floating-message-actions {
         transition: none;

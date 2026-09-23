@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
     ArrowRight,
+    ArrowLeft,
     Check,
     Eye,
     EyeOff,
@@ -229,6 +230,19 @@ export default function SignupPage() {
                     </span>
                 </div>
             </div>
+
+            {/* Back home */}
+                    <Link
+                        to="/"
+                        className="auth-back-home"
+                    >
+                        <ArrowLeft
+                            size={17}
+                            strokeWidth={2}
+                        />
+            
+                        <span>Back home</span>
+                    </Link>
 
             <div className="auth-heading auth-signup-heading">
                 <span className="auth-form-eyebrow">

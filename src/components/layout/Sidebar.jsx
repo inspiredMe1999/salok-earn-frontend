@@ -80,11 +80,11 @@ const navigation = [
         path: "/notifications",
         icon: Bell,
     },
-    {
-        label: "Community",
-        path: "/community",
-        icon: MessageCircle,
-    },
+    // {
+    //     label: "Community",
+    //     path: "/community",
+    //     icon: MessageCircle,
+    // },
 ];
 
 const secondaryNavigation = [

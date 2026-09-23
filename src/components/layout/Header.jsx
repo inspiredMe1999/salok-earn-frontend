@@ -332,7 +332,7 @@ function Header({
 
                                     <div className="profile-dropdown-divider" />
 
-                                    <Link
+                                    {/* <Link
                                         to="/profile"
                                         className="profile-dropdown-item"
                                         onClick={() =>
@@ -384,9 +384,9 @@ function Header({
                                         <span>
                                             Settings
                                         </span>
-                                    </Link>
+                                    </Link> */}
 
-                                    <div className="profile-dropdown-divider" />
+                                    {/* <div className="profile-dropdown-divider" /> */}
 
                                     <button
                                         type="button"

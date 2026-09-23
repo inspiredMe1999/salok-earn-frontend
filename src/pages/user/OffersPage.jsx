@@ -134,12 +134,10 @@ function OffersPage() {
 
                 <p>
                     An offerwall is a collection of offers
-                    from a third-party network — app installs,
+                    from a third-party network app installs,
                     sign-ups, quick surveys and trials. Complete
                     one through Salok and the reward lands in
-                    your wallet automatically. Below are the
-                    networks we currently support and a sample
-                    of what's live right now.
+                    your wallet automatically.
                 </p>
             </section>
 

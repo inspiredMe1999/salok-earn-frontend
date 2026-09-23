@@ -26,17 +26,19 @@
 }
 
 .admin-referrals-header h1 {
+    letter-spacing: -0.02em;
     margin: 0;
     color: var(--text-primary, #171717);
-    font-size: clamp(1.7rem, 3vw, 2.3rem);
-    line-height: 1.1;
-    font-weight: 800;
+    font-size: clamp(26px, 3vw, 34px);
+    line-height: 1.15;
+    font-weight: 700;
 }
 
 .admin-referrals-header p {
+    line-height: 1.6;
     margin: 8px 0 0;
     color: var(--text-secondary, #737373);
-    font-size: 0.92rem;
+    font-size: 13px;
 }
 
 .admin-referrals-header-actions {

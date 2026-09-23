@@ -73,10 +73,11 @@
 }
 
 .admin-devices-heading h1 {
+    font-weight: 700;
     margin: 0;
-    font-size: clamp(29px, 3vw, 41px);
-    line-height: 1.06;
-    letter-spacing: -1.3px;
+    font-size: clamp(26px, 3vw, 34px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
 }
 
 .admin-devices-heading-copy > p {
