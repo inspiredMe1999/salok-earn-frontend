@@ -1,0 +1,519 @@
+/* =========================================================
+   ADMIN PAGE HERO
+   =========================================================
+
+   One hero, three optional layers:
+   1. identity (icon/eyebrow/title/description/actions) — always
+   2. metric (one big feature figure + sparkline) — optional
+   3. stats (a row of smaller supporting figures) — optional
+   ========================================================= */
+
+.admin-page-hero {
+    position: relative;
+    margin-bottom: var(--space-6);
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    isolation: isolate;
+    background:
+        linear-gradient(165deg,
+            var(--color-card) 0%,
+            color-mix(in srgb, var(--color-card) 90%, black) 100%);
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-page-hero-glow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(40% 70% at 6% 0%,
+            rgba(220, 169, 47, 0.18),
+            transparent 70%),
+        radial-gradient(34% 60% at 100% 100%,
+            rgba(79, 168, 159, 0.10),
+            transparent 70%);
+}
+
+
+/* =========================================================
+   Identity row
+   ========================================================= */
+
+.admin-page-hero-top {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-5);
+    padding: var(--space-7);
+}
+
+.admin-page-hero-identity {
+    min-width: 0;
+}
+
+.admin-hero-breadcrumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+    color: var(--color-text-faint);
+    font-size: 0.72rem;
+}
+
+.admin-hero-breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.admin-hero-breadcrumb a {
+    color: var(--color-text-muted);
+    transition: color var(--transition-normal);
+}
+
+.admin-hero-breadcrumb a:hover {
+    color: var(--gold-400);
+}
+
+.admin-hero-breadcrumb span[aria-current="page"] {
+    color: var(--color-text-soft);
+}
+
+.admin-page-hero-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.admin-page-hero-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    color: var(--color-primary-text);
+    background: linear-gradient(135deg, var(--gold-300), var(--gold-600));
+    box-shadow: 0 8px 20px rgba(220, 169, 47, 0.28);
+}
+
+.admin-page-hero-text {
+    min-width: 0;
+}
+
+.admin-page-hero-eyebrow {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--gold-400);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.admin-page-hero-text h1 {
+    margin: 0;
+    color: var(--color-text);
+    font-size: clamp(22px, 2.6vw, 30px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.admin-page-hero-text p {
+    margin: 7px 0 0;
+    max-width: 52ch;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.admin-page-hero-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+
+/* =========================================================
+   Shared action-slot helpers
+   ========================================================= */
+
+.admin-hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    color: var(--color-text-muted);
+    background: var(--color-surface-2);
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   Metric
+   ========================================================= */
+
+.admin-page-hero-metric {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-6);
+    padding: 0 var(--space-7) var(--space-6);
+}
+
+.admin-hero-metric-primary {
+    min-width: 0;
+}
+
+.admin-hero-metric-head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.admin-hero-metric-label {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.admin-hero-period-pill {
+    padding: 3px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    color: var(--color-text-muted);
+    font-size: 0.68rem;
+    font-weight: 600;
+}
+
+.admin-hero-metric-value {
+    display: block;
+    color: var(--color-text);
+    font-family: var(--admin-font-serif);
+    font-weight: 560;
+    font-size: clamp(32px, 4.6vw, 50px);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    font-variant-numeric: tabular-nums;
+    animation: adminHeroRise 0.5s ease-out;
+}
+
+@keyframes adminHeroRise {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.admin-hero-metric-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.admin-hero-change {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.admin-hero-change.is-up {
+    color: var(--admin-success);
+    background: var(--admin-success-soft);
+}
+
+.admin-hero-change.is-down {
+    color: var(--admin-danger);
+    background: var(--admin-danger-soft);
+}
+
+.admin-hero-metric-note {
+    color: var(--color-text-faint);
+    font-size: 0.75rem;
+}
+
+.admin-hero-sparkline {
+    flex: 0 1 240px;
+    width: 240px;
+    height: 56px;
+    opacity: 0.9;
+}
+
+
+/* =========================================================
+   Loading shimmer
+   ========================================================= */
+
+.admin-hero-shimmer {
+    display: inline-block;
+    width: 110px;
+    height: 1em;
+    border-radius: 6px;
+    background:
+        linear-gradient(90deg,
+            var(--color-surface-2),
+            var(--color-surface-3),
+            var(--color-surface-2));
+    background-size: 200% 100%;
+    animation: adminHeroShimmer 1.4s ease-in-out infinite;
+}
+
+.admin-hero-shimmer-value {
+    width: 220px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+}
+
+@keyframes adminHeroShimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+
+/* =========================================================
+   Stat rail
+   ========================================================= */
+
+.admin-page-hero-stats {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    border-top: 1px solid var(--color-border);
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.admin-hero-stat {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-5) var(--space-6);
+    border: 0;
+    border-right: 1px solid var(--color-border);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: default;
+}
+
+.admin-hero-stat:last-child {
+    border-right: 0;
+}
+
+.admin-hero-stat.is-interactive {
+    cursor: pointer;
+    transition: background-color var(--transition-normal);
+}
+
+.admin-hero-stat.is-interactive:hover {
+    background: var(--color-surface-hover);
+}
+
+.admin-hero-stat.is-interactive[aria-pressed="true"] {
+    background: var(--color-primary-soft);
+    box-shadow: inset 0 -2px 0 var(--gold-400);
+}
+
+.admin-hero-stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    background: var(--color-surface-3);
+}
+
+.admin-hero-stat-icon[data-tone="gold"] {
+    color: var(--gold-400);
+    background: var(--color-primary-soft);
+}
+
+.admin-hero-stat-icon[data-tone="success"] {
+    color: var(--admin-success);
+    background: var(--admin-success-soft);
+}
+
+.admin-hero-stat-icon[data-tone="danger"] {
+    color: var(--admin-danger);
+    background: var(--admin-danger-soft);
+}
+
+.admin-hero-stat-icon[data-tone="warning"] {
+    color: var(--admin-warning);
+    background: var(--admin-warning-soft);
+}
+
+.admin-hero-stat-icon[data-tone="info"] {
+    color: var(--admin-info);
+    background: var(--admin-info-soft);
+}
+
+.admin-hero-stat-icon[data-tone="teal"] {
+    color: var(--admin-teal);
+    background: var(--admin-teal-soft);
+}
+
+.admin-hero-stat-icon[data-tone="blue"] {
+    color: var(--admin-blue);
+    background: var(--admin-blue-soft);
+}
+
+.admin-hero-stat-icon[data-tone="slate"] {
+    color: var(--admin-slate);
+    background: var(--admin-slate-soft);
+}
+
+.admin-hero-stat-icon[data-tone="brown"] {
+    color: var(--admin-brown);
+    background: var(--admin-brown-soft);
+}
+
+.admin-hero-stat-body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.admin-hero-stat-label {
+    color: var(--color-text-muted);
+    font-size: 0.72rem;
+}
+
+.admin-hero-stat-value {
+    color: var(--color-text);
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+}
+
+.admin-hero-stat-meta {
+    color: var(--color-text-faint);
+    font-size: 0.68rem;
+}
+
+
+/* =========================================================
+   Tablet
+   ========================================================= */
+
+@media (max-width: 900px) {
+    .admin-page-hero-top {
+        padding: var(--space-6) var(--space-6) var(--space-5);
+    }
+
+    .admin-page-hero-metric {
+        padding: 0 var(--space-6) var(--space-5);
+    }
+
+    .admin-hero-sparkline {
+        display: none;
+    }
+}
+
+
+/* =========================================================
+   Mobile
+   ========================================================= */
+
+@media (max-width: 700px) {
+    .admin-page-hero-top {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .admin-page-hero-actions {
+        width: 100%;
+    }
+
+    .admin-page-hero-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-hero-stat {
+        border-right: 0;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .admin-hero-stat:last-child {
+        border-bottom: 0;
+    }
+}
+
+@media (max-width: 560px) {
+    .admin-page-hero {
+        border-radius: var(--radius-xl);
+    }
+
+    .admin-page-hero-top {
+        padding: var(--space-5);
+    }
+
+    .admin-page-hero-metric {
+        padding: 0 var(--space-5) var(--space-5);
+    }
+
+    .admin-page-hero-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    .admin-hero-metric-value {
+        font-size: clamp(28px, 9vw, 38px);
+    }
+}
+
+
+/* =========================================================
+   Reduced motion
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-hero-metric-value,
+    .admin-hero-shimmer {
+        animation: none;
+    }
+
+    .admin-hero-stat.is-interactive {
+        transition: none;
+    }
+}

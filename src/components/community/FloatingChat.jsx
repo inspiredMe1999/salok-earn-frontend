@@ -449,8 +449,31 @@ function FloatingChat() {
         setTravelDistance(measuredTravel);
         setDragging(true);
 
+        // Belt-and-braces on browsers that support it, but the real
+        // fix for mobile/touch is below: tracking the drag on window
+        // itself rather than relying on capture keeping events routed
+        // to this ~44px button once the finger has moved off it.
         event.currentTarget.setPointerCapture?.(
             event.pointerId
+        );
+
+        window.addEventListener(
+            "pointermove",
+            handlePointerMove
+        );
+
+        window.addEventListener(
+            "pointerup",
+            handlePointerUp
+        );
+
+        // Mobile browsers can cancel a gesture mid-drag (a system
+        // back-swipe, pull-to-refresh, an incoming call, etc.) — a
+        // cancel has to clean up the same way an up does, or the drag
+        // state gets stuck and the pill freezes mid-transition.
+        window.addEventListener(
+            "pointercancel",
+            handlePointerCancel
         );
     }
 
@@ -541,6 +564,41 @@ function FloatingChat() {
         setDragOffsetX(travel);
     }
 
+    // Shared cleanup for both a real release and a cancelled gesture.
+    function detachDragListeners() {
+        window.removeEventListener(
+            "pointermove",
+            handlePointerMove
+        );
+
+        window.removeEventListener(
+            "pointerup",
+            handlePointerUp
+        );
+
+        window.removeEventListener(
+            "pointercancel",
+            handlePointerCancel
+        );
+    }
+
+    // A cancelled gesture (the OS/browser interrupted it) always just
+    // aborts and snaps back — never commits, regardless of how far it
+    // had already traveled.
+    function handlePointerCancel() {
+        const data =
+            dragData.current;
+
+        if (!data.dragging) return;
+
+        data.dragging = false;
+
+        setDragging(false);
+        setDragOffsetX(0);
+
+        detachDragListeners();
+    }
+
     function handlePointerUp(event) {
         const data =
             dragData.current;
@@ -551,6 +609,8 @@ function FloatingChat() {
 
         setDragging(false);
         setDragOffsetX(0);
+
+        detachDragListeners();
 
         /*
         |--------------------------------------------------------------------------
@@ -949,12 +1009,6 @@ function FloatingChat() {
                         onPointerDown={(event) =>
                             handlePointerDown(event, -1)
                         }
-                        onPointerMove={
-                            handlePointerMove
-                        }
-                        onPointerUp={
-                            handlePointerUp
-                        }
                         tabIndex={isOpen ? 0 : -1}
                         aria-hidden={!isOpen}
                         aria-label="Close community chat"
@@ -968,12 +1022,6 @@ function FloatingChat() {
                         className="floating-pill-icon floating-pill-icon-chat"
                         onPointerDown={(event) =>
                             handlePointerDown(event, 1)
-                        }
-                        onPointerMove={
-                            handlePointerMove
-                        }
-                        onPointerUp={
-                            handlePointerUp
                         }
                         tabIndex={isOpen ? -1 : 0}
                         aria-hidden={isOpen}
