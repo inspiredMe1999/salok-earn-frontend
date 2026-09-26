@@ -252,7 +252,7 @@ body {
     min-width: 320px;
     min-height: 100vh;
 
-    overflow-x: hidden;
+    overflow-x: clip;
 
     font-family: var(--font-primary);
 
@@ -909,7 +909,7 @@ ol {
 @media (max-width: 820px) {
   html, body {
     height: auto;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   body *:has(.au) {

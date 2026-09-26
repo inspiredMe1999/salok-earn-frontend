@@ -31,7 +31,7 @@ const QUICK_REACTIONS = [
     "💯",
 ];
 
-// Diameter (px) of a single icon slot — also the pill's height.
+// Diameter (px) of a single icon slot.
 const ICON_SIZE = 44;
 
 // Gap (px) between the two icons inside the pill, and also the
@@ -41,19 +41,27 @@ const ICON_SIZE = 44;
 // icon land at exactly 0px visible, not peeking or over-hidden.
 const ICON_GAP = 6;
 
-// The pill's total width — both icons, side by side, plus the gap
-// between them. This NEVER changes. The pill doesn't resize or
-// clip its own content; it's a fixed-size object that gets
-// positioned mostly off the page, and the browser's own viewport
-// edge is what hides whichever icon is currently off-screen.
-const PILL_WIDTH = ICON_SIZE * 2 + ICON_GAP;
+// Breathing room (px) between the icons and the pill's own edge —
+// on all four sides. Without this the icon exactly fills the pill
+// and looks fused to it; this is what gives it a visible ring.
+const PILL_PADDING = 5;
+
+// The pill's total width/height — both icons, side by side, the gap
+// between them, and padding on every side. This NEVER changes. The
+// pill doesn't resize or clip its own content; it's a fixed-size
+// object that gets positioned mostly off the page, and the browser's
+// own viewport edge is what hides whichever icon is off-screen.
+const PILL_WIDTH = ICON_SIZE * 2 + ICON_GAP + PILL_PADDING * 2;
+const PILL_HEIGHT = ICON_SIZE + PILL_PADDING * 2;
 
 // The pill's resting "left" (px) when closed: far enough negative
 // that the home icon (the first, left-hand icon in the pill) sits
 // completely past the page's left edge — 0px of it visible — while
 // the chat icon (second, right-hand) ends up sitting ICON_GAP in
-// from the true edge.
-const PILL_REST_LEFT_CLOSED = -ICON_SIZE;
+// from the true edge. The padding has to be backed out here too,
+// since it's the icon's position that must line up with the page
+// edge, not the pill's own (padded) outer edge.
+const PILL_REST_LEFT_CLOSED = -(ICON_SIZE + PILL_PADDING);
 
 // Fallback travel distance (px), only used before a real measurement
 // is available (e.g. before mount). Recomputed on mount, on resize,
@@ -81,7 +89,12 @@ function computeRestLeftOpen() {
         return DRAG_TRAVEL_FALLBACK;
     }
 
-    return window.innerWidth - ICON_GAP - ICON_SIZE;
+    return (
+        window.innerWidth -
+        ICON_GAP -
+        ICON_SIZE -
+        PILL_PADDING
+    );
 }
 
 // The real, on-screen distance the pill travels between its two
@@ -327,7 +340,7 @@ function FloatingChat() {
     useEffect(() => {
         function handleResize() {
             const height =
-                pillRef.current?.offsetHeight || ICON_SIZE;
+                pillRef.current?.offsetHeight || PILL_HEIGHT;
 
             const margin = 12;
 
@@ -523,7 +536,7 @@ function FloatingChat() {
                 pillRef.current;
 
             const height =
-                pill?.offsetHeight || ICON_SIZE;
+                pill?.offsetHeight || PILL_HEIGHT;
 
             const viewportHeight =
                 window.innerHeight;
@@ -1080,14 +1093,14 @@ function FloatingChat() {
                         </div>
 
                         <div className="floating-chat-header-actions">
-                            {/* <Link
+                            <Link
                                 to="/community"
                                 title="Open full community"
                             >
                                 <ArrowUpRight
                                     size={16}
                                 />
-                            </Link> */}
+                            </Link>
 
                             <button
                                 type="button"
